@@ -75,6 +75,8 @@ const InnerContainer = styled(motion.div)`
   position: relative;
   z-index: 1;
   max-width: 1200px;
+  
+
   margin: 0 auto;
   padding: clamp(24px, 5vw, 56px) 20px clamp(24px, 6vw, 64px);
 `;
@@ -85,7 +87,8 @@ const HeaderRow = styled(motion.div)`
   margin-bottom: clamp(14px, 2vw, 22px);
 
   h3 {
-    margin: 0;
+      margin-top:5rem;
+
     font-size: clamp(18px, 3.2vw, 24px);
     color: ${colors.accentGold};
     letter-spacing: .2px;
@@ -439,7 +442,7 @@ export default function Footer() {
 
           {/* Newsletter légère (non bloquante) */}
           <Column variants={variants}>
-            <SectionTitle>Newsletter</SectionTitle>
+            <SectionTitle>Visite</SectionTitle>
             <p style={{ margin: 0, color: colors.accentGoldLight }}>
               Recevez nos actualités programmes, dates clés et opportunités.
             </p>
