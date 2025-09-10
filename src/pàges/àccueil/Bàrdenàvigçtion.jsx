@@ -21,12 +21,11 @@ import colors from "../../Styles/colors";
 const NAV = [
   { label: "Accueil", to: "/" },
   { label: "Contact", to: "/contact" },
-
   {
     label: "Programmes",
     to: "/programmes",
   },
-   { label: "À propos", to: "/apropos" },
+  { label: "À propos", to: "/apropos" },
 ];
 
 // ---------------- Styled ----------------
@@ -422,7 +421,16 @@ export default function HeaderPro() {
       <Bar>
         {/* Brand */}
         <Brand to="/" aria-label="Institut CORTEX – Accueil">
-          <span className="logo" />
+          {/* --- Seule modification : intégration du logo du dossier /public --- */}
+          <img
+            src="/img/cortexlogoblànc.avif"
+            alt="Institut CORTEX"
+            className="logo"
+            width="56"
+            height="56"
+            loading="eager"
+            decoding="async"
+          />
           <span className="name">
             <span className="title">Institut CORTEX</span>
             <span className="tag">Excellence utile, impact durable</span>

@@ -38,9 +38,10 @@ const defaultSlides = [
     subtitle:
       "Management, Finance, RH, QHSE, Ingénierie & SI, Santé, BTP, Supply",
     image:
-      imagess?.Responsablecommercialegroupe5 || imagess?.Responsablecommercialegroupe2,
+      imagess?.Responsablecommercialegroupe5 ||
+      imagess?.Responsablecommercialegroupe2,
     ctaLabel: "Télécharger les catalogues",
-    ctaHref: "",//"/catalogues",
+    ctaHref: "", //"/catalogues",
   },
   {
     title: "Réussites & Lauréats",
@@ -67,7 +68,6 @@ const defaultSlides = [
     ctaLabel: "Télécharger les catalogues",
     ctaHref: "/catalogues",
   },
-
 ];
 
 /* ======================= 3D LAYER ======================= */
@@ -315,8 +315,8 @@ const Shade = styled.div`
   inset: 0;
   pointer-events: none;
   z-index: 1;
-  background: linear-gradient(120deg, ${colors.bg} 50%, ${colors.bgSoft} 50%),
-    linear-gradient(180deg, rgba(28, 10, 11, 0.18), rgba(28, 10, 11, 0.58));
+  background: linear-gradient(120deg, ${colors.bg1} 50%, ${colors.bg} 50%),
+    linear-gradient(180deg, ${colors.accentGold}, ${colors.accentGold});
   mix-blend-mode: soft-light;
 `;
 
@@ -388,7 +388,7 @@ const CTA = styled(motion.a)`
   width: fit-content;
   background: ${colors.accentGold};
   color: #0e1a2b;
-  border: 1px solid #d9b642;
+  //border: 1px solid #d9b642;
   padding: 12px 16px;
   border-radius: 18px 0px 18px 0px;
   font-weight: 800;
@@ -399,21 +399,5 @@ const CTA = styled(motion.a)`
     background: ${colors.accentGold}70;
 
     box-shadow: 0 12px 12px rgba(242, 201, 76, 0.36);
-  }
-`;
-
-const Ghost = styled(motion.a)`
-  align-self: start;
-  width: fit-content;
-  color: ${colors.text};
-  background: ${colors.bgSoft};
-  padding: 12px 16px;
-  border-radius: 18px 0px 18px 0px;
-  font-weight: 800;
-  transition: border-color 0.2s ease;
-  &:hover {
-    background: ${colors.bgSoft}70;
-
-    border-color: #2a4b7c;
   }
 `;
