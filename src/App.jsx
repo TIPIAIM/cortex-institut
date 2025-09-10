@@ -7,6 +7,7 @@ import ContactCortex from "./pàges/contàct/Contact.jsx";
 import HomeBase from "./pàges/àccueil/HomeBase.jsx";
 import Footer from "./pàges/àccueil/Footer.jsx";
 import Header from "./pàges/àccueil/Bàrdenàvigçtion.jsx";
+import MonQRCode from "./MonQRCode.jsx";
  
 export default function App() {
   return (
@@ -18,9 +19,13 @@ export default function App() {
         <Route path="/programmes" element={<Programmes />} />
         <Route path="/contact" element={<ContactCortex />} />
    
-   {/**en cours 
-        <Route path="/realisations" element={<RealisationsEtPartenaires />} />
+   {/**en cours  MonQRCode
+        <Route
+         path="/realisations" element={<RealisationsEtPartenaires />} />
  */}
+         <Route
+         path="/realisations" element={<MonQRCode />} />
+
       </Routes>
       <Footer/>
     </>

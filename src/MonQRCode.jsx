@@ -11,15 +11,12 @@ const QRContainer = styled.div`
   margin: 0 auto;
   background: linear-gradient(145deg, #f8fafc 0%, #e6f0ff 100%);
   border-radius: 28px;
-  box-shadow: 
-    0 12px 40px rgba(26, 77, 46, 0.15),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.3);
-  display: flex;
+   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
   backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+ // border: 1px solid rgba(255, 255, 255, 0.4);
   overflow: hidden;
 
   &::before {
@@ -29,13 +26,19 @@ const QRContainer = styled.div`
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(242,201,76,0.1) 0%, transparent 70%);
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.86) 0%,
+      transparent 70%
+    );
     animation: rotate 20s linear infinite;
     z-index: 0;
   }
 
   @keyframes rotate {
-    100% { transform: rotate(360deg); }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;
 
@@ -47,13 +50,10 @@ const Logo = styled.img`
   height: 60px;
   transform: translate(-50%, -50%);
   border-radius: 16px;
-  box-shadow: 
-    0 4px 12px rgba(0, 43, 91, 0.15),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.4);
-  background: white;
+   background: white;
   object-fit: contain;
   padding: 8px;
-  border: 3px solid #f2c94c;
+  border: 2px solid rgb(190, 113, 11);
   z-index: 2;
   transition: all 0.3s ease;
 
@@ -87,14 +87,13 @@ const DownloadBtn = styled.button`
   margin: 2rem auto 0;
   display: block;
   padding: 14px 32px;
-  background: linear-gradient(90deg, #002B5B 0%, #1A4D2E 100%);
+  background: linear-gradient(90deg, #002b5b 0%, #1a4d2e 100%);
   color: #fff;
   font-weight: 600;
   border: none;
   border-radius: 16px;
-  box-shadow: 
-    0 4px 20px rgba(0, 43, 91, 0.2),
-    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  //box-shadow: 0 4px 20px rgba(0, 43, 91, 0.2),
+  //  inset 0 1px 1px rgba(255, 255, 255, 0.2);
   font-size: 1.1em;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -109,7 +108,12 @@ const DownloadBtn = styled.button`
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent
+    );
     transition: all 0.5s ease;
     z-index: -1;
   }
@@ -117,7 +121,7 @@ const DownloadBtn = styled.button`
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 24px rgba(26, 77, 46, 0.3);
-    
+
     &::before {
       left: 100%;
     }
@@ -130,7 +134,7 @@ const DownloadBtn = styled.button`
 
 const ScanText = styled.p`
   font-weight: 600;
-  color: #002B5B;
+  color: #002b5b;
   font-size: 1.15em;
   margin-top: 1.5rem;
   text-align: center;
@@ -146,7 +150,7 @@ const ScanText = styled.p`
     transform: translateX(-50%);
     width: 60px;
     height: 3px;
-    background: linear-gradient(90deg, #f2c94c, #1A4D2E);
+    background: linear-gradient(90deg, rgb(243, 140, 56), rgb(31, 26, 77));
     border-radius: 3px;
   }
 `;
@@ -156,9 +160,7 @@ const GlowEffect = styled.div`
   width: 100%;
   height: 100%;
   border-radius: 28px;
-  box-shadow: 
-    0 0 30px rgba(242, 201, 76, 0.15),
-    0 0 60px rgba(26, 77, 46, 0.1);
+  box-shadow: 0 0 30px rgba(224, 103, 4, 0.86), 0 0 60px rgba(10, 4, 59, 0.1);
   pointer-events: none;
   z-index: -1;
 `;
@@ -188,30 +190,28 @@ const MonQRCode = () => {
           <GlowEffect />
           <QRDecoration />
           <QRCode
-            value="https://caurisinvestment.com"
+            value="https://institut-cortex.com"
             size={220}
             bgColor="transparent"
             fgColor="#002B5B"
             level="H"
-            style={{ 
-              width: "220px", 
-              height: "220px", 
+            style={{
+              width: "220px",
+              height: "220px",
               position: "relative",
-              zIndex: "1"
+              zIndex: "1",
             }}
             eyeRadius={[
               { outer: [24, 24, 0, 24], inner: [16, 16, 0, 16] },
               { outer: [24, 24, 24, 0], inner: [16, 16, 16, 0] },
-              { outer: [0, 24, 24, 24], inner: [0, 16, 16, 16] }
+              { outer: [0, 24, 24, 24], inner: [0, 16, 16, 16] },
             ]}
           />
-          <Logo src="/img/kori2.PNG" alt="Logo Premium" />
+          <Logo src="/img/cortexlogoblànc.avif" alt="Logo Premium" />
         </QRContainer>
       </div>
       <ScanText>Scannez pour une expérience exclusive</ScanText>
-      <DownloadBtn onClick={handleDownload}>
-        Télécharger le QR Code
-      </DownloadBtn>
+      <DownloadBtn onClick={handleDownload}>Télécharger le QR Code</DownloadBtn>
     </div>
   );
 };
