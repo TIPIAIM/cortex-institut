@@ -1,5 +1,5 @@
 // src/components/home/HeroIntro.jsx
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef } from "react";
 import styled, { keyframes } from "styled-components";
 import {
   motion,
@@ -88,8 +88,8 @@ const Hero = styled(motion.header)`
     pointer-events: none;
     background: radial-gradient(
       560px 360px at var(--mx, 50%) var(--my, 50%),
-      rgba(6, 40, 92, 0.96) 0%,
-      rgba(4, 19, 27, 0.91) 20%,
+      ${colors.accentGold} 0%,
+      ${colors.bg1} 10%,
       transparent 50%
     );
     mix-blend-mode: soft-light;
@@ -124,7 +124,6 @@ const Content = styled(motion.div)`
   text-align: center;
 `;
 
- 
 const Title = styled(motion.h1)`
   margin: 0 0 12px;
   font-size: clamp(20px, 5.8vw, 40px);

@@ -173,7 +173,7 @@ color:#0f223a ;
  font-weight: 700;
  background: linear-gradient(
     120deg,
-    ${colors.semygprimar} 64%,
+    ${colors.accentGold3} 64%,
     ${colors.bg} 50%
   );
   padding: 10px 12px;
@@ -201,7 +201,7 @@ const CloseBtn = styled.button`
   border-radius: 50px;
   border: 1px solid #21304f;
   background: #0e1a2b;
-  color: #f2c94c;
+  color: ${colors.accentGold};
   transition: transform 0.15s ease, background 0.15s ease;
   &:hover {
     transform: translateY(-1px);

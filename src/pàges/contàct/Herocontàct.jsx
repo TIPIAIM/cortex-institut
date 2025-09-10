@@ -99,8 +99,9 @@ const Inner = styled(motion.div)`
 
 const Title = styled.h1`
   margin: 0;
+  color: ${colors.accentGold};
   font-size: clamp(54px, 5vw, 44px);
- `;
+`;
 
 const Sub = styled.p`
   margin: 0;
@@ -130,7 +131,7 @@ const Chip = styled.a`
   text-decoration: none;
   background: linear-gradient(
     120deg,
-    ${colors.bg}90 60%,
+    ${colors.bg1} 60%,
     ${colors.accentGold}90 60%
   );
   border: 1px solid #1f2c44;

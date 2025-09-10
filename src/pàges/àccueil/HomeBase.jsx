@@ -24,7 +24,7 @@ const shimmer = keyframes`
 
 const Page = styled.main`
   position: relative;
-  background: linear-gradient(180deg, ${colors.bg}, ${colors.bgSoft} 55%, #0f223a);
+  background: linear-gradient(180deg, ${colors.bg1}, ${colors.bgSoft} 55%, ${colors.bg1});
   color: ${colors.text};
   isolation: isolate;
 `;

@@ -160,7 +160,7 @@ const RailTrack = styled(motion.div)`
     background: linear-gradient(
       90deg,
       ${colors.accentGold},
-      ${colors.secondary}
+      ${colors.bg1}
     );
     border-radius: 10px;
     transition: all 0.3s ease;
@@ -188,7 +188,7 @@ const Card = styled(motion(Link))`
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  background: linear-gradient(145deg, #0f223a, #0b1729);
+  background: linear-gradient(120deg, ${colors.bg1} 90%, ${colors.accentGold} 30%);
   text-decoration: none;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 
@@ -201,7 +201,7 @@ const Card = styled(motion(Link))`
     bottom: 0;
     background: linear-gradient(
       45deg,
-      rgba(200, 170, 110, 0.1),
+     ${colors.accentGold}10,
       rgba(42, 75, 124, 0.1)
     );
     opacity: 0;

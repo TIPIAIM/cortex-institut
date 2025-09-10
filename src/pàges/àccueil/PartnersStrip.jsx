@@ -34,7 +34,7 @@ const float = keyframes`
 const Strip = styled(motion.section)`
   position: relative;
   padding: clamp(24px, 5vw, 40px) 0;
- // background: linear-gradient(180deg, #0f223a, #112a48);
+  background: linear-gradient(120deg, ${colors.bg1} 70% ,${colors.accentGold} 30%);
   overflow: hidden;
   isolation: isolate;
   
@@ -64,10 +64,10 @@ const Overlay = styled.div`
   inset: 0;
   background: linear-gradient(
     90deg,
-    ${colors.bg} 0%,
+    ${colors.bg1} 0%,
     transparent 10%,
     transparent 90%,
-    ${colors.bg} 100%
+   // ${colors.bgSoft} 100%
   );
   pointer-events: none;
   z-index: 2;

@@ -3,7 +3,7 @@ import React from "react";
 import styled, { keyframes } from "styled-components";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Download, MessageCircle, Star, ArrowRight, Users, Award, Aperture } from "lucide-react";
+import {  MessageCircle, Star, ArrowRight, Users, Award, Aperture } from "lucide-react";
 import colors from "../../Styles/colors";
 
 // Animations
@@ -47,7 +47,7 @@ const Inner = styled(motion.div)`
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px 24px 0 0;
   overflow: hidden;
-  background: linear-gradient(135deg, ${colors.accentGold}20 50% 0%,  ${colors.bg}20 50% 100%);
+  background: linear-gradient(135deg, ${colors.accentGold3}20 50% 0%,  ${colors.bg1} 50% 100%);
   padding: clamp(24px, 4vw, 40px);
   display: grid;
   gap: 24px;
@@ -132,7 +132,7 @@ const Feature = styled(motion.span)`
   border-radius: 20px 0 20px 0;
   font-size: 14px;
   font-weight: 600;
-  color: ${colors.accentGold};
+  color: ${colors.accentGold3};
   
   svg {
     width: 18px;
@@ -161,8 +161,8 @@ const CTA = styled(motion(Link))`
   font-weight: 800;
   font-size: 16px;
   transition: all 0.3s ease;
-  background: linear-gradient(120deg, ${colors.accentGold}40, ${colors.bg});
-  color:  ${colors.accentGold};
+  background: linear-gradient(120deg, ${colors.accentGold3}40, ${colors.bg});
+  color:  ${colors.accentGold3};
     position: relative;
   overflow: hidden;
   

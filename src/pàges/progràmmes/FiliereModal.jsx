@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ChevronRight, Star, BadgeCheck } from "lucide-react";
 import ProModal from "./ProModal";
 import { imagess } from "../../assets/imagess";
+import colors from "../../Styles/colors";
  
 /* ========== Icône animée réutilisable ========== */
 function AnimatedIcon({
@@ -217,9 +218,8 @@ const HeroWrap = styled.div`
   position: relative;
   height: clamp(220px, 42vh, 480px);
   border-radius: 4px;
-  // border: 1px solid #1f2c44;
-  overflow: hidden;
-  background: linear-gradient(180deg, #0e1a2b, #0f223a);
+   overflow: hidden;
+  background: linear-gradient(180deg, ${colors.bg1}, ${colors.bg2});
   &:after {
     content: "";
     position: absolute;
@@ -247,10 +247,10 @@ const HeroShade = styled.div`
   pointer-events: none;
   background: radial-gradient(
       1000px 480px at 85% -10%,
-      #2a4b7c55,
+    ${colors.bg2},
       transparent 60%
     ),
-    linear-gradient(180deg, rgba(6, 10, 18, 0.1), rgba(6, 10, 18, 0.3));
+    linear-gradient(180deg, ${colors.bg1}, ${colors.bg1});
   mix-blend-mode: soft-light;
 `;
 
@@ -261,25 +261,24 @@ const HeroControls = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(10, 16, 28, 0.55);
+  background: ${colors.bg1};
   backdrop-filter: blur(6px);
-  border: 1px solid #24385f;
-  border-radius: 12px;
+   border-radius: 12px;
   padding: 6px;
 `;
 
 const Sep = styled.span`
   width: 1px;
   height: 18px;
-  background: #27416a;
+  background: ${colors.bg2};
   opacity: 0.8;
   margin: 0 2px;
 `;
 
 const Chip = styled.button`
   border: 1px solid #2a4b7c;
-  background: #0e1a2b;
-  color: #cfe0f1;
+  background: ${colors.bg2};
+  color: ${colors.accentGold3};
   padding: 6px 10px;
   border-radius: 10px;
   font-weight: 700;
@@ -287,8 +286,8 @@ const Chip = styled.button`
   transition: transform 0.12s ease, background 0.12s ease,
     border-color 0.12s ease, color 0.12s ease;
   &[data-active="true"] {
-    background: #103055;
-    color: #f2c94c;
+    background: ${colors.accentGold};
+    color:${colors.bg1};
     border-color: #3a67a8;
   }
   &:hover {
@@ -313,7 +312,7 @@ const ColLeft = styled(motion.div)`
 
 const Desc = styled.p`
   margin: 0;
-  color: #d3e1f3;
+  color:${colors.accentGoldLight};
   font-size: clamp(15px, 1.9vw, 18px);
   line-height: 1.65;
 `;
@@ -322,7 +321,7 @@ const Block = styled.section`
   border: 1px solid #1f2c44;
   border-radius: 14px;
   padding: clamp(12px, 2vw, 16px);
-  background: linear-gradient(180deg, #0e1a2b, #0f223a);
+  background: linear-gradient(180deg,${colors.bg2}20 , ${colors.bg1});
 `;
 
 const BlockTitle = styled.h4`
@@ -331,7 +330,7 @@ const BlockTitle = styled.h4`
   align-items: center;
   gap: 10px;
   font-size: clamp(16px, 2.2vw, 18px);
-  color: #f2c94c;
+  color: ${colors.accentGold3};
 `;
 
 /* icône animée */
@@ -342,7 +341,7 @@ const IconWrap = styled(motion.span)`
   width: 28px;
   height: 28px;
   border-radius: 10px;
-  background: #1a2c49;
+  background:${colors.bg2};
   box-shadow: 0 8px 22px rgba(26, 44, 73, 0.35);
   svg {
     transform: translateY(0);
@@ -365,7 +364,7 @@ const IconGlow = styled.span`
 const List = styled.ul`
   margin: 0;
   padding-left: clamp(16px, 2vw, 20px);
-  color: #e8eef7;
+  color: ${colors.accentGoldLight};
   li {
     margin: 6px 0;
     line-height: 1.6;
@@ -385,7 +384,7 @@ const ProgList = styled.ul`
     gap: 10px;
     padding: 12px 14px;
     border-radius: 12px;
-    color: #e8eef7;
+    color: ${colors.accentGoldLight};
     background: linear-gradient(180deg, #0e1a2b, #0f223a);
     border: 1px solid transparent;
     transition: border-color 0.15s ease, background 0.15s ease,
@@ -421,9 +420,9 @@ const Ctas = styled.div`
     font-size: clamp(14px, 1.8vw, 16px);
   }
   .primary {
-    background: #f2c94c;
-    color: #0e1a2b;
-    border: 1px solid #d9b642;
+    background: ${colors.accentGold};
+    color: ${colors.bg1};
+    
     box-shadow: 0 8px 22px rgba(242, 201, 76, 0.25);
   }
   .primary:hover {
@@ -445,7 +444,7 @@ const Meta = styled.div`
   border-radius: 14px 14px 0px 0px;
  margin-bottom: 1rem;
   padding: 14px;
-  background: #0f223a;
+  background: ${colors.bg1};
   display: grid;
   gap: 10px;
   div {

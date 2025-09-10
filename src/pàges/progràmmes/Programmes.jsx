@@ -70,8 +70,8 @@ const Page = styled.div`
   gap: 22px;
   background: linear-gradient(
     120deg,
-    ${colors.bg} 64%,
-    ${colors.semygprimary} 50%
+    ${colors.bg1} 64%,
+    ${colors.bg2} 50%
   );
 `;
 
@@ -161,7 +161,7 @@ const TiltWrap = styled.div`
 
 const Card = styled(motion.article)`
   position: relative;
-  background: linear-gradient(120deg, ${colors.bg} 64%, ${colors.bgSoft} 50%);
+  background: linear-gradient(120deg, ${colors.b1g} 64%, ${colors.bgSoft} 50%);
   border: 1px solid #1f2c44;
   border-radius: 10px 10px 0 0;
   overflow: hidden;
@@ -180,7 +180,7 @@ const Card = styled(motion.article)`
     border-radius: 16px;
     background: radial-gradient(
       300px 60px at 10% -10%,
-      ${colors.semygsecondar}55,
+      ${colors.semygsecondar},
       transparent 60%
     );
     pointer-events: none;
@@ -217,7 +217,7 @@ const Cover = styled.div`
   position: relative;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  background: #0b1729;
+  background: ${colors.bg};
   transform-style: preserve-3d;
 `;
 
@@ -318,7 +318,7 @@ const Badge = styled.span`
   bottom: 10px;
   background: linear-gradient(
     90deg,
-    ${colors.semygprimar} 5%,
+    ${colors.accentGold} 50%,
     ${colors.bg} 10%
   );
   backdrop-filter: blur(6px);

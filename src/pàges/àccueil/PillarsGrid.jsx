@@ -7,13 +7,10 @@ import {
   Eye, 
   Heart, 
   Star, 
-  Users, 
-  Lightbulb, 
+ 
   Shield,
   BookOpen,
-  GraduationCap,
-  Briefcase,
-  Globe,
+ 
   Award,
   Clock,
   TrendingUp
@@ -70,10 +67,10 @@ const Section = styled.section`
     pointer-events: none;
     background: repeating-linear-gradient(
         90deg,
-        #ffffff0a 0 1px,
+        #ffffff0a 0 2px,
         transparent 1px 42px
       ),
-      repeating-linear-gradient(0deg, #ffffff08 0 1px, transparent 1px 42px);
+      repeating-linear-gradient(0deg,rgba(9, 7, 138, 0.03) 0 1px, transparent 1px 42px);
     animation: ${gridDrift} 18s linear infinite;
     mix-blend-mode: soft-light;
   }
@@ -130,7 +127,7 @@ const TabList = styled.div`
   gap: 8px;
   border: 1px solid #1f2c44;
   border-radius: 14px;
-  background: linear-gradient(180deg, #0e1a2b, #0f223a);
+  background: linear-gradient(180deg, ${colors.bg1}, ${colors.bg2});
   padding: 6px;
   max-width: 100%;
   box-sizing: border-box;
@@ -190,10 +187,10 @@ const Indicator = styled(motion.div)`
   border-radius: 10px;
   background: radial-gradient(
       400px 120px at 85% -10%,
-      ${colors.semygsecondar}55,
+      ${colors.bg1},
       transparent 60%
     ),
-    linear-gradient(180deg, ${colors.accentGold}, #112a48);
+    linear-gradient(120deg, ${colors.accentGold},  ${colors.bg1} 60%);
   border: 1px solid #274066;
   box-shadow: inset 0 0 0 1px #1f2c44, 0 10px 28px rgba(10, 16, 28, 0.25);
   box-sizing: border-box;
@@ -212,9 +209,9 @@ const Indicator = styled(motion.div)`
 
 /* ---------- Panel ---------- */
 const Panel = styled(motion.div)`
-  border: 1px solid #1f2c44;
+  //border: 1px solid #1f2c44;
   border-radius: 18px;
-  background: linear-gradient(180deg, #0f223a, #112a48);
+  background: linear-gradient(120deg, ${colors.accentGold}5 70% ,${colors.bg1} 40%);
   padding: clamp(14px, 3vw, 18px);
   display: grid;
   gap: 16px;

@@ -43,7 +43,8 @@ const CANONICAL =
   typeof window !== "undefined"
     ? window.location.href
     : "https://institut-cortex.com/apropos";
-const OG_IMAGE = imagess?.logoCortex2 || imagess?.logoCortex || "/img/cortex-logo.png";
+const OG_IMAGE =
+  imagess?.logoCortex2 || imagess?.logoCortex || "/img/cortex-logo.png";
 
 /* ---------------------- Page shell ---------------------- */
 const Page = styled.main`
@@ -60,9 +61,9 @@ const Skeleton = styled.div`
   border: 1px solid #1f2c44;
   background: linear-gradient(
       100deg,
-      rgba(255,255,255,0.04) 20%,
-      rgba(255,255,255,0.08) 40%,
-      rgba(255,255,255,0.04) 60%
+      rgba(255, 255, 255, 0.04) 20%,
+      rgba(255, 255, 255, 0.08) 40%,
+      rgba(255, 255, 255, 0.04) 60%
     ),
     #0f223a;
   background-size: 200% 100%;
@@ -95,7 +96,9 @@ function DeferInView({ children, height = 280 }) {
     return () => obs?.disconnect();
   }, [show]);
 
-  return <div ref={ref}>{show ? children : <Skeleton $h={`${height}px`} />}</div>;
+  return (
+    <div ref={ref}>{show ? children : <Skeleton $h={`${height}px`} />}</div>
+  );
 }
 
 /* ---------------------- Hero ---------------------- */
@@ -105,16 +108,24 @@ const Hero = styled.header`
   display: grid;
   align-items: end;
   isolation: isolate;
-  background:
-    radial-gradient(60% 80% at 75% 15%, #00000080 0%, #000000b0 60%, #000000cc 100%),
+  background: radial-gradient(
+      60% 80% at 75% 15%,
+      #00000080 0%,
+      #000000b0 60%,
+      #000000cc 100%
+    ),
     url(${(p) => cld(p.$cover, 1600)}) center/cover no-repeat;
   &:after {
     content: "";
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: repeating-linear-gradient(90deg, #ffffff08 0 1px, transparent 1px 40px),
-                repeating-linear-gradient(0deg, #ffffff06 0 1px, transparent 1px 40px);
+    background: repeating-linear-gradient(
+        90deg,
+        #ffffff08 0 1px,
+        transparent 1px 40px
+      ),
+      repeating-linear-gradient(0deg, #ffffff06 0 1px, transparent 1px 40px);
     animation: ${gridDrift} 22s linear infinite;
     mix-blend-mode: soft-light;
   }
@@ -141,22 +152,23 @@ const HeroInner = styled(motion.div)`
     flex-wrap: wrap;
   }
 `;
- 
+
 const CTAGhost = styled(Link)`
-   padding: 12px 16px;
+  padding: 12px 16px;
   border-radius: 14px 0 14px 0;
   text-decoration: none;
   font-weight: 800;
-  background: ${colors.accentGold}20;
-  color: #0e1a2b;
-  box-shadow: 0 10px 28px rgba(242, 201, 76, 0.28);
-  border: 1px solid #d9b642;
+  background: ${colors.accentGold};
+  color: ${colors.bg1};
+  box-shadow: 0 5px 2px ${colors.bg1};
+  // border: 1px solid #d9b642;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   &:hover {
-    background: ${colors.accentGold};
+    background: ${colors.accentGold}20;
+    color: ${colors.accentGoldLight};
 
     transform: translateY(-1px);
-    box-shadow: 0 12px 32px rgba(242, 201, 76, 0.36);
+    box-shadow: 0 5px 2px ${colors.accentGold};
   }
 `;
 
@@ -192,9 +204,9 @@ const TwoCols = styled.div`
   }
 `;
 const Card = styled(motion.article)`
-  background: linear-gradient(120deg, ${colors.bg} 60%, ${colors.bgSoft} 60%);
+  background: linear-gradient(120deg, ${colors.bg2}80 60%, ${colors.bg1} 60%);
   border: 1px solid #1f2c44;
-  border-radius: 0 24px 0 24px ;
+  border-radius: 0 24px 0 24px;
   padding: 16px;
   display: grid;
   gap: 10px;
@@ -260,7 +272,7 @@ const Portrait = styled(motion.figure)`
   border-radius: 22px 0 22px 0;
   overflow: hidden;
   border: 1px solid #21375a;
-  background: #0b1729;
+  background: ${colors.bg1};
   position: relative;
   img {
     width: 100%;
@@ -274,7 +286,12 @@ const Portrait = styled(motion.figure)`
     position: absolute;
     inset: auto 0 0 0;
     padding: 8px 10px;
-    background: linear-gradient(180deg, transparent, #0009 40%, #000c);
+    background: linear-gradient(
+      180deg,
+      transparent,
+      ${colors.bg1} 40%,
+      ${colors.bg1}
+    );
     color: #fff;
     font-weight: 700;
     font-size: 0.95rem;
@@ -357,30 +374,83 @@ const FaceBase = styled.div`
   -webkit-backface-visibility: hidden;
   border: 1px solid #1f2c44;
 `;
-const FaceFront = styled(FaceBase)` background: #0b1729; `;
+const FaceFront = styled(FaceBase)`
+  background: #0b1729;
+`;
 const FrontImage = styled.img`
-  width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
   transform: translateZ(0);
 `;
 const FrontLegend = styled.div`
-  position: absolute; inset: auto 0 0 0; padding: 10px 12px;
-  background: linear-gradient(180deg, transparent, #0009 40%, #000d);
-  color: ${colors.text}; text-align: center;
-  h4{ margin:0; font-size: clamp(15px, 1.9vw, 18px); color:${colors.accentGold}; }
-  small{ opacity:.9; font-size: clamp(12px, 1.6vw, 13px); }
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 10px 12px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    ${colors.bg1} 40%,
+    ${colors.bg2}
+  );
+  color: ${colors.text};
+  text-align: center;
+  h4 {
+    margin: 0;
+    font-size: clamp(15px, 1.9vw, 18px);
+    color: ${colors.accentGold};
+  }
+  small {
+    opacity: 0.9;
+    font-size: clamp(12px, 1.6vw, 13px);
+  }
 `;
 const FaceBack = styled(FaceBase)`
   transform: rotateY(180deg);
-  background: linear-gradient(120deg, ${colors.semygsecondar}50 64%, ${colors.bgSoft} 50%);
-  display: grid; grid-template-rows: auto auto 1fr auto; gap: 10px;
-  padding: clamp(12px, 2.5vw, 18px); box-shadow: inset 0 0 0 1px #274066;
+  background: linear-gradient(
+    120deg,
+    ${colors.semygsecondar} 64%,
+    ${colors.bgSoft} 50%
+  );
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 10px;
+  padding: clamp(12px, 2.5vw, 18px);
+  box-shadow: inset 0 0 0 1px #274066;
 `;
-const BackTitle = styled.h4` margin:0; font-size:clamp(16px,2vw,20px); color:${colors.accentGold}; text-align:center; `;
-const BackRole = styled.div` text-align:center; color:#f7f9fc; font-weight:600; font-size:clamp(13px,1.8vw,14px); `;
-const BackBio = styled.p` margin:0; color:${colors.accentGoldLight}; font-size:clamp(12.5px,1.8vw,14px); line-height:1.55; text-align:center; `;
+const BackTitle = styled.h4`
+  margin: 0;
+  font-size: clamp(16px, 2vw, 20px);
+  color: ${colors.accentGold};
+  text-align: center;
+`;
+const BackRole = styled.div`
+  text-align: center;
+  color: #f7f9fc;
+  font-weight: 600;
+  font-size: clamp(13px, 1.8vw, 14px);
+`;
+const BackBio = styled.p`
+  margin: 0;
+  color: ${colors.accentGoldLight};
+  font-size: clamp(12.5px, 1.8vw, 14px);
+  line-height: 1.55;
+  text-align: center;
+`;
 const BackStats = styled.div`
-  display:flex; justify-content:center; gap:16px; opacity:.9;
-  div{ display:flex; align-items:center; gap:6px; color:${colors.text}; font-size:12px; }
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  opacity: 0.9;
+  div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: ${colors.text};
+    font-size: 12px;
+  }
 `;
 
 /* ---------------------- Actions ---------------------- */
@@ -394,27 +464,30 @@ const Actions = styled.div`
 /* ---------------------- Page Component ---------------------- */
 function AboutPage() {
   const heroCover =
-    imagess.àutàbleàu ||
-    imagess.DirecteurInstitutCortex1 ||
-    imagess.loreàt;
+    imagess.àutàbleàu || imagess.DirecteurInstitutCortex1 || imagess.loreàt;
 
   // Contenu équipe (useMemo pour éviter recalculs)
   const team = useMemo(
     () => [
       {
-        img: imagess.DirecteurInstitutCortex2 || imagess.DirecteurInstitutCortex1,
+        img:
+          imagess.DirecteurInstitutCortex2 || imagess.DirecteurInstitutCortex1,
         name: "Direction CORTEX",
         role: "Pilotage académique & innovation",
         bio: "Conduit la R&D, la qualité pédagogique et les partenariats.",
       },
       {
-        img: imagess.ResponsableadministrativeetFinancière2 || imagess.ResponsableadministrativeetFinancière,
+        img:
+          imagess.ResponsableadministrativeetFinancière2 ||
+          imagess.ResponsableadministrativeetFinancière,
         name: "Administration & Finances",
         role: "Gouvernance & conformité",
         bio: "Fiabilise la gestion, la conformité et la transparence.",
       },
       {
-        img: imagess.Responsablecommercialegroupe4 || imagess.Responsablecommercialegroupe2,
+        img:
+          imagess.Responsablecommercialegroupe4 ||
+          imagess.Responsablecommercialegroupe2,
         name: "Dév. commercial",
         role: "Relation & croissance",
         bio: "Déploie les offres, anime le réseau et la satisfaction client.",
@@ -499,7 +572,7 @@ function AboutPage() {
             durable, humaine et innovante.
           </p>
           <div className="ctaRow">
-             <CTAGhost to="/programmes">Voir les programmes</CTAGhost>
+            <CTAGhost to="/programmes">Voir les programmes</CTAGhost>
             <CTAGhost to="/contact">Contact</CTAGhost>
           </div>
         </HeroInner>
@@ -603,14 +676,26 @@ function AboutPage() {
               </Card>
               <Portraits>
                 {[
-                  { img: imagess.Responsablecommercialegroupe3, name: "Resp Commerciale" },
-                  { img: imagess.DirecteurInstitutCortex2, name: "Direction CORTEX" },
-                  { img: imagess.DirecteurduGroupe4, name: "Direction Groupe NONI" },
+                  {
+                    img: imagess.Responsablecommercialegroupe3,
+                    name: "Resp Commerciale",
+                  },
+                  {
+                    img: imagess.DirecteurInstitutCortex2,
+                    name: "Direction CORTEX",
+                  },
+                  {
+                    img: imagess.DirecteurduGroupe4,
+                    name: "Direction Groupe NONI",
+                  },
                 ].map((p, i) => (
                   <Portrait key={i} {...fadeStagger(i)}>
                     <img
                       src={cld(p.img, 900)}
-                      srcSet={`${cld(p.img, 600)} 600w, ${cld(p.img, 900)} 900w`}
+                      srcSet={`${cld(p.img, 600)} 600w, ${cld(
+                        p.img,
+                        900
+                      )} 900w`}
                       sizes="(max-width: 620px) 50vw, 33vw"
                       alt={p.name}
                       loading="lazy"
@@ -665,15 +750,19 @@ function AboutPage() {
           </Lead>
           <TeamGrid>
             {team.map((m, i) => (
-              <FlipCard key={i} tabIndex={0} aria-label={`${m.name} — ${m.role}`}>
+              <FlipCard
+                key={i}
+                tabIndex={0}
+                aria-label={`${m.name} — ${m.role}`}
+              >
                 <CardInner>
                   <FaceFront>
                     <FrontImage
                       src={cld(m.img, 1200)}
-                      srcSet={`${cld(m.img, 600)} 600w, ${cld(m.img, 900)} 900w, ${cld(
+                      srcSet={`${cld(m.img, 600)} 600w, ${cld(
                         m.img,
-                        1200
-                      )} 1200w`}
+                        900
+                      )} 900w, ${cld(m.img, 1200)} 1200w`}
                       sizes="(max-width: 560px) 100vw, (max-width: 900px) 50vw, 25vw"
                       alt={m.name}
                       loading="lazy"
@@ -711,7 +800,7 @@ function AboutPage() {
       <Section aria-label="Passer à l’action">
         <DeferInView height={160}>
           <Actions>
-             <CTAGhost to="/programmes">Explorer les programmes</CTAGhost>
+            <CTAGhost to="/programmes">Explorer les programmes</CTAGhost>
             <CTAGhost to="/contact">Parler à un conseiller</CTAGhost>
           </Actions>
         </DeferInView>

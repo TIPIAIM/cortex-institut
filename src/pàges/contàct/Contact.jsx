@@ -76,7 +76,7 @@ const Page = styled.section`
   min-height: 100vh;
   background: linear-gradient(
     180deg,
-    ${colors.bg},
+    ${colors.bg1},
     ${colors.bgSoft} 55%,
     #0f223a
   );
@@ -121,16 +121,17 @@ const Grid = styled.div`
 const InfoPanel = styled(motion.aside)`
   border: 1px solid #1f2c44;
   border-radius: 22px 0 22px 0;
-  background: linear-gradient(120deg, ${colors.bg} 60%, ${colors.bgSoft} 60%);
+  background: linear-gradient(120deg, ${colors.bg2}80 60%, ${colors.bg1} 60%);
   padding: clamp(14px, 3vw, 22px);
   display: grid;
+  
   gap: 12px;
   align-content: start;
 `;
 const PanelTitle = styled.h2`
   margin: 0 0 2px;
   font-size: clamp(18px, 2.8vw, 24px);
-  color: ${colors.accentGold};
+  color: ${colors.accentGold3};
 `;
 const PanelText = styled.p`
   margin: 0 0 6px;
@@ -151,7 +152,7 @@ const Item = styled.li`
   gap: 10px;
   color: ${colors.text};
   svg {
-    color: ${colors.semygprimar};
+    color: ${colors.accentGold3};
   }
   a {
     color: ${colors.text};
@@ -167,14 +168,14 @@ const Whats = styled(motion.a)`
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: #25d366;
-  color: white;
+ // background: red;
+  color: ${colors.accentGold3};
   text-decoration: none;
   padding: 12px 16px;
   border-radius: 12px;
   font-weight: 800;
   box-shadow: 0 8px 22px rgba(37, 211, 102, 0.25);
-  border: 1px solid #1aa855;
+  border: 1px solid ;
   width: fit-content;
   &:hover {
     filter: brightness(0.95);
@@ -183,12 +184,12 @@ const Whats = styled(motion.a)`
 
 /* ===================== Form ===================== */
 const Form = styled(motion.form)`
-  border: 1px solid #1f2c44;
+  border: 1px solid ${colors.bg1};
   border-radius: 0 24px 0 24px;
   background: linear-gradient(
     120deg,
-    ${colors.bgSoft}70 50%,
-    ${colors.bg}90 20%
+    ${colors.bg2}80 70%,
+    ${colors.bg2}30 50%
   );
   padding: clamp(16px, 3.5vw, 26px);
   display: grid;
@@ -268,7 +269,7 @@ const Actions = styled.div`
 `;
 const Submit = styled(motion.button)`
   appearance: none;
-  border: 1px solid #d9b642;
+  //border: 1px solid #d9b642;
   cursor: pointer;
   background: ${colors.accentGold};
   color: #0e1a2b;
@@ -297,12 +298,12 @@ const shimmer = keyframes`
 const Skeleton = styled.div`
   height: ${(p) => p.$h || "240px"};
   border-radius: 18px;
-  border: 1px solid #1f2c44;
+  //border: 1px solid red;
   background: linear-gradient(
       100deg,
       rgba(255, 255, 255, 0.04) 20%,
-      rgba(255, 255, 255, 0.08) 40%,
-      rgba(255, 255, 255, 0.04) 60%
+      ${colors.accentGold} 40%,
+      ${colors.accentGold} 60%
     ),
     #0f223a;
   background-size: 200% 100%;

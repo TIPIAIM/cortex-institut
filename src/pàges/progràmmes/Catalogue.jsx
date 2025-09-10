@@ -299,7 +299,7 @@ const Page = styled.div`
    background: linear-gradient(
     120deg,
     ${colors.bg} 70%,
-    ${colors.semygprimary} 60%
+    ${colors.bg1} 60%
   );,
   display: grid;
   gap: 22px;
@@ -425,7 +425,7 @@ const Badge = styled.span`
   align-self: start;
 
   color: ${colors.accentGold};
-  background: linear-gradient(120deg, ${colors.bgSoft} 64%, ${colors.bg} 50%);
+  background: linear-gradient(120deg, ${colors.bg} 64%, ${colors.bg1} 50%);
   padding: 6px 10px;
   font-size: 17px;
   font-weight: 700;
@@ -474,7 +474,7 @@ const Actions = styled.div`
     background: linear-gradient(
       120deg,
       ${colors.accentGold}90 54%,
-      ${colors.accentGold} 20%
+      ${colors.bg2} 20%
     );
     transform: translateY(-1px);
     box-shadow: 0 10px 26px rgba(242, 201, 76, 0.3);
