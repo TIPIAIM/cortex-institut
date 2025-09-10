@@ -1,0 +1,29 @@
+import { Helmet } from '@dr.pogodin/react-helmet'
+
+export default function Page() {
+  return (
+    <>
+      <Helmet>
+        <title>Ma page</title>
+        <meta name="description" content="Desc de la page" />
+        <link rel="canonical" href="https://exemple.com/page" />
+      </Helmet>
+      {/* ... */}
+    </>
+  )
+}
+
+
+dàns màin js 
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { HelmetProvider } from '@dr.pogodin/react-helmet'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <HelmetProvider>
+      <App />
+    </HelmetProvider>
+  </StrictMode>
+)
