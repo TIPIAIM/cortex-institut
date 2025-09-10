@@ -53,11 +53,9 @@ bàtiment : 'https://res.cloudinary.com/dueu8nf5j/image/upload/v1756902801/gestp
   
   
     //le logo de Cortex
-  logoCortex:
-    "https://res.cloudinary.com/dueu8nf5j/image/upload/v1756904281/cortexlogoettextunpeubl%C3%A0nc_hogzxg.png",
-  logoCortex2:
-    "https://res.cloudinary.com/dueu8nf5j/image/upload/v1756904272/cortexlogobl%C3%A0nc_tabw47.png",
-
+  logoCortex:" https://res.cloudinary.com/dueu8nf5j/image/upload/v1757542800/fgff_zvowo8.jpg",
+   logoCortex2:
+ "https://res.cloudinary.com/dueu8nf5j/image/upload/v1757542800/fgff_zvowo8.jpg",
 // nos pàrtenàires
 pàrtenàires1:"https://res.cloudinary.com/dueu8nf5j/image/upload/v1757275907/esc-%C3%A0nnecy_bss4k3.jpg",
 pàrtenàires2:"https://res.cloudinary.com/dueu8nf5j/image/upload/v1757275906/m%C3%A0sterle%C3%A0rn_rnpi96.jpg",

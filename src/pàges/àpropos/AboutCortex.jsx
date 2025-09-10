@@ -484,6 +484,7 @@ function AboutPage() {
         role: "Gouvernance & conformité",
         bio: "Fiabilise la gestion, la conformité et la transparence.",
       },
+      
       {
         img:
           imagess.Responsablecommercialegroupe4 ||
@@ -494,13 +495,14 @@ function AboutPage() {
       },
       {
         img: imagess.DirecteurduGroupe5 || imagess.DirecteurduGroupe1,
-        name: "Direction Groupe NONI",
+        name: "Directeur de NONI",
         role: "Stratégie & Développement",
         bio: "Structure la croissance et la performance du Groupe.",
       },
     ],
     []
   );
+
 
   // Pré-chargement images (idle) pour réduire LCP des sections suivantes
   useEffect(() => {

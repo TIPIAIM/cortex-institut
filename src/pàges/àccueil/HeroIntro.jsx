@@ -131,10 +131,11 @@ const Title = styled(motion.h1)`
   font-weight: 900;
   color: transparent;
   background-image: linear-gradient(
-    90deg,
-    ${colors.accentGold},
-    ${colors.accentGoldLight} 18%,
-    ${colors.accentGold} 48%
+    120deg,
+    ${colors.accentGoldLight}10 18%,
+        white,
+
+    ${colors.accentGoldLight} 48%
   );
   background-clip: text;
   -webkit-background-clip: text;
