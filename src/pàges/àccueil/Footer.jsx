@@ -455,7 +455,7 @@ export default function Footer() {
 
   /* ====== Données de contact CORTEX ====== */
   const CONTACT = {
-    address: "Kobaya, Conakry — Guinée",
+    address: "Yataya, Conakry — Guinée",
     phone: "+224 623 21 19 74",
     mailCommercial: "commerciale@institut-cortex.com",
     mailDirection: "direction@institut-cortex.com",
