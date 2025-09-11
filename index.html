@@ -1,36 +1,39 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta
       name="viewport"
       content="width=device-width,initial-scale=1,viewport-fit=cover"
     />
-
     <meta name="theme-color" content="#0E2D4F" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="robots" content="index,follow,max-image-preview:large" />
+    <meta name="format-detection" content="telephone=no" />
 
     <title>
-      Institut CORTEX | Formations & Conseil (Management, Finance, RH, QHSE,
-      Ingénierie & SI, Santé, BTP, Supply) – Guinée
+      Institut CORTEX · Formations & Conseil en Guinée (Management, Finance, RH,
+      QHSE, Ingénierie & SI, Santé, BTP, Supply)
     </title>
     <meta
       name="description"
-      content="Institut CORTEX+, centre d’excellence en formation continue, certifications, recherche appliquée et conseil en Guinée. Programmes professionnels orientés impact."
+      content="Institut CORTEX+, centre d’excellence en formation continue, certifications, recherche appliquée et conseil en Guinée. Programmes professionnels orientés impact : management, finance, RH, QHSE, ingénierie & SI, santé, BTP, supply."
     />
 
-    <!-- Domaine de prod https://www.institut-cortex.com-->
+    <!-- Canonical (prod) -->
     <link rel="canonical" href="https://institut-cortex.com/" />
 
-    <link rel="preconnect" href="https://res.cloudinary.com" />
+    <!-- Perf: Cloudinary (si tes images OG/hero y sont) -->
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
     <link rel="dns-prefetch" href="https://res.cloudinary.com" />
 
     <!-- Open Graph -->
     <meta property="og:locale" content="fr_GN" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Institut CORTEX+" />
+    <meta property="og:site_name" content="Institut CORTEX" />
     <meta
       property="og:title"
-      content="Institut CORTEX+ · Centre d’excellence (Formations & Conseil)"
+      content="Institut CORTEX · Formations & Conseil"
     />
     <meta
       property="og:description"
@@ -39,91 +42,116 @@
     <meta property="og:url" content="https://institut-cortex.com/" />
     <meta
       property="og:image"
-      content="https://res.cloudinary.com/dueu8nf5j/image/upload/v1756904272/cortexlogobl%C3%A0nc_tabw47.png"
+      content="https://res.cloudinary.com/dueu8nf5j/image/upload/v1757542800/fgff_zvowo8.jpg"
     />
-    <meta property="og:image:alt" content="Institut CORTEX+ — logo officiel" />
+    <meta
+      property="og:image:alt"
+      content="Institut CORTEX — visuel de marque"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/avif" />
 
-    <!-- Twitter Card -->
+    <!-- Twitter Card (laisse twitter:site si tu n’as pas de handle officiel) -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@YOUR_TWITTER_HANDLE" />
     <meta
       name="twitter:title"
-      content="Institut CORTEX+ · Formations & Conseil"
+      content="Institut CORTEX · Formations & Conseil"
     />
     <meta
       name="twitter:description"
-      content="Programmes professionnels, certifications, recherche appliquée & conseil en Guinée."
+      content="Programmes professionnels, certifications, recherche appliquée & conseil."
     />
     <meta
       name="twitter:image"
       content="https://res.cloudinary.com/dueu8nf5j/image/upload/v1757542800/fgff_zvowo8.jpg"
     />
 
-    <!-- Favicons -->
+    <!-- Favicons (fichiers dans /public) -->
     <link
       rel="icon"
-      href="https://res.cloudinary.com/dueu8nf5j/image/upload/v1757542800/fgff_zvowo8.jpg"
+      href="/img/cortexlogoblànc.avif"
       sizes="96x96"
-      type="image/png"
+      type="image/avif"
     />
     <link
       rel="apple-touch-icon"
-      href="https://res.cloudinary.com/dueu8nf5j/image/upload/v1757542800/fgff_zvowo8.jpg"
+      href="/img/cortexlogoblànc.avif"
       sizes="180x180"
     />
+    <!-- <link rel="manifest" href="/manifest.webmanifest" /> -->
 
-    <!-- JSON-LD -->
+    <!-- JSON-LD : Organization + EducationalOrganization + WebSite + Navigation -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@graph": [
           {
             "@type": "Organization",
-            "name": "Groupe NONI",
+            "name": "Institut CORTEX",
             "url": "https://institut-cortex.com/",
-            "brand": {
-              "@type": "Brand",
-              "name": "Institut CORTEX+"
-            }
-          },
-          {
-            "@type": "EducationalOrganization",
-            "name": "Institut CORTEX+",
-            "url": "https://institut-cortex.com/",
-            "logo": "https://res.cloudinary.com/dueu8nf5j/image/upload/v1757542800/fgff_zvowo8.jpg",
-            "description": "Centre d’excellence en formation continue, certifications, recherche appliquée et conseil.",
+            "logo": "https://institut-cortex.com/img/cortexlogoblànc.avif",
             "parentOrganization": {
               "@type": "Organization",
               "name": "Groupe NONI"
             },
+            "sameAs": [
+              "https://www.linkedin.com/company/institut-cortex",
+              "https://www.facebook.com/institut.cortex"
+            ],
+            "contactPoint": [
+              {
+                "@type": "ContactPoint",
+                "contactType": "Service client",
+                "telephone": "+224623211974",
+                "email": "contact@institut-cortex.com",
+                "areaServed": "GN",
+                "availableLanguage": ["fr"]
+              }
+            ]
+          },
+          {
+            "@type": "EducationalOrganization",
+            "name": "Institut CORTEX",
+            "url": "https://institut-cortex.com/",
+            "logo": "https://institut-cortex.com/img/cortexlogoblànc.avif",
+            "description": "Centre d’excellence en formation continue, certifications, recherche appliquée et conseil.",
             "address": {
               "@type": "PostalAddress",
               "addressLocality": "Conakry",
               "addressCountry": "GN"
             },
             "areaServed": "GN",
-            "sameAs": [
-              "https://www.facebook.com/YOUR_HANDLE",
-              "https://www.linkedin.com/company/YOUR_HANDLE",
-              "https://www.instagram.com/YOUR_HANDLE"
-            ],
-            "contactPoint": [
-              {
-                "@type": "ContactPoint",
-                "contactType": "Service client",
-                "areaServed": "GN"
-              }
+            "knowsAbout": [
+              "Management",
+              "Finance",
+              "Ressources Humaines",
+              "QHSE",
+              "Ingénierie & SI",
+              "Santé",
+              "BTP",
+              "Supply Chain"
             ]
           },
           {
             "@type": "WebSite",
-            "name": "Institut CORTEX+",
+            "name": "Institut CORTEX",
             "url": "https://institut-cortex.com/",
             "potentialAction": {
               "@type": "SearchAction",
               "target": "https://institut-cortex.com/recherche?q={query}",
               "query-input": "required name=query"
             }
+          },
+          {
+            "@type": "SiteNavigationElement",
+            "name": ["Accueil", "Programmes", "À propos", "Contact"],
+            "url": [
+              "https://institut-cortex.com/",
+              "https://institut-cortex.com/programmes",
+              "https://institut-cortex.com/apropos",
+              "https://institut-cortex.com/contact"
+            ]
           }
         ]
       }

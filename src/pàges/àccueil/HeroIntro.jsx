@@ -132,10 +132,10 @@ const Title = styled(motion.h1)`
   color: transparent;
   background-image: linear-gradient(
     120deg,
-    ${colors.accentGoldLight}10 18%,
-        white,
+    ${colors.accentGoldLight} 18%,
+      
 
-    ${colors.accentGoldLight} 48%
+    ${colors.accentGoldLight} 48%,  white
   );
   background-clip: text;
   -webkit-background-clip: text;
@@ -170,11 +170,11 @@ const CTA = styled(motion(Link))`
   border-radius: 14px 0 14px 0;
   text-decoration: none;
   font-weight: 800;
+  
   font-size: 16px;
   background: ${colors.accentGold};
   color: #0e1a2b;
-  border: 1px solid #d9b642;
-  box-shadow: 0 12px 30px rgba(242, 201, 76, 0.3);
+   box-shadow: 0 12px 30px rgba(242, 201, 76, 0.3);
   transition: box-shadow 0.2s ease, transform 0.2s ease;
   will-change: transform;
   &:hover {
