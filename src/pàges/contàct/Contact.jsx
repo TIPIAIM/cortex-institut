@@ -568,7 +568,7 @@ export default function ContactCortex() {
                   <div>
                     <b style={{ color: colors.semygprimar }}>Adresse</b>
                     <br />
-                    Conakry, Guinée — Quartier Kobaya
+                    Conakry, Guinée — Quartier Yataya
                   </div>
                 </Item>
               </List>
@@ -673,7 +673,7 @@ export default function ContactCortex() {
                   <Help $error={invalid("phone")}>
                     {invalid("phone")
                       ? "Numéro invalide (espaces autorisés)."
-                      : " "}
+                      : " " }
                   </Help>
                 </Field>
 
