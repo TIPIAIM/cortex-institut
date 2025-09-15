@@ -1,6 +1,6 @@
 // src/components/layout/HeaderPro.jsx
 import React, { useEffect, useId, useMemo, useRef, useState } from "react";
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 import {
   motion,
   AnimatePresence,
@@ -8,25 +8,21 @@ import {
   useMotionValueEvent,
 } from "framer-motion";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import {
-  Menu as MenuIcon,
-  X,
-  ChevronDown,
-  Phone,
-  Mail,
-} from "lucide-react";
+import { Menu as MenuIcon, X, ChevronDown, Phone, Mail } from "lucide-react";
 import colors from "../../Styles/colors";
 
-// --------- Config nav (modifie ici tes routes facilement) ----------
+// --------- Config nav ----------
 const NAV = [
   { label: "Accueil", to: "/" },
   { label: "Contact", to: "/contact" },
-  {
-    label: "Programmes",
-    to: "/programmes",
-  },
+  { label: "Programmes", to: "/programmes" },
   { label: "À propos", to: "/apropos" },
 ];
+
+/* ---------- Global lock quand le menu est ouvert ---------- */
+const NoScroll = createGlobalStyle`
+  html, body { overflow: hidden !important; overscroll-behavior: contain; touch-action: none; }
+`;
 
 // ---------------- Styled ----------------
 const Shell = styled(motion.header)`
@@ -34,12 +30,8 @@ const Shell = styled(motion.header)`
   top: 0;
   z-index: 60;
   backdrop-filter: saturate(140%) blur(8px);
-  background: linear-gradient(
-    180deg,
-    ${colors.bg},
-    ${colors.bgSoft}
-  );
- // border-bottom: 1px solid #1f2c44;
+  background: linear-gradient(180deg, ${colors.bg}, ${colors.bgSoft});
+  overflow-x: clip;
 `;
 
 const Bar = styled.div`
@@ -50,6 +42,7 @@ const Bar = styled.div`
   grid-template-columns: auto 1fr auto;
   gap: 12px;
   align-items: center;
+  min-width: 0;
 `;
 
 const Brand = styled(Link)`
@@ -58,35 +51,37 @@ const Brand = styled(Link)`
   align-items: center;
   gap: 10px;
   text-decoration: none;
+  min-width: 0;
 
   .logo {
     width: 56px;
     height: 56px;
     border-radius: 10px;
-    background: radial-gradient(
-        120px 80px at 60% -20%,
-        ${colors.bg}66,
-        transparent 60%
-      ),
-      linear-gradient(140deg, $${colors.bg}, ${colors.bgSoft});
-    //border: 1px solid #274066;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), inset 0 0 0 1px #183055;
+    object-fit: contain;
+    display: block;
   }
   .name {
     display: grid;
     line-height: 1.05;
+    min-width: 0;
   }
   .title {
     color: ${colors.text};
     font-weight: 900;
     letter-spacing: 0.2px;
     font-size: clamp(16px, 2.4vw, 18px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .tag {
     color: ${colors.accentGold};
     font-size: 12px;
     font-weight: 700;
     opacity: 0.9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
@@ -98,12 +93,12 @@ const DesktopNav = styled.nav`
   align-items: center;
   justify-content: center;
   gap: 8px;
+  min-width: 0;
 `;
 
 const NavItem = styled.div`
   position: relative;
 `;
-
 const NavLinkA = styled(NavLink)`
   position: relative;
   display: inline-flex;
@@ -116,20 +111,17 @@ const NavLinkA = styled(NavLink)`
   font-weight: 700;
   font-size: 14px;
   border: 1px solid transparent;
-
   &:hover {
     color: ${colors.accentGold};
     border-color: #21375a;
     background: linear-gradient(180deg, #0e1a2b, #0f223a);
   }
-
   &.active {
     color: ${colors.accentGold};
     background: linear-gradient(180deg, #0e1a2b, #0f223a);
     border-color: #21375a;
   }
 `;
-
 const Underline = styled(motion.span)`
   position: absolute;
   left: 10px;
@@ -139,22 +131,19 @@ const Underline = styled(motion.span)`
   border-radius: 2px;
   background: ${colors.accentGold};
 `;
-
 const Dropdown = styled(motion.div)`
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
   min-width: 260px;
-  //background: linear-gradient(180deg, #0f223a, #112a48);
   border: 1px solid #1f2c44;
   border-radius: 12px;
   padding: 10px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+  background: ${colors.bg};
 `;
-
 const DropLink = styled(NavLink)`
   display: grid;
-  
   grid-template-columns: auto 1fr;
   gap: 10px;
   padding: 10px;
@@ -163,7 +152,6 @@ const DropLink = styled(NavLink)`
   color: ${colors.text};
   font-size: 14px;
   border: 1px solid transparent;
-
   &:hover {
     color: ${colors.accentGold};
     border-color: #21375a;
@@ -176,9 +164,7 @@ const Right = styled.div`
   grid-auto-flow: column;
   gap: 8px;
   align-items: center;
-  
 `;
-
 const GhostBtn = styled(Link)`
   display: inline-flex;
   align-items: center;
@@ -198,29 +184,7 @@ const GhostBtn = styled(Link)`
     display: none;
   }
 `;
-
-const CTA = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 14px 0 14px 0;
-  text-decoration: none;
-  font-weight: 900;
-  font-size: 14px;
-  background: ${colors.accentGold};
-  color: #0e1a2b;
-  border: 1px solid #d9b642;
-  box-shadow: 0 10px 26px rgba(242, 201, 76, 0.25);
-  &:hover {
-    box-shadow: 0 12px 32px rgba(242, 201, 76, 0.35);
-    transform: translateY(-1px);
-  }
-  @media (max-width: 1023px) {
-    display: none;
-  }
-`;
-
+ 
 const Burger = styled.button`
   display: inline-flex;
   align-items: center;
@@ -231,28 +195,37 @@ const Burger = styled.button`
   border: 1px solid #274066;
   background: transparent;
   color: ${colors.text};
+  flex: 0 0 auto;
   @media (min-width: 1024px) {
     display: none;
   }
 `;
 
+/* ===== FULL SCREEN SHEET ===== */
 const Sheet = styled(motion.aside)`
   position: fixed;
-  inset: 0 0 0 auto;
-  width: min(88vw, 360px);
+  inset: 0; /* plein écran */
+  width: 100vw;
+  height: 100vh;
   background: linear-gradient(180deg, #0f223a, #0e1a2b);
-  border-left: 1px solid #1f2c44;
+  /* pas de border-left sur un plein écran */
   z-index: 80;
   display: grid;
   grid-template-rows: auto 1fr auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  contain: layout paint;
+  will-change: transform;
+  -webkit-overflow-scrolling: touch;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 `;
 
 const SheetHead = styled.div`
   display: flex;
   align-items: center;
-
   justify-content: space-between;
-  padding: 14px 14px;
+  padding: 14px;
   border-bottom: 1px solid #1f2c44;
 `;
 const SheetTitle = styled.div`
@@ -276,8 +249,7 @@ const SheetBody = styled.nav`
   display: grid;
   gap: 6px;
   align-content: start;
-      background: ${colors.bg};
-
+  background: ${colors.bg};
 `;
 const MLink = styled(NavLink)`
   display: flex;
@@ -296,15 +268,13 @@ const MLink = styled(NavLink)`
     border-color: #2a4b7c;
   }
 `;
-
 const MChild = styled(NavLink)`
   display: block;
   margin: 6px 0 0 12px;
   padding: 10px;
   border-radius: 8px;
   text-decoration: none;
-      background: ${colors.bgSoft};
-
+  background: ${colors.bgSoft};
   color: ${colors.accentGoldLight};
   border: 1px dashed #21375a;
   &:hover {
@@ -312,20 +282,18 @@ const MChild = styled(NavLink)`
     border-style: solid;
   }
 `;
-
 const SheetFoot = styled.div`
   padding: 12px;
   border-top: 1px solid #1f2c44;
   display: grid;
-      background: ${colors.bg};
-
   gap: 8px;
+  background: ${colors.bg};
 `;
 const FootBtn = styled(Link)`
   display: inline-flex;
   align-items: center;
-  gap: 8px;
   justify-content: center;
+  gap: 8px;
   padding: 12px;
   border-radius: 12px;
   text-decoration: none;
@@ -340,8 +308,8 @@ const FootBtn = styled(Link)`
 const FootCTA = styled(Link)`
   display: flex;
   align-items: center;
-  gap: 8px;
   justify-content: center;
+  gap: 8px;
   padding: 12px;
   border-radius: 14px 0 14px 0;
   text-decoration: none;
@@ -377,7 +345,7 @@ export default function HeaderPro() {
     return () => document.removeEventListener("keydown", onKey);
   }, []);
 
-  // Simple focus trap for sheet
+  // Focus trap
   useEffect(() => {
     if (!open) return;
     const focusables = sheetRef.current?.querySelectorAll(
@@ -400,6 +368,19 @@ export default function HeaderPro() {
     return () => document.removeEventListener("keydown", onTab);
   }, [open]);
 
+  // Body lock
+  useEffect(() => {
+    if (!open) return;
+    const prevOverflow = document.documentElement.style.overflow;
+    const prevTa = document.documentElement.style.touchAction;
+    document.documentElement.style.overflow = "hidden";
+    document.documentElement.style.touchAction = "none";
+    return () => {
+      document.documentElement.style.overflow = prevOverflow || "";
+      document.documentElement.style.touchAction = prevTa || "";
+    };
+  }, [open]);
+
   const activeIndex = useMemo(() => {
     const i = NAV.findIndex(
       (n) => pathname === n.to || pathname.startsWith(n.to + "#")
@@ -418,10 +399,11 @@ export default function HeaderPro() {
       transition={{ duration: 0.25 }}
       role="banner"
     >
+      {open && <NoScroll />}
+
       <Bar>
-        {/* Brand */}
+        {/* Brand (logo public) */}
         <Brand to="/" aria-label="Institut CORTEX – Accueil">
-          {/* --- Seule modification : intégration du logo du dossier /public --- */}
           <img
             src="/img/cortexlogoblànc.avif"
             alt="Institut CORTEX"
@@ -460,7 +442,6 @@ export default function HeaderPro() {
                   )}
                 </NavLinkA>
 
-                {/* Dropdown */}
                 {hasChildren && (
                   <AnimatePresence>
                     {dropOpen === idx && (
@@ -493,10 +474,12 @@ export default function HeaderPro() {
           <GhostBtn to="/contact" aria-label="Nous appeler">
             <Phone size={16} /> +224 623 21 19 74
           </GhostBtn>
-          <GhostBtn to="mailto:contact@institut-cortex.com" aria-label="Nous écrire">
+          <GhostBtn
+            to="mailto:contact@institut-cortex.com"
+            aria-label="Nous écrire"
+          >
             <Mail size={16} /> contact@institut-cortex.com
           </GhostBtn>
-         
           <Burger
             aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={open}
@@ -508,13 +491,13 @@ export default function HeaderPro() {
         </Right>
       </Bar>
 
-      {/* Mobile sheet */}
+      {/* Mobile FULLSCREEN */}
       <AnimatePresence>
         {open && (
           <Sheet
             ref={sheetRef}
             id={`mobile-menu-${uid}`}
-            initial={{ x: "100%" }}
+            initial={{ x: "100%" }} // slide depuis la droite
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "tween", duration: 0.28 }}
@@ -549,7 +532,7 @@ export default function HeaderPro() {
             </SheetBody>
 
             <SheetFoot>
-              <FootBtn to="/contact">
+              <FootBtn to="mailto:contact@institut-cortex.com">
                 <Mail size={16} /> contact@institut-cortex.com
               </FootBtn>
               <FootBtn to="/contact">
