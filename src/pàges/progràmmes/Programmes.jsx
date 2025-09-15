@@ -1,8 +1,7 @@
 import { useMemo, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import FiliereModal from "./FiliereModal";
+ import FiliereModal from "./FiliereModal";
 import { filieres } from "./filieres.data";
 import { imagess } from "../../assets/imagess";
 import colors from "../../Styles/colors";
@@ -19,7 +18,7 @@ function cld(url, w = 900) {
   return `${url}${sep}f_auto&q_auto&w=${w}`;
 }
 
-/* ===== Tilt wrapper (3D) ===== */
+/* ===== motion Tilt wrapper (3D) ===== */
 function TiltCard({ children }) {
   const ref = useRef(null);
   const [style, setStyle] = useState({
@@ -65,14 +64,15 @@ function TiltCard({ children }) {
 
 /* ======================= UI ======================= */
 
+ 
+
+// APRÈS
 const Page = styled.div`
   display: grid;
   gap: 22px;
-  background: linear-gradient(
-    120deg,
-    ${colors.bg1} 64%,
-    ${colors.bg2} 50%
-  );
+  background: linear-gradient(120deg, ${colors.bg1} 64%, ${colors.bg2} 50%);
+  overflow-x: clip;        /* ← coupe tout overflow horizontal (iOS friendly) */
+  max-width: 100%;
 `;
 
 const Wrap = styled.main`
@@ -100,21 +100,21 @@ const Head = styled.div`
   }
 `;
 
-/* Search + icon, plus compacte */
+ 
+const SearchIconBox = styled.div`
+  display: grid;
+  place-items: center;
+  color: ${colors.accentGold};
+`;
+ 
+// APRÈS
 const SearchRow = styled.div`
-  width: 60%;
-  max-width: min(560px, 100%);
-  @media (min-width: 992px) {
-    max-width: 520px;
-  }
-  @media (min-width: 1280px) {
-    max-width: 480px;
-  }
+  width: 100%;
+  max-width: 560px;        /* 100% sur mobile, limité à 560px sinon */
   display: grid;
   grid-template-columns: 36px 1fr;
   align-items: center;
   gap: 8px;
-  //background: ${colors.bg};
   border: 1px solid #1f2c44;
   border-radius: 12px;
   padding: 4px 10px;
@@ -123,15 +123,8 @@ const SearchRow = styled.div`
     box-shadow: 0 0 0 3px rgba(42, 75, 124, 0.25);
   }
 `;
-
-const SearchIconBox = styled.div`
-  display: grid;
-  place-items: center;
-  color: ${colors.accentGold};
-`;
-
 const Search = styled.input`
-  width: 60%;
+  width: 100%;             /* ← évite que le champ dépasse / casse la grille */
   height: clamp(36px, 3.2vw, 42px);
   border: 0;
   outline: none;
@@ -257,20 +250,15 @@ const CoverGlare = styled.div`
   opacity: 0.75;
 `;
 
+ 
+// APRÈS
 const CoverShade = styled.div`
   position: absolute;
   inset: 0;
   pointer-events: none;
- background: linear-gradient(
-    120deg,
-    ${colors.semygprimar}20 64%,
-    ${colors.bg}42 50%
-  );
-    radial-gradient(
-      600px 220px at 85% -10%,
-      ${colors.semygsecondar}55,
-      transparent 60%
-    );
+  background:
+    linear-gradient(120deg, ${colors.semygprimar}20 64%, ${colors.bg}42 50%),
+    radial-gradient(600px 220px at 85% -10%, ${colors.semygsecondar}55, transparent 60%);
 `;
 
 const PulseRing = styled.span`
@@ -345,14 +333,7 @@ const Button = styled.button`
     box-shadow: 0 10px 26px rgba(242, 201, 76, 0.32);
   }
 `;
-const Ghost = styled(Link)`
-  padding: 10px 12px;
-  border-radius: 12px;
-  font-weight: 700;
-  color: #cfe0f1;
-  background: ${colors.bg};
-  border: 1px solid #264066;
-`;
+ 
 
 /* ======= Composant ======= */
 export default function Programmes() {

@@ -291,20 +291,18 @@ export default function CatalogueBac3({
 }
 
 /* ================== Styles ================== */
-
+// APRÈS
 const Page = styled.div`
   max-width: 1400px;
   margin: 0 auto;
   padding: 18px 20px 64px;
-   background: linear-gradient(
-    120deg,
-    ${colors.bg} 70%,
-    ${colors.bg1} 60%
-  );,
+  background: linear-gradient(120deg, ${colors.bg} 70%, ${colors.bg1} 60%);
   display: grid;
   gap: 22px;
+  overflow-x: clip;         /* ← coupe les débordements horizontaux */
 `;
 
+ 
 const Head = styled(motion.header)`
   display: grid;
   gap: 14px;
@@ -325,33 +323,7 @@ const Head = styled(motion.header)`
   }
 `;
 
-const TopDownloads = styled.div`
-  display: grid;
-  gap: 10px;
-
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  a {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    text-align: center;
-    gap: 10px;
-    margin-bottom: 2rem;
-    padding: 12px 14px;
-    border-radius: 25px 0 25px 0;
-    font-weight: 900;
-
-    color: ${colors.bg};
-    background: ${colors.accentGold};
-    transition: border-color 0.15s ease, transform 0.15s ease,
-      box-shadow 0.15s ease;
-  }
-  a:hover {
-    background: ${colors.semygjouneclàire};
-    transform: translateY(-1px);
-  }
-`;
-
+ 
 const Filters = styled(motion.div)`
   display: grid;
   gap: 12px;
@@ -398,12 +370,13 @@ const SectionTitle = styled.h2`
   }
 `;
 
+ 
+// APRÈS
 const Grid = styled(motion.div)`
   display: grid;
   gap: 16px;
-  magin-bottom: 20rem;
-
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  margin-bottom: 20rem; /* (corrige la typo 'magin-bottom') */
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
 `;
 
 const Card = styled(motion.article)`
@@ -505,6 +478,20 @@ const BottomBox = styled(motion.section)`
     margin-top: 2rem;
 
     color: ${colors.accentGold};
+  }
+`;
+// APRÈS
+const TopDownloads = styled.div`
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  min-width: 0;                 /* ← évite qu’un enfant force le conteneur à déborder */
+  a{
+    display:flex; align-items:center; gap:10px;
+    text-decoration:none; text-align:center;
+    padding:12px 14px; border-radius:25px 0 25px 0;
+    font-weight:900; color:${colors.bg}; background:${colors.accentGold};
+    word-break: break-word;     /* ← coupe proprement les très longues chaînes */
   }
 `;
 

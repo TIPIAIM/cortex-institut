@@ -11,12 +11,13 @@ const COLORS = {
   light: "#ffffff",
 };
 
-// Grid + Parallax + Glow
+ 
+// APRÈS
 const AnimatedGrid = styled(motion.svg)`
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;   /* ← évite les scrollbars horizontales fantômes */
+  height: 100%;
   z-index: 0;
   opacity: 0.5;
   pointer-events: none;

@@ -232,7 +232,7 @@ const FloatingBadges = styled(motion.div)`
   }
 `;
 
-/* Stats (désactivées mobile pour sobriété) */
+/* Stats milk (désactivées mobile pour sobriété) */
 const StatsBar = styled(motion.div)`
   position: absolute;
   left: 0;
@@ -468,14 +468,17 @@ export default function HeroIntro({
           <div className="number">500+</div>
           <div className="label">Étudiants</div>
         </div>
+
         <div className="stat">
           <div className="number">98%</div>
           <div className="label">Réussite</div>
         </div>
+
         <div className="stat">
           <div className="number">25+</div>
           <div className="label">Programmes</div>
         </div>
+
         <div className="stat">
           <div className="number">15+</div>
           <div className="label">Partenaires</div>
