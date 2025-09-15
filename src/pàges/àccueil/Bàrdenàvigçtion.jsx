@@ -39,7 +39,7 @@ const Bar = styled.div`
   margin: 0 auto;
   padding: clamp(10px, 2.6vw, 14px) 20px;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto; /* brand | espace | actions (burger à droite) */
   gap: 12px;
   align-items: center;
   min-width: 0;
@@ -159,12 +159,18 @@ const DropLink = styled(NavLink)`
   }
 `;
 
+/* --------- Zone actions à DROITE (burger à l'extrême droite en mobile) --------- */
 const Right = styled.div`
-  display: grid;
-  grid-auto-flow: column;
+  display: flex;
   gap: 8px;
   align-items: center;
+  justify-self: end; /* colle le bloc à droite de la grille */
+  @media (max-width: 1023px) {
+    width: 100%;
+    justify-content: flex-end; /* pousse le burger à l'extrême droite */
+  }
 `;
+
 const GhostBtn = styled(Link)`
   display: inline-flex;
   align-items: center;
@@ -182,9 +188,31 @@ const GhostBtn = styled(Link)`
   }
   @media (max-width: 1023px) {
     display: none;
-  }
+  } /* masqué en mobile */
 `;
- 
+
+const CTA = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 14px 0 14px 0;
+  text-decoration: none;
+  font-weight: 900;
+  font-size: 14px;
+  background: ${colors.accentGold};
+  color: #0e1a2b;
+  border: 1px solid #d9b642;
+  box-shadow: 0 10px 26px rgba(242, 201, 76, 0.25);
+  &:hover {
+    box-shadow: 0 12px 32px rgba(242, 201, 76, 0.35);
+    transform: translateY(-1px);
+  }
+  @media (max-width: 1023px) {
+    display: none;
+  } /* masqué en mobile */
+`;
+
 const Burger = styled.button`
   display: inline-flex;
   align-items: center;
@@ -196,6 +224,7 @@ const Burger = styled.button`
   background: transparent;
   color: ${colors.text};
   flex: 0 0 auto;
+  margin-left: auto; /* garde le bouton au bord droit quand d'autres actions seraient visibles */
   @media (min-width: 1024px) {
     display: none;
   }
@@ -204,11 +233,10 @@ const Burger = styled.button`
 /* ===== FULL SCREEN SHEET ===== */
 const Sheet = styled(motion.aside)`
   position: fixed;
-  inset: 0; /* plein écran */
+  inset: 0;
   width: 100vw;
   height: 100vh;
   background: linear-gradient(180deg, #0f223a, #0e1a2b);
-  /* pas de border-left sur un plein écran */
   z-index: 80;
   display: grid;
   grid-template-rows: auto 1fr auto;
@@ -469,7 +497,7 @@ export default function HeaderPro() {
           })}
         </DesktopNav>
 
-        {/* Right actions */}
+        {/* Right actions (burger à droite) */}
         <Right>
           <GhostBtn to="/contact" aria-label="Nous appeler">
             <Phone size={16} /> +224 623 21 19 74
