@@ -472,7 +472,7 @@ function AboutPage() {
       {
         img:
           imagess.DirecteurInstitutCortex2 || imagess.DirecteurInstitutCortex1,
-        name: "Direction CORTEX",
+        name: "Directeur CORTEX",
         role: "Pilotage académique & innovation",
         bio: "Conduit la R&D, la qualité pédagogique et les partenariats.",
       },

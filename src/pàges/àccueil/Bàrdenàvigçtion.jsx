@@ -560,14 +560,11 @@ export default function HeaderPro() {
             </SheetBody>
 
             <SheetFoot>
-              <FootBtn to="mailto:contact@institut-cortex.com">
+              <FootCTA to="mailto:contact@institut-cortex.com">
                 <Mail size={16} /> contact@institut-cortex.com
-              </FootBtn>
-              <FootBtn to="/contact">
-                <Phone size={16} /> +224 623 21 19 74
-              </FootBtn>
-              <FootCTA to="/catalogues">Catalogue</FootCTA>
-            </SheetFoot>
+              </FootCTA>
+
+             </SheetFoot>
           </Sheet>
         )}
       </AnimatePresence>
