@@ -560,9 +560,9 @@ export default function HeaderPro() {
             </SheetBody>
 
             <SheetFoot>
-              <FootCTA to="mailto:contact@institut-cortex.com">
+              <FootBtn to="mailto:contact@institut-cortex.com">
                 <Mail size={16} /> contact@institut-cortex.com
-              </FootCTA>
+              </FootBtn>
 
              </SheetFoot>
           </Sheet>
