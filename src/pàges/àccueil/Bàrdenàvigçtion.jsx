@@ -190,28 +190,7 @@ const GhostBtn = styled(Link)`
     display: none;
   } /* masqué en mobile */
 `;
-
-const CTA = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: 14px 0 14px 0;
-  text-decoration: none;
-  font-weight: 900;
-  font-size: 14px;
-  background: ${colors.accentGold};
-  color: #0e1a2b;
-  border: 1px solid #d9b642;
-  box-shadow: 0 10px 26px rgba(242, 201, 76, 0.25);
-  &:hover {
-    box-shadow: 0 12px 32px rgba(242, 201, 76, 0.35);
-    transform: translateY(-1px);
-  }
-  @media (max-width: 1023px) {
-    display: none;
-  } /* masqué en mobile */
-`;
+ 
 
 const Burger = styled.button`
   display: inline-flex;
@@ -234,11 +213,12 @@ const Burger = styled.button`
 const Sheet = styled(motion.aside)`
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 95vw;
+  height: 70vh;
   background: linear-gradient(180deg, #0f223a, #0e1a2b);
   z-index: 80;
   display: grid;
+  border-radius: 16px 0 16px 16px;
   grid-template-rows: auto 1fr auto;
   overflow-y: auto;
   overflow-x: hidden;
