@@ -8,6 +8,7 @@ import Footer from "./pàges/àccueil/Footer.jsx";
 import Header from "./pàges/àccueil/Bàrdenàvigçtion.jsx";
 import MonQRCode from "./MonQRCode.jsx";
 import HeroCortexWebGL from "./pàges/progràmmes/HeroCortexCarouselhome1.jsx";
+import CampusCortexPage from "./pàges/Càmpus/CampusCortex.jsx";
  
 export default function App() {
   return (
@@ -19,15 +20,15 @@ export default function App() {
         <Route path="/programmes" element={<Programmes />} />
         <Route path="/contact" element={<ContactCortex />} />
    
-   {/**en cours  MonQRCode
+   {/**en cours  MonQRCode 
         <Route
          path="/realisations" element={<export default function HeroCortexWebGL({
  />} /> 
  */}
          <Route
          path="/realisations" element={<MonQRCode />} />
-           <Route
-       path="/realisation" element={<HeroCortexWebGL />} />
+           <Route path="/realisation" element={<HeroCortexWebGL />} />
+           <Route path="/campuscortex" element={<CampusCortexPage />} />
 
       </Routes>
       <Footer/>

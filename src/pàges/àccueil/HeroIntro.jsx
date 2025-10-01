@@ -162,7 +162,7 @@ const CtaRow = styled(motion.div)`
 `;
 
 /* CTAs brandés (palette CORTEX) */
-const CTA = styled(motion(Link))`
+const CTA = styled(motion.create(Link))`
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -170,11 +170,10 @@ const CTA = styled(motion(Link))`
   border-radius: 14px 0 14px 0;
   text-decoration: none;
   font-weight: 800;
-  
   font-size: 16px;
   background: ${colors.accentGold};
   color: #0e1a2b;
-   box-shadow: 0 12px 30px rgba(242, 201, 76, 0.3);
+  box-shadow: 0 12px 30px rgba(242, 201, 76, 0.3);
   transition: box-shadow 0.2s ease, transform 0.2s ease;
   will-change: transform;
   &:hover {
@@ -183,7 +182,7 @@ const CTA = styled(motion(Link))`
   }
 `;
 
-const GhostCTA = styled(motion(Link))`
+const GhostCTA = styled(motion.create(Link))`
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -422,12 +421,12 @@ export default function HeroIntro({
         <Lead variants={itemV}>{lead}</Lead>
         <CtaRow variants={itemV}>
           <CTA
-            to="/contact"
+            to="/campuscortex"
             whileTap={{ scale: 0.98 }}
             aria-label="Parler à un conseiller"
           >
             <Users size={18} />
-            Parler à un conseiller
+            Campus-Cortex ?
             <ArrowRight size={16} />
           </CTA>
           <GhostCTA
