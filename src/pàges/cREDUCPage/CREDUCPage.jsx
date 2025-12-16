@@ -55,7 +55,8 @@ const alertPop = keyframes`
 const CREDUCPage = () => {
   const prefersReducedMotion = useReducedMotion();
 
-  const col = (key, fallback) => (colors && colors[key] ? colors[key] : fallback);
+  const col = (key, fallback) =>
+    colors && colors[key] ? colors[key] : fallback;
 
   const [pdfStatus, setPdfStatus] = useState({
     checking: true,
@@ -95,7 +96,7 @@ const CREDUCPage = () => {
         {
           icon: <Percent size={18} />,
           label: "Taux social",
-          value: "3% / mois",
+          value: "5% / mois",
           helper: "Taux réduit (partenariat éducatif)",
         },
       ],
@@ -115,7 +116,11 @@ const CREDUCPage = () => {
           id: "public",
           icon: <BriefcaseBusiness size={18} />,
           title: "Public principalement concerné",
-          items: ["Étudiants", "Jeunes professionnels", "Entrepreneurs débutants"],
+          items: [
+            "Étudiants",
+            "Jeunes professionnels",
+            "Entrepreneurs débutants",
+          ],
         },
       ],
       accordions: [
@@ -156,16 +161,40 @@ const CREDUCPage = () => {
         },
       ],
       benefits: [
-        { icon: <CheckCircle2 size={18} />, text: "Accès immédiat à la formation" },
-        { icon: <CheckCircle2 size={18} />, text: "Se former même sans fonds disponibles" },
+        {
+          icon: <CheckCircle2 size={18} />,
+          text: "Accès immédiat à la formation",
+        },
+        {
+          icon: <CheckCircle2 size={18} />,
+          text: "Se former même sans fonds disponibles",
+        },
         { icon: <CheckCircle2 size={18} />, text: "Flexibilité de paiement" },
-        { icon: <Laptop2 size={18} />, text: "Accès à un ordinateur et outils de travail" },
-        { icon: <CheckCircle2 size={18} />, text: "Historique financier utile pour futurs crédits" },
+        {
+          icon: <Laptop2 size={18} />,
+          text: "Accès à un ordinateur et outils de travail",
+        },
+        {
+          icon: <CheckCircle2 size={18} />,
+          text: "Historique financier utile pour futurs crédits",
+        },
       ],
       steps: [
-        { icon: <Download size={18} />, title: "Télécharger", text: "Récupère le formulaire d’inscription." },
-        { icon: <FileText size={18} />, title: "Remplir", text: "Complète les informations et pièces requises." },
-        { icon: <Users size={18} />, title: "Déposer", text: "Dépose le dossier selon la procédure interne." },
+        {
+          icon: <Download size={18} />,
+          title: "Télécharger",
+          text: "Récupère le formulaire d’inscription.",
+        },
+        {
+          icon: <FileText size={18} />,
+          title: "Remplir",
+          text: "Complète les informations et pièces requises.",
+        },
+        {
+          icon: <Users size={18} />,
+          title: "Déposer",
+          text: "Dépose le dossier selon la procédure interne.",
+        },
       ],
     }),
     []
@@ -192,13 +221,19 @@ const CREDUCPage = () => {
 
         if (!alive) return;
         if (ok) setPdfStatus({ checking: false, ok: true, error: "" });
-        else setPdfStatus({ checking: false, ok: false, error: `Fichier introuvable (HTTP ${res.status})` });
+        else
+          setPdfStatus({
+            checking: false,
+            ok: false,
+            error: `Fichier introuvable (HTTP ${res.status})`,
+          });
       } catch (e) {
         if (!alive) return;
         setPdfStatus({
           checking: false,
           ok: false,
-          error: "Impossible de vérifier le fichier. Vérifie le chemin dans /public/docs.",
+          error:
+            "Impossible de vérifier le fichier. Vérifie le chemin dans /public/docs.",
         });
       }
     };
@@ -221,7 +256,9 @@ const CREDUCPage = () => {
 
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.origin + FORM_DOWNLOAD_URL);
+      await navigator.clipboard.writeText(
+        window.location.origin + FORM_DOWNLOAD_URL
+      );
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {
@@ -230,7 +267,10 @@ const CREDUCPage = () => {
   };
 
   const scrollToTop = () => {
-    topRef.current?.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+    topRef.current?.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "start",
+    });
   };
 
   const pageMotion = prefersReducedMotion
@@ -250,7 +290,11 @@ const CREDUCPage = () => {
       $accent={col("accent", "#F36F21")}
       $blue={col("brandBlue", col("bg1", "#1C3F6E"))}
     >
-      <AmbientGlow aria-hidden="true" $a={col("accent", "#F36F21")} $b={col("brandBlue", "#2A4B7C")} />
+      <AmbientGlow
+        aria-hidden="true"
+        $a={col("accent", "#F36F21")}
+        $b={col("brandBlue", "#2A4B7C")}
+      />
 
       <Shell>
         <HeroGrid as={motion.section} {...pageMotion}>
@@ -280,8 +324,14 @@ const CREDUCPage = () => {
 
               <Pills role="list" aria-label="Points clés">
                 {content.highlights.map((h, idx) => (
-                  <Pill key={idx} role="listitem" $border={col("stroke", "rgba(255,255,255,.14)")}>
-                    <PillIcon $accent={col("accent", "#F36F21")}>{h.icon}</PillIcon>
+                  <Pill
+                    key={idx}
+                    role="listitem"
+                    $border={col("stroke", "rgba(255,255,255,.14)")}
+                  >
+                    <PillIcon $accent={col("accent", "#F36F21")}>
+                      {h.icon}
+                    </PillIcon>
                     <span>{h.label}</span>
                   </Pill>
                 ))}
@@ -296,7 +346,9 @@ const CREDUCPage = () => {
                   $border={col("stroke", "rgba(255,255,255,.14)")}
                 >
                   <KpiHead>
-                    <KpiIcon $accent={col("accent", "#F36F21")}>{k.icon}</KpiIcon>
+                    <KpiIcon $accent={col("accent", "#F36F21")}>
+                      {k.icon}
+                    </KpiIcon>
                     <KpiLabel>{k.label}</KpiLabel>
                   </KpiHead>
                   <KpiValue>{k.value}</KpiValue>
@@ -388,7 +440,8 @@ const CREDUCPage = () => {
               </SecondaryRow>
 
               <MicroHint>
-                Si le bouton ne fonctionne pas : place le PDF dans <code>/public/docs</code> et vérifie le nom.
+                Si le bouton ne fonctionne pas : place le PDF dans{" "}
+                <code>/public/docs</code> et vérifie le nom.
               </MicroHint>
             </CTAGroup>
           </SideCard>
@@ -399,12 +452,18 @@ const CREDUCPage = () => {
             as={motion.article}
             {...(prefersReducedMotion
               ? {}
-              : { initial: { opacity: 0, y: 10 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, amount: 0.25 } })}
+              : {
+                  initial: { opacity: 0, y: 10 },
+                  whileInView: { opacity: 1, y: 0 },
+                  viewport: { once: true, amount: 0.25 },
+                })}
             $card={col("bg1", "rgba(255,255,255,.06)")}
             $border={col("stroke", "rgba(255,255,255,.14)")}
           >
             <SectionHead>
-              <SectionIcon $accent={col("accent", "#F36F21")}>{content.sections[0].icon}</SectionIcon>
+              <SectionIcon $accent={col("accent", "#F36F21")}>
+                {content.sections[0].icon}
+              </SectionIcon>
               <SectionTitle>{content.sections[0].title}</SectionTitle>
             </SectionHead>
 
@@ -424,12 +483,18 @@ const CREDUCPage = () => {
             as={motion.article}
             {...(prefersReducedMotion
               ? {}
-              : { initial: { opacity: 0, y: 10 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, amount: 0.25 } })}
+              : {
+                  initial: { opacity: 0, y: 10 },
+                  whileInView: { opacity: 1, y: 0 },
+                  viewport: { once: true, amount: 0.25 },
+                })}
             $card={col("bg1", "rgba(255,255,255,.06)")}
             $border={col("stroke", "rgba(255,255,255,.14)")}
           >
             <SectionHead>
-              <SectionIcon $accent={col("accent", "#F36F21")}>{content.sections[1].icon}</SectionIcon>
+              <SectionIcon $accent={col("accent", "#F36F21")}>
+                {content.sections[1].icon}
+              </SectionIcon>
               <SectionTitle>{content.sections[1].title}</SectionTitle>
             </SectionHead>
 
@@ -458,7 +523,9 @@ const CREDUCPage = () => {
               >
                 <Summary>
                   <SummaryLeft>
-                    <SummaryIcon $accent={col("accent", "#F36F21")}>{a.icon}</SummaryIcon>
+                    <SummaryIcon $accent={col("accent", "#F36F21")}>
+                      {a.icon}
+                    </SummaryIcon>
                     <span>{a.title}</span>
                   </SummaryLeft>
                   <Chevron aria-hidden="true">⌄</Chevron>
@@ -468,7 +535,10 @@ const CREDUCPage = () => {
                   <List>
                     {a.items.map((it, i) => (
                       <Li key={i}>
-                        <Dot $accent={col("accent", "#F36F21")} aria-hidden="true" />
+                        <Dot
+                          $accent={col("accent", "#F36F21")}
+                          aria-hidden="true"
+                        />
                         <span>{it}</span>
                       </Li>
                     ))}
@@ -484,7 +554,11 @@ const CREDUCPage = () => {
             as={motion.section}
             {...(prefersReducedMotion
               ? {}
-              : { initial: { opacity: 0, y: 10 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, amount: 0.25 } })}
+              : {
+                  initial: { opacity: 0, y: 10 },
+                  whileInView: { opacity: 1, y: 0 },
+                  viewport: { once: true, amount: 0.25 },
+                })}
             $card={col("bg1", "rgba(255,255,255,.06)")}
             $border={col("stroke", "rgba(255,255,255,.14)")}
           >
@@ -495,8 +569,13 @@ const CREDUCPage = () => {
 
             <BenefitsGrid>
               {content.benefits.map((b, idx) => (
-                <BenefitItem key={idx} $soft={col("bg2", "rgba(255,255,255,.05)")}>
-                  <BenefitIcon $accent={col("accent", "#F36F21")}>{b.icon}</BenefitIcon>
+                <BenefitItem
+                  key={idx}
+                  $soft={col("bg2", "rgba(255,255,255,.05)")}
+                >
+                  <BenefitIcon $accent={col("accent", "#F36F21")}>
+                    {b.icon}
+                  </BenefitIcon>
                   <span>{b.text}</span>
                 </BenefitItem>
               ))}
@@ -509,20 +588,28 @@ const CREDUCPage = () => {
             as={motion.section}
             {...(prefersReducedMotion
               ? {}
-              : { initial: { opacity: 0, y: 10 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, amount: 0.25 } })}
+              : {
+                  initial: { opacity: 0, y: 10 },
+                  whileInView: { opacity: 1, y: 0 },
+                  viewport: { once: true, amount: 0.25 },
+                })}
             $card={col("bg1", "rgba(255,255,255,.06)")}
             $border={col("stroke", "rgba(255,255,255,.14)")}
           >
             <DownloadLeft>
               <DownloadTitle>Formulaire d’inscription</DownloadTitle>
               <DownloadText>
-                Télécharge le PDF, remplis-le, puis dépose-le selon la procédure interne. Pour gagner du temps, utilise les sections “Accès rapide” ci-dessus.
+                Télécharge le PDF, remplis-le, puis dépose-le selon la procédure
+                interne. Pour gagner du temps, utilise les sections “Accès
+                rapide” ci-dessus.
               </DownloadText>
 
               <Steps>
                 {content.steps.map((s, i) => (
                   <Step key={i}>
-                    <StepIcon $accent={col("accent", "#F36F21")}>{s.icon}</StepIcon>
+                    <StepIcon $accent={col("accent", "#F36F21")}>
+                      {s.icon}
+                    </StepIcon>
                     <div>
                       <StepTitle>{s.title}</StepTitle>
                       <StepText>{s.text}</StepText>
@@ -573,8 +660,6 @@ const CREDUCPage = () => {
                   <span>{pdfStatus.error}</span>
                 </InlineAlert>
               )}
-
-            
             </DownloadRight>
           </DownloadCard>
         </Section>
@@ -585,7 +670,9 @@ const CREDUCPage = () => {
           $soft={col("bg2", "rgba(255,255,255,.05)")}
         >
           <FooterBadge $accent={col("accent", "#F36F21")}>CRÉDUC</FooterBadge>
-          <span>“Tu veux apprendre ? Nous finançons ta formation… chez Cortex.”</span>
+          <span>
+            “Tu veux apprendre ? Nous finançons ta formation… chez Cortex.”
+          </span>
         </FooterNote>
       </Shell>
 
@@ -598,7 +685,13 @@ const CREDUCPage = () => {
         <DockInner>
           <DockLeft>
             <DockTitle>Formulaire CRÉDUC</DockTitle>
-            <DockMeta>{pdfStatus.checking ? "Vérification…" : pdfStatus.ok ? "PDF prêt" : "PDF manquant"}</DockMeta>
+            <DockMeta>
+              {pdfStatus.checking
+                ? "Vérification…"
+                : pdfStatus.ok
+                ? "PDF prêt"
+                : "PDF manquant"}
+            </DockMeta>
           </DockLeft>
 
           <DockRight>
@@ -651,14 +744,21 @@ export default CREDUCPage;
 ========================= */
 
 const glass = css`
-  background: linear-gradient(180deg, rgba(235, 221, 221, 0.01), rgba(255, 255, 255, 0.06));
+  background: linear-gradient(
+    180deg,
+    rgba(235, 221, 221, 0.01),
+    rgba(255, 255, 255, 0.06)
+  );
   backdrop-filter: blur(14px);
 `;
 
 const Wrap = styled.div`
   min-height: 100vh;
-  background:
-    radial-gradient(980px 520px at 18% 8%, rgba(4, 1, 24, 0.81), transparent 55%),
+  background: radial-gradient(
+      980px 520px at 18% 8%,
+      rgba(4, 1, 24, 0.81),
+      transparent 55%
+    ),
     radial-gradient(900px 520px at 84% 18%, rgb(11, 0, 51), transparent 55%),
     linear-gradient(180deg, ${(p) => p.$bg} 0%, #06121e 100%);
   color: rgba(255, 255, 255, 0.92);
@@ -729,7 +829,11 @@ const BrandMark = styled.div`
   width: 44px;
   height: 44px;
   border-radius: 12px 0 12px 0;
-  background: linear-gradient(135deg, ${(p) => p.$navy}20 50%, ${(p) => p.$accent}20 50%);
+  background: linear-gradient(
+    135deg,
+    ${(p) => p.$navy}20 50%,
+    ${(p) => p.$accent}20 50%
+  );
   box-shadow: 0 16px 38px rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.16);
 `;
@@ -752,12 +856,22 @@ const H1 = styled.h1`
 `;
 
 const GradientText = styled.span`
-  background: linear-gradient(90deg, ${(p) => p.$a}, ${(p) => p.$b}, ${(p) => p.$a});
+  background: linear-gradient(
+    90deg,
+    ${(p) => p.$a},
+    ${(p) => p.$b},
+    ${(p) => p.$a}
+  );
   background-size: 200% 200%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: ${(p) => (p.$reduce ? "none" : css`${gradientShift} 7s ease-in-out infinite`)};
+  animation: ${(p) =>
+    p.$reduce
+      ? "none"
+      : css`
+          ${gradientShift} 7s ease-in-out infinite
+        `};
 `;
 
 const Subtitle = styled.p`
@@ -817,7 +931,7 @@ const KpiCard = styled.div`
 
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.30);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.3);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -929,7 +1043,7 @@ const TOCLink = styled.a`
 const Divider = styled.div`
   margin: 12px 0;
   height: 1px;
-  background: rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.1);
 `;
 
 const InlineAlert = styled.div`
@@ -975,7 +1089,12 @@ const PrimaryBtn = styled.a`
   background-size: 200% 200%;
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
   transition: transform 160ms ease, box-shadow 160ms ease;
-  animation: ${(p) => (p.$reduce ? "none" : css`${gradientShift} 7s ease-in-out infinite`)};
+  animation: ${(p) =>
+    p.$reduce
+      ? "none"
+      : css`
+          ${gradientShift} 7s ease-in-out infinite
+        `};
 
   &:hover {
     transform: translateY(-1px) scale(1.01);
@@ -1038,7 +1157,8 @@ const MicroHint = styled.div`
   line-height: 1.45;
 
   code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
     font-size: 12px;
     opacity: 0.95;
   }
@@ -1180,7 +1300,7 @@ const Chevron = styled.span`
 
 const DetailsBody = styled.div`
   padding: 0 14px 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.10);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
 const BenefitsCard = styled.section`
@@ -1231,7 +1351,7 @@ const BenefitItem = styled.div`
   border-radius: 12px 0 12px 0;
   padding: 12px;
   background: ${(p) => p.$soft};
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 `;
 
 const BenefitIcon = styled.div`
@@ -1285,7 +1405,7 @@ const Step = styled.div`
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(0, 0, 0, 0.12);
   border-radius: 12px 0 12px 0;
   padding: 12px;
@@ -1331,7 +1451,8 @@ const SmallHint = styled.div`
   line-height: 1.45;
 
   code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace;
     font-size: 12px;
   }
 `;
@@ -1418,7 +1539,7 @@ const TopBtn = styled.button`
   height: 44px;
   border-radius: 12px 0 12px 0;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(0, 0, 0, 0.30);
+  background: rgba(0, 0, 0, 0.3);
   color: rgba(255, 255, 255, 0.92);
   display: grid;
   place-items: center;

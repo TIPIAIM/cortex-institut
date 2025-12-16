@@ -17,8 +17,8 @@ const NAV = [
   { label: "Contact", to: "/contact" },
   { label: "Programmes", to: "/programmes" },
   { label: "Campus-Cortex", to: "/campuscortex" },
-  { label: "Credit", to: "/CreducPage" },
- 
+  { label: "CREDUC-Guinée", to: "/CreducPage" },
+
   { label: "À propos", to: "/apropos" },
 ];
 
@@ -329,7 +329,7 @@ const FootCTA = styled(Link)`
   border: 1px solid #d9b642;
 `;
 
-// ---------------- Component ----------------
+// ------Taux social---------- Component ----------------
 export default function HeaderPro() {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
