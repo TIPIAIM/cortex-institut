@@ -16,7 +16,8 @@ const NAV = [
   { label: "Accueil", to: "/" },
   { label: "Contact", to: "/contact" },
   { label: "Programmes", to: "/programmes" },
-  { label: "Creduc", to: "/CreducPage" },
+  { label: "Campus-Cortex", to: "/campuscortex" },
+  { label: "Credit", to: "/CreducPage" },
   { label: "À propos", to: "/apropos" },
 
   { label: "À propos", to: "/apropos" },
@@ -193,7 +194,6 @@ const GhostBtn = styled(Link)`
     display: none;
   } /* masqué en mobile */
 `;
- 
 
 const Burger = styled.button`
   display: inline-flex;
@@ -482,7 +482,7 @@ export default function HeaderPro() {
 
         {/* Right actions (burger à droite) */}
         <Right>
-        { /* <GhostBtn to="/contact" aria-label="Nous appeler">
+          {/* <GhostBtn to="/contact" aria-label="Nous appeler">
             <Phone size={16} /> +224 623 21 19 74
           </GhostBtn>*/}
           <GhostBtn
@@ -543,11 +543,10 @@ export default function HeaderPro() {
             </SheetBody>
 
             <SheetFoot>
-           <FootBtn to="mailto:contact@institut-cortex.com">
+              <FootBtn to="mailto:contact@institut-cortex.com">
                 <Mail size={16} /> contact@institut-cortex.com
-              </FootBtn> 
-
-             </SheetFoot>
+              </FootBtn>
+            </SheetFoot>
           </Sheet>
         )}
       </AnimatePresence>
