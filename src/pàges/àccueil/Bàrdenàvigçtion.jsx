@@ -16,7 +16,9 @@ const NAV = [
   { label: "Accueil", to: "/" },
   { label: "Contact", to: "/contact" },
   { label: "Programmes", to: "/programmes" },
-  { label: "Campus-Cortex", to: "/campuscortex" },
+  { label: "Creduc", to: "/CreducPage" },
+  { label: "À propos", to: "/apropos" },
+
   { label: "À propos", to: "/apropos" },
 ];
 
@@ -480,9 +482,9 @@ export default function HeaderPro() {
 
         {/* Right actions (burger à droite) */}
         <Right>
-          <GhostBtn to="/contact" aria-label="Nous appeler">
+        { /* <GhostBtn to="/contact" aria-label="Nous appeler">
             <Phone size={16} /> +224 623 21 19 74
-          </GhostBtn>
+          </GhostBtn>*/}
           <GhostBtn
             to="mailto:contact@institut-cortex.com"
             aria-label="Nous écrire"
@@ -541,9 +543,9 @@ export default function HeaderPro() {
             </SheetBody>
 
             <SheetFoot>
-              <FootBtn to="mailto:contact@institut-cortex.com">
+           <FootBtn to="mailto:contact@institut-cortex.com">
                 <Mail size={16} /> contact@institut-cortex.com
-              </FootBtn>
+              </FootBtn> 
 
              </SheetFoot>
           </Sheet>
