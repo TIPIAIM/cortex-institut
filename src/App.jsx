@@ -20,7 +20,7 @@ export default function App() {
         <Route path="/programmes" element={<Programmes />} />
         <Route path="/contact" element={<ContactCortex />} />
    
-   {/**en cours  MonQRCode 
+   {/**en cours  MonQRCode  campuscortex
         <Route
          path="/realisations" element={<export default function HeroCortexWebGL({
  />} /> 

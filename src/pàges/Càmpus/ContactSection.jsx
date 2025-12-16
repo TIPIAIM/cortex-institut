@@ -234,8 +234,8 @@ const DownloadTitle = styled.h3`
 const DownloadButtonsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
-  gap: clamp(1rem, 2vw, 1.5rem);
-  max-width: 600px;
+  gap: clamp(1rem, 2vw, 1rem);
+  max-width: 1200px;
   margin: 0 auto;
 
   @media (max-width: 480px) {
@@ -277,6 +277,15 @@ const ContactSection = () => {
     {
       name: "Formulaire d'Inscription",
       file: "/docs/DC-2025-2026-inscription.pdf", // URL relative dans le dossier public
+      icon: <Download size={getIconSize()} />,
+    },
+    {
+      name: "CRÉDUC Microcrédit éducatif interne",
+      file: "/docs/microcrédit-éducatif-interne.pdf", // URL relative dans le dossier public
+      icon: <Download size={getIconSize()} />,
+    },{
+      name: "Formulaire_Demande_Microcredit",
+      file: "/docs/Formulaire_Demande_Microcredit_Cortex.pdf", // URL relative dans le dossier public
       icon: <Download size={getIconSize()} />,
     },
   ];
