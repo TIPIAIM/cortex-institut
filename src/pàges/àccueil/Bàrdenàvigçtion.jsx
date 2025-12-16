@@ -18,8 +18,7 @@ const NAV = [
   { label: "Programmes", to: "/programmes" },
   { label: "Campus-Cortex", to: "/campuscortex" },
   { label: "Credit", to: "/CreducPage" },
-  { label: "À propos", to: "/apropos" },
-
+ 
   { label: "À propos", to: "/apropos" },
 ];
 
