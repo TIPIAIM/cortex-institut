@@ -1,462 +1,821 @@
-// src/components/feature/FiliereModal.jsx
-import { useMemo, useState } from "react";
-import styled, { css } from "styled-components";
+import { useMemo } from "react";
+import styled from "styled-components";
 import { motion } from "framer-motion";
-import { ChevronRight, Star, BadgeCheck } from "lucide-react";
+import colors from "../../Styles/colors";
 import ProModal from "./ProModal";
 import { imagess } from "../../assets/imagess";
-import colors from "../../Styles/colors";
- 
-/* ========== Icône animée réutilisable ========== */
-function AnimatedIcon({
-  icon: IconCmp,
-  accent = "#F2C94C",
-  size = 18,
-  delay = 0,
-}) {
-  return (
-    <IconWrap
-      initial={{ scale: 0.95, rotate: -2 }}
-      animate={{
-        scale: [1, 1.06, 1],
-        rotate: [-2, 0, -2],
-        y: [0, -1.5, 0],
-      }}
-      transition={{
-        duration: 3.2,
-        repeat: Infinity,
-        ease: "easeInOut",
-        delay,
-      }}
-    >
-      <IconCmp size={size} />
-      <IconGlow $accent={accent} />
-    </IconWrap>
-  );
+import {
+  BriefcaseBusiness,
+  Banknote,
+  Users,
+  ShieldCheck,
+  Cpu,
+  HeartPulse,
+  Building2,
+  Boxes,
+  Megaphone,
+  Layers,
+  Download,
+  ExternalLink,
+  Clock3,
+  BadgeCheck,
+  Target,
+  BookOpen,
+  Sparkles,
+  Files,
+  LayoutGrid,
+  ListChecks,
+  Info,
+} from "lucide-react";
+
+function cld(url, w = 1400) {
+  if (typeof url !== "string") return url;
+  if (!url.includes("res.cloudinary.com")) return url;
+  const sep = url.includes("?") ? "&" : "?";
+  return `${url}${sep}f_auto&q_auto&w=${w}`;
 }
 
-/**
- * props:
- * - open: bool
- * - onClose: fn
- * - filiere: { title, description, outcomes[], programs[], accent?, heroKey?, meta? }
- */
+const iconMap = {
+  briefcase: BriefcaseBusiness,
+  banknote: Banknote,
+  users: Users,
+  shield: ShieldCheck,
+  cpu: Cpu,
+  "heart-pulse": HeartPulse,
+  "building-2": Building2,
+  boxes: Boxes,
+  megaphone: Megaphone,
+};
+
 export default function FiliereModal({ open, onClose, filiere }) {
-  if (!filiere) return null;
+  const computed = useMemo(() => {
+    if (!filiere) return null;
 
-  const accent = filiere.accent || "#F2C94C";
-  const rawHero =
-    (filiere.heroKey && imagess[filiere.heroKey]) ||
-    imagess?.loreàt ||
-    "/img/hero-filiere.jpg";
+    const Icon = iconMap[filiere.iconName] || Layers;
+    const hero =
+      (filiere.heroKey && imagess?.[filiere.heroKey]) ||
+      imagess?.loreàt ||
+      "/img/placeholder.jpg";
 
-  // Optimisations Cloudinary
-  const hero = useMemo(() => {
-    if (typeof rawHero !== "string") return rawHero;
-    if (!rawHero.includes("res.cloudinary.com")) return rawHero;
-    return rawHero.includes("?")
-      ? `${rawHero}&f_auto&q_auto`
-      : `${rawHero}?f_auto&q_auto`;
-  }, [rawHero]);
+    const detailedPrograms = filiere.programCards || [];
+    const fallbackPrograms = filiere.programs || [];
 
-  // Réglages d’ajustement de l’image (toujours visible par défaut)
-  const [fitMode, setFitMode] = useState("contain"); // "contain" | "cover"
-  const [position, setPosition] = useState("center"); // "top" | "center" | "bottom"
+    return {
+      Icon,
+      hero,
+      detailedPrograms,
+      fallbackPrograms,
+      stats: [
+        {
+          label: "Programmes détaillés",
+          value: String(detailedPrograms.length),
+          icon: <Files size={16} />,
+        },
+        {
+          label: "Programmes listés",
+          value: String(fallbackPrograms.length),
+          icon: <LayoutGrid size={16} />,
+        },
+        {
+          label: "Mode",
+          value: filiere.meta?.mode || "—",
+          icon: <BadgeCheck size={16} />,
+        },
+        {
+          label: "Durée",
+          value: filiere.meta?.duration || "—",
+          icon: <Clock3 size={16} />,
+        },
+      ],
+      navItems: [
+        {
+          id: "modal-overview",
+          label: "Vue d’ensemble",
+          icon: <Info size={15} />,
+        },
+        {
+          id: "modal-programmes-detail",
+          label: "Programmes détaillés",
+          icon: <BookOpen size={15} />,
+        },
+        {
+          id: "modal-programmes-list",
+          label: "Liste complète",
+          icon: <ListChecks size={15} />,
+        },
+      ],
+    };
+  }, [filiere]);
+
+  if (!filiere || !computed) return null;
+
+  const {
+    Icon,
+    hero,
+    detailedPrograms,
+    fallbackPrograms,
+    stats,
+    navItems,
+  } = computed;
 
   return (
-    <ProModal open={open} onClose={onClose} title={filiere.title} fullScreen>
-      <Wrap>
-        {/* HERO image avec ajustements */}
-        <HeroWrap $accent={accent}>
-          <HeroImg
-            as={motion.img}
-            src={hero}
-            alt={filiere.title}
-            initial={{ opacity: 0.0, scale: 1.01, filter: "blur(3px)" }}
-            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            $fit={fitMode}
-            $pos={position}
-            loading="eager"
-            decoding="async"
-          />
-          <HeroShade />
+    <ProModal
+      open={open}
+      onClose={onClose}
+      fullScreen
+      title={filiere.title}
+      labelledById="filiere-modal-title"
+      describedById="filiere-modal-desc"
+    >
+      <Wrap id="filiere-modal-desc">
+        <Layout>
+          <SideRail aria-label="Navigation rapide du modal">
+            <RailCard>
+              <RailTitle>
+                <Layers size={16} />
+                Navigation rapide
+              </RailTitle>
 
-          {/* Boutons d’ajustement */}
-          <HeroControls
-            role="group"
-            aria-label="Réglages d’affichage de l’image"
-          >
-            <Chip
-              data-active={fitMode === "contain"}
-              onClick={() => setFitMode("contain")}
-            >
-              Ajuster
-            </Chip>
-            <Chip
-              data-active={fitMode === "cover"}
-              onClick={() => setFitMode("cover")}
-            >
-              Remplir
-            </Chip>
-            <Sep />
-            {/*  <Chip data-active={position === "top"} onClick={() => setPosition("top")}>Haut</Chip>*/}
-            <Chip
-              data-active={position === "center"}
-              onClick={() => setPosition("center")}
-            >
-              Centre
-            </Chip>
-            {/*       <Chip data-active={position === "bottom"} onClick={() => setPosition("bottom")}>Bas</Chip>
-             */}{" "}
-          </HeroControls>
-        </HeroWrap>
-
-        {/* CONTENU */}
-        <Body>
-          {/* Colonne principale */}
-          <ColLeft
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35 }}
-          >
-            {filiere.description && <Desc>{filiere.description}</Desc>}
-
-            {filiere.outcomes?.length > 0 && (
-              <Block>
-                <BlockTitle>
-                  <AnimatedIcon icon={Star} accent={accent} />
-                  Ce que vous saurez faire
-                </BlockTitle>
-                <List>
-                  {filiere.outcomes.map((o, i) => (
-                    <li key={i}>{o}</li>
-                  ))}
-                </List>
-              </Block>
-            )}
-
-            <Block>
-              <BlockTitle>
-                <AnimatedIcon icon={BadgeCheck} accent={accent} delay={0.1} />
-                Programmes inclus
-              </BlockTitle>
-
-              <ProgList>
-                {filiere.programs.map((p, i) => (
-                  <motion.li
-                    key={i}
-                    initial={{ opacity: 0, y: 6 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.25 }}
-                    transition={{ duration: 0.22, delay: i * 0.02 }}
-                  >
-                    <a  >
-                      <span>{p}</span>
-                      <ChevronAnim
-                        initial={{ x: 0 }}
-                        whileHover={{ x: 3 }}
-                        transition={{ type: "tween", duration: 0.15 }}
-                      >
-                       </ChevronAnim>
-                    </a>
-                  </motion.li>
+              <RailNav>
+                {navItems.map((item) => (
+                  <RailLink key={item.id} href={`#${item.id}`}>
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </RailLink>
                 ))}
-              </ProgList>
-            </Block>
-          </ColLeft>
+              </RailNav>
 
-          {/* Aside */}
-          <Aside>
-            <Ctas>
-              <a className="primary" href="/contact">
-                Contactez-nous
-              </a>
-            </Ctas>
+              <RailHint>
+                Utilise ces raccourcis pour accéder plus vite aux sections.
+              </RailHint>
+            </RailCard>
+          </SideRail>
 
-            {filiere.meta && (
-              <Meta>
-                {filiere.meta.level && (
-                  <div>
-                    <b>Niveau</b>
-                    <span>{filiere.meta.level}</span>
-                  </div>
-                )}
-                {filiere.meta.mode && (
-                  <div>
-                    <b>Modalité</b>
-                    <span>{filiere.meta.mode}</span>
-                  </div>
-                )}
-                {filiere.meta.duration && (
-                  <div>
-                    <b>Durée</b>
-                    <span>{filiere.meta.duration}</span>
-                  </div>
-                )}
-              </Meta>
+          <MainColumn>
+            <HeroSection id="modal-overview">
+              <HeroVisual>
+                <HeroImage
+                  src={cld(hero, 1400)}
+                  alt={filiere.title}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <HeroOverlay />
+                <HeroBadge>
+                  <Icon size={16} />
+                  {filiere.title}
+                </HeroBadge>
+              </HeroVisual>
+
+              <HeroContent
+                as={motion.div}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35 }}
+              >
+                <TitleBlock>
+                  <Title id="filiere-modal-title">{filiere.title}</Title>
+                  <Desc>{filiere.description}</Desc>
+                </TitleBlock>
+
+                <MetaWrap>
+                  {filiere.meta?.level && (
+                    <MetaPill>{filiere.meta.level}</MetaPill>
+                  )}
+                  {filiere.meta?.mode && <MetaPill>{filiere.meta.mode}</MetaPill>}
+                  {filiere.meta?.duration && (
+                    <MetaPill>{filiere.meta.duration}</MetaPill>
+                  )}
+                </MetaWrap>
+
+                {Array.isArray(filiere.outcomes) &&
+                  filiere.outcomes.length > 0 && (
+                    <OutcomeList>
+                      {filiere.outcomes.map((item, idx) => (
+                        <Outcome key={idx}>
+                          <Sparkles size={15} />
+                          <span>{item}</span>
+                        </Outcome>
+                      ))}
+                    </OutcomeList>
+                  )}
+              </HeroContent>
+            </HeroSection>
+
+            <StatsGrid>
+              {stats.map((item, idx) => (
+                <StatCard key={idx}>
+                  <StatTop>
+                    <StatIcon>{item.icon}</StatIcon>
+                    <StatLabel>{item.label}</StatLabel>
+                  </StatTop>
+                  <StatValue>{item.value}</StatValue>
+                </StatCard>
+              ))}
+            </StatsGrid>
+
+            {detailedPrograms.length > 0 && (
+              <Section id="modal-programmes-detail">
+                <SectionTitle>
+                  <BookOpen size={18} />
+                  Programmes détaillés
+                </SectionTitle>
+
+                <ProgramsGrid>
+                  {detailedPrograms.map((program, idx) => (
+                    <ProgramCard
+                      as={motion.article}
+                      key={program.id || idx}
+                      initial={{ opacity: 0, y: 12 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.18 }}
+                      transition={{ duration: 0.32, delay: idx * 0.03 }}
+                    >
+                      <CardHead>
+                        <div>
+                          {program.type && (
+                            <ProgramType>{program.type}</ProgramType>
+                          )}
+                          <ProgramTitle>{program.title}</ProgramTitle>
+                        </div>
+
+                        {program.duration && (
+                          <MiniPill>
+                            <Clock3 size={14} />
+                            {program.duration}
+                          </MiniPill>
+                        )}
+                      </CardHead>
+
+                      {program.summary && (
+                        <ProgramSummary>{program.summary}</ProgramSummary>
+                      )}
+
+                      <MetaGrid>
+                        {program.schedule && (
+                          <MetaBox>
+                            <span className="label">Organisation</span>
+                            <span className="value">{program.schedule}</span>
+                          </MetaBox>
+                        )}
+
+                        {program.volume && (
+                          <MetaBox>
+                            <span className="label">Volume</span>
+                            <span className="value">{program.volume}</span>
+                          </MetaBox>
+                        )}
+
+                        {program.price && (
+                          <MetaBox>
+                            <span className="label">Tarif indicatif</span>
+                            <span className="value">{program.price}</span>
+                          </MetaBox>
+                        )}
+
+                        {program.certification && (
+                          <MetaBox>
+                            <span className="label">Certification</span>
+                            <span className="value">{program.certification}</span>
+                          </MetaBox>
+                        )}
+                      </MetaGrid>
+
+                      {Array.isArray(program.target) &&
+                        program.target.length > 0 && (
+                          <Block>
+                            <BlockTitle>
+                              <Target size={16} />
+                              Public cible
+                            </BlockTitle>
+                            <BulletList>
+                              {program.target.map((item, i) => (
+                                <li key={i}>{item}</li>
+                              ))}
+                            </BulletList>
+                          </Block>
+                        )}
+
+                      {Array.isArray(program.modules) &&
+                        program.modules.length > 0 && (
+                          <Block>
+                            <BlockTitle>
+                              <BadgeCheck size={16} />
+                              Modules clés
+                            </BlockTitle>
+                            <BulletList>
+                              {program.modules.map((item, i) => (
+                                <li key={i}>{item}</li>
+                              ))}
+                            </BulletList>
+                          </Block>
+                        )}
+
+                      <Actions>
+                        {program.docHref && (
+                          <>
+                            <PrimaryLink
+                              href={program.docHref}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              <Download size={16} />
+                              Télécharger la fiche
+                            </PrimaryLink>
+
+                            <GhostLink
+                              href={program.docHref}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              <ExternalLink size={16} />
+                              Ouvrir
+                            </GhostLink>
+                          </>
+                        )}
+                      </Actions>
+                    </ProgramCard>
+                  ))}
+                </ProgramsGrid>
+              </Section>
             )}
-          </Aside>
-        </Body>
+
+            <Section id="modal-programmes-list">
+              <SectionTitle>
+                <Layers size={18} />
+                Liste complète des programmes de la filière
+              </SectionTitle>
+
+              <SimpleProgramsGrid>
+                {fallbackPrograms.map((item, idx) => (
+                  <SimpleProgram key={`${item}-${idx}`}>{item}</SimpleProgram>
+                ))}
+              </SimpleProgramsGrid>
+            </Section>
+          </MainColumn>
+        </Layout>
       </Wrap>
     </ProModal>
   );
 }
 
-/* ================= styles ================= */
-
 const Wrap = styled.div`
   display: grid;
-  gap: 18px;
-  max-width: 1400px;
-  margin: 0 auto;
-  
+  gap: 20px;
+  color: ${colors.text};
+  padding-bottom: 6px;
 `;
 
-/* --- HERO --- */
-const HeroWrap = styled.div`
-  position: relative;
-  height: clamp(220px, 42vh, 480px);
-  border-radius: 4px;
-   overflow: hidden;
-  background: linear-gradient(180deg, ${colors.bg1}, ${colors.bg2});
-  &:after {
-    content: "";
-    position: absolute;
-    inset: auto 0 0 0;
-    height: 6px;
-    background: ${(p) => p.$accent};
-    opacity: 0.95;
-  }
-`;
-
-const HeroImg = styled.img`
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: ${(p) => (p.$fit === "cover" ? "cover" : "contain")};
-  object-position: ${(p) =>
-    p.$pos === "top" ? "50% 0%" : p.$pos === "bottom" ? "50% 100%" : "50% 50%"};
-  filter: contrast(1.03) brightness(0.98);
-`;
-
-const HeroShade = styled.div`
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(
-      1000px 480px at 85% -10%,
-    ${colors.bg2},
-      transparent 60%
-    ),
-    linear-gradient(180deg, ${colors.bg1}, ${colors.bg1});
-  mix-blend-mode: soft-light;
-`;
-
-const HeroControls = styled.div`
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: ${colors.bg1};
-  backdrop-filter: blur(6px);
-   border-radius: 12px;
-  padding: 6px;
-`;
-
-const Sep = styled.span`
-  width: 1px;
-  height: 18px;
-  background: ${colors.bg2};
-  opacity: 0.8;
-  margin: 0 2px;
-`;
-
-const Chip = styled.button`
-  border: 1px solid #2a4b7c;
-  background: ${colors.bg2};
-  color: ${colors.accentGold3};
-  padding: 6px 10px;
-  border-radius: 10px;
-  font-weight: 700;
-  font-size: 12px;
-  transition: transform 0.12s ease, background 0.12s ease,
-    border-color 0.12s ease, color 0.12s ease;
-  &[data-active="true"] {
-    background: ${colors.accentGold};
-    color:${colors.bg1};
-    border-color: #3a67a8;
-  }
-  &:hover {
-    transform: translateY(-1px);
-  }
-`;
-
-/* --- CONTENU --- */
-const Body = styled.div`
+const Layout = styled.div`
   display: grid;
   gap: 18px;
-  grid-template-columns: 1fr;
-  @media (min-width: 1024px) {
-    grid-template-columns: 1fr 340px;
+
+  @media (min-width: 1180px) {
+    grid-template-columns: 280px minmax(0, 1fr);
+    align-items: start;
   }
 `;
 
-const ColLeft = styled(motion.div)`
+const SideRail = styled.aside`
+  display: none;
+
+  @media (min-width: 1180px) {
+    display: block;
+    position: sticky;
+    top: 0;
+    align-self: start;
+  }
+`;
+
+const RailCard = styled.div`
+  border: 1px solid #1f2c44;
+  border-radius: 20px 0 20px 0;
+  background: linear-gradient(120deg, ${colors.bgSoft} 64%, ${colors.bg} 50%);
+  padding: 16px;
+  display: grid;
+  gap: 14px;
+`;
+
+const RailTitle = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+  color: ${colors.accentGold};
+`;
+
+const RailNav = styled.nav`
+  display: grid;
+  gap: 10px;
+`;
+
+const RailLink = styled.a`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  padding: 11px 12px;
+  border-radius: 16px 0 16px 0;
+  border: 1px solid #264066;
+  background: ${colors.bg};
+  color: ${colors.text};
+  font-weight: 700;
+  transition: transform 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: ${colors.accentGold};
+    box-shadow: 0 10px 22px rgba(10, 16, 28, 0.2);
+  }
+
+  span {
+    line-height: 1.4;
+  }
+`;
+
+const RailHint = styled.p`
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  opacity: 0.82;
+`;
+
+const MainColumn = styled.div`
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+`;
+
+const HeroSection = styled.section`
+  display: grid;
+  gap: 16px;
+  scroll-margin-top: 18px;
+
+  @media (min-width: 980px) {
+    grid-template-columns: 1.05fr 1fr;
+    align-items: stretch;
+  }
+`;
+
+const HeroVisual = styled.div`
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px 0 20px 0;
+  min-height: 280px;
+  border: 1px solid #1f2c44;
+  background: ${colors.bg};
+`;
+
+const HeroImage = styled.img`
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  object-fit: cover;
+  display: block;
+`;
+
+const HeroOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(10, 16, 28, 0.08), rgba(10, 16, 28, 0.72)),
+    linear-gradient(120deg, ${colors.semygsecondar}25 20%, transparent 60%);
+`;
+
+const HeroBadge = styled.div`
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(14, 26, 43, 0.78);
+  color: ${colors.accentGold};
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 10px 12px;
+  border-radius: 16px 0 16px 0;
+  font-weight: 800;
+  backdrop-filter: blur(8px);
+`;
+
+const HeroContent = styled.div`
+  border: 1px solid #1f2c44;
+  border-radius: 20px 0 20px 0;
+  padding: 18px;
+  background: linear-gradient(120deg, ${colors.bgSoft} 64%, ${colors.bg} 50%);
   display: grid;
   gap: 16px;
 `;
 
+const TitleBlock = styled.div`
+  display: grid;
+  gap: 10px;
+`;
+
+const Title = styled.h2`
+  margin: 0;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.08;
+  color: ${colors.accentGold};
+`;
+
 const Desc = styled.p`
   margin: 0;
-  color:${colors.accentGoldLight};
-  font-size: clamp(15px, 1.9vw, 18px);
-  line-height: 1.65;
+  line-height: 1.72;
+  color: ${colors.text};
 `;
 
-const Block = styled.section`
+const MetaWrap = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+`;
+
+const MetaPill = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  border: 1px solid #264066;
+  background: ${colors.bg};
+  color: ${colors.accentGold};
+  font-weight: 800;
+  font-size: 13px;
+`;
+
+const OutcomeList = styled.div`
+  display: grid;
+  gap: 10px;
+`;
+
+const Outcome = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 16px 0 16px 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  svg {
+    color: ${colors.accentGold};
+    margin-top: 2px;
+    flex: 0 0 auto;
+  }
+
+  span {
+    line-height: 1.55;
+  }
+`;
+
+const StatsGrid = styled.div`
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+`;
+
+const StatCard = styled.div`
   border: 1px solid #1f2c44;
-  border-radius: 14px;
-  padding: clamp(12px, 2vw, 16px);
-  background: linear-gradient(180deg,${colors.bg2}20 , ${colors.bg1});
+  border-radius: 18px 0 18px 0;
+  background: linear-gradient(120deg, ${colors.bgSoft} 58%, ${colors.bg} 50%);
+  padding: 14px;
+  display: grid;
+  gap: 10px;
 `;
 
-const BlockTitle = styled.h4`
-  margin: 0 0 10px 0;
+const StatTop = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: clamp(16px, 2.2vw, 18px);
-  color: ${colors.accentGold3};
+  gap: 9px;
 `;
 
-/* icône animée */
-const IconWrap = styled(motion.span)`
-  position: relative;
-  display: inline-grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 10px;
-  background:${colors.bg2};
-  box-shadow: 0 8px 22px rgba(26, 44, 73, 0.35);
-  svg {
-    transform: translateY(0);
-  }
-`;
-
-const IconGlow = styled.span`
-  pointer-events: none;
-  position: absolute;
-  inset: -18px;
-  border-radius: 16px;
-  background: radial-gradient(
-    20px 20px at 50% 50%,
-    ${(p) => p.$accent}55,
-    transparent 60%
-  );
-  filter: blur(10px);
-`;
-
-const List = styled.ul`
-  margin: 0;
-  padding-left: clamp(16px, 2vw, 20px);
-  color: ${colors.accentGoldLight};
-  li {
-    margin: 6px 0;
-    line-height: 1.6;
-  }
-`;
-
-const ProgList = styled.ul`
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 8px;
-  li a {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 12px 14px;
-    border-radius: 12px;
-    color: ${colors.accentGoldLight};
-    background: linear-gradient(180deg, #0e1a2b, #0f223a);
-    border: 1px solid transparent;
-    transition: border-color 0.15s ease, background 0.15s ease,
-      transform 0.15s ease;
-  }
-  li a:hover {
-    border-color: #25406b;
-    background: #0f223a;
-    transform: translateX(2px);
-  }
-`;
-
-const ChevronAnim = styled(motion.span)`
+const StatIcon = styled.span`
+  width: 32px;
+  height: 32px;
   display: grid;
   place-items: center;
+  border-radius: 12px 0 12px 0;
+  background: rgba(242, 201, 76, 0.12);
+  color: ${colors.accentGold};
 `;
 
-const Aside = styled.aside`
+const StatLabel = styled.span`
+  font-size: 13px;
+  opacity: 0.88;
+`;
+
+const StatValue = styled.div`
+  font-size: 18px;
+  font-weight: 900;
+  color: ${colors.text};
+`;
+
+const Section = styled.section`
   display: grid;
   gap: 14px;
+  scroll-margin-top: 18px;
+`;
+
+const SectionTitle = styled.h3`
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  color: ${colors.accentGold};
+`;
+
+const ProgramsGrid = styled.div`
+  display: grid;
+  gap: 16px;
+
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+`;
+
+const ProgramCard = styled.article`
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border-radius: 20px 0 20px 0;
+  border: 1px solid #1f2c44;
+  background: linear-gradient(120deg, ${colors.bgSoft} 58%, ${colors.bg} 50%);
+  box-shadow: 0 14px 34px rgba(10, 16, 28, 0.22);
   align-content: start;
 `;
 
-const Ctas = styled.div`
+const CardHead = styled.div`
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+`;
+
+const ProgramType = styled.div`
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 900;
+  color: ${colors.accentGold};
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+`;
+
+const ProgramTitle = styled.h4`
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.25;
+  color: ${colors.text};
+`;
+
+const MiniPill = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid #264066;
+  background: ${colors.bg};
+  color: ${colors.accentGold};
+  font-size: 12px;
+  font-weight: 800;
+`;
+
+const ProgramSummary = styled.p`
+  margin: 0;
+  line-height: 1.7;
+  color: ${colors.text};
+  opacity: 0.95;
+`;
+
+const MetaGrid = styled.div`
   display: grid;
   gap: 10px;
-  a {
-    text-align: center;
-    padding: 12px 14px;
-    border-radius: 12px 12px 0 0;
-    font-weight: 700;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-    font-size: clamp(14px, 1.8vw, 16px);
-  }
-  .primary {
-    background: ${colors.accentGold};
-    color: ${colors.bg1};
-    
-    box-shadow: 0 8px 22px rgba(242, 201, 76, 0.25);
-  }
-  .primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 26px rgba(242, 201, 76, 0.32);
-  }
-  .ghost {
-    border: 1px solid #264066;
-    color: #cfe0f1;
-    background: #0e1a2b;
-  }
-  .ghost:hover {
-    border-color: #2a4b7c;
+
+  @media (min-width: 700px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 `;
 
-const Meta = styled.div`
-  border: 1px solid #1f2c44;
-  border-radius: 14px 14px 0px 0px;
- margin-bottom: 1rem;
-  padding: 14px;
-  background: ${colors.bg1};
+const MetaBox = styled.div`
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 16px 0 16px 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  .label {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: ${colors.accentGold};
+  }
+
+  .value {
+    font-size: 14px;
+    line-height: 1.55;
+    color: ${colors.text};
+  }
+`;
+
+const Block = styled.div`
   display: grid;
   gap: 10px;
-  div {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+`;
+
+const BlockTitle = styled.h5`
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: ${colors.accentGold};
+`;
+
+const BulletList = styled.ul`
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 8px;
+  color: ${colors.text};
+
+  li {
+    line-height: 1.55;
   }
-  b {
-    color: #a8b3c7;
-    font-weight: 600;
+`;
+
+const Actions = styled.div`
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: auto;
+  padding-top: 4px;
+`;
+
+const PrimaryLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  font-weight: 800;
+  padding: 11px 14px;
+  border-radius: 18px 0 18px 0;
+  background: ${colors.accentGold};
+  color: #0e1a2b;
+  box-shadow: 0 10px 24px rgba(242, 201, 76, 0.22);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px rgba(242, 201, 76, 0.3);
   }
-  span {
-    color: #e8eef7;
+`;
+
+const GhostLink = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  font-weight: 800;
+  padding: 11px 14px;
+  border-radius: 18px 0 18px 0;
+  border: 1px solid #264066;
+  background: ${colors.bg};
+  color: ${colors.text};
+  transition: transform 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: ${colors.semygsecondar};
   }
+`;
+
+const SimpleProgramsGrid = styled.div`
+  display: grid;
+  gap: 10px;
+
+  @media (min-width: 700px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1100px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+`;
+
+const SimpleProgram = styled.div`
+  padding: 12px 14px;
+  border-radius: 16px 0 16px 0;
+  border: 1px solid #1f2c44;
+  background: linear-gradient(120deg, ${colors.bgSoft} 58%, ${colors.bg} 50%);
+  line-height: 1.55;
+  color: ${colors.text};
 `;

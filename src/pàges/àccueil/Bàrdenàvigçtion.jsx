@@ -13,11 +13,12 @@ import colors from "../../Styles/colors";
 
 // --------- Config nav ----------
 const NAV = [
-  { label: "Accueil", to: "/" },
+//  { label: "Accueil", to: "/" },
   { label: "Contact", to: "/contact" },
-  { label: "Programmes", to: "/programmes" },
+  { label: "Institut-Cortex", to: "/programmes" },
   { label: "Campus-Cortex", to: "/campuscortex" },
   { label: "CREDUC-Guinée", to: "/CreducPage" },
+  { label: "Innov-edition", to: "/" },
 
   { label: "À propos", to: "/apropos" },
 ];
@@ -38,7 +39,7 @@ const Shell = styled(motion.header)`
 `;
 
 const Bar = styled.div`
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: clamp(10px, 2.6vw, 14px) 20px;
   display: grid;
@@ -59,7 +60,7 @@ const Brand = styled(Link)`
   .logo {
     width: 56px;
     height: 56px;
-    border-radius: 10px;
+    border-radius: 5px 0 5px 0;
     object-fit: contain;
     display: block;
   }
@@ -108,7 +109,7 @@ const NavLinkA = styled(NavLink)`
   align-items: center;
   gap: 6px;
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: 5px 0 5px 0;
   text-decoration: none;
   color: ${colors.text};
   font-weight: 700;
@@ -140,7 +141,7 @@ const Dropdown = styled(motion.div)`
   left: 0;
   min-width: 260px;
   border: 1px solid #1f2c44;
-  border-radius: 12px;
+  border-radius: 5px 0 5px 0;
   padding: 10px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
   background: ${colors.bg};
@@ -150,7 +151,7 @@ const DropLink = styled(NavLink)`
   grid-template-columns: auto 1fr;
   gap: 10px;
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 5px 0 5px 0;
   text-decoration: none;
   color: ${colors.text};
   font-size: 14px;
@@ -179,7 +180,7 @@ const GhostBtn = styled(Link)`
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
-  border-radius: 12px;
+  border-radius: 5px 0 5px 0;
   color: ${colors.text};
   text-decoration: none;
   font-weight: 800;
@@ -200,7 +201,7 @@ const Burger = styled.button`
   justify-content: center;
   width: 42px;
   height: 42px;
-  border-radius: 10px;
+  border-radius: 5px 0 5px 0;
   border: 1px solid #274066;
   background: transparent;
   color: ${colors.text};
@@ -220,7 +221,7 @@ const Sheet = styled(motion.aside)`
   background: linear-gradient(180deg, #0f223a, #0e1a2b);
   z-index: 80;
   display: grid;
-  border-radius: 16px 0 16px 16px;
+  border-radius: 5px 0 5px 0;
   grid-template-rows: auto 1fr auto;
   overflow-y: auto;
   overflow-x: hidden;
@@ -248,7 +249,7 @@ const SheetClose = styled.button`
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: 10px;
+  border-radius: 5px 0 5px 0;
   border: 1px solid #274066;
   background: transparent;
   color: ${colors.text};
@@ -267,7 +268,7 @@ const MLink = styled(NavLink)`
   justify-content: space-between;
   gap: 10px;
   padding: 12px;
-  border-radius: 10px;
+  border-radius: 5px 0 5px 0;
   text-decoration: none;
   color: ${colors.text};
   font-weight: 800;
@@ -282,7 +283,7 @@ const MChild = styled(NavLink)`
   display: block;
   margin: 6px 0 0 12px;
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 5px 0 5px 0;
   text-decoration: none;
   background: ${colors.bgSoft};
   color: ${colors.accentGoldLight};
@@ -305,7 +306,7 @@ const FootBtn = styled(Link)`
   justify-content: center;
   gap: 8px;
   padding: 12px;
-  border-radius: 12px;
+  border-radius: 5px 0 5px 0;
   text-decoration: none;
   font-weight: 900;
   border: 1px solid #274066;
@@ -321,7 +322,7 @@ const FootCTA = styled(Link)`
   justify-content: center;
   gap: 8px;
   padding: 12px;
-  border-radius: 14px 0 14px 0;
+  border-radius: 5px 0 5px 0;
   text-decoration: none;
   font-weight: 900;
   background: ${colors.accentGold};
@@ -424,7 +425,7 @@ export default function HeaderPro() {
             decoding="async"
           />
           <span className="name">
-            <span className="title">Institut CORTEX</span>
+            <span className="title">CORTEX HOLDING</span>
             <span className="tag">Excellence utile, impact durable</span>
           </span>
         </Brand>

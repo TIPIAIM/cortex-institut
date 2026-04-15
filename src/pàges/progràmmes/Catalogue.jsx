@@ -1,190 +1,137 @@
-// src/components/catalogue/CatalogueBac3.jsx
-import { useMemo, useRef, useState } from "react";
+import {
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import styled from "styled-components";
-import { motion, AnimatePresence } from "framer-motion";
-import { Download, Filter, Search as SearchIcon, Tag } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  Download,
+  Filter,
+  Search as SearchIcon,
+  Tag,
+  ExternalLink,
+  FolderOpen,
+  Sparkles,
+  BookOpen,
+  Clock3,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
+
 import colors from "../../Styles/colors";
+import { imagess } from "../../assets/imagess";
+import { filieres } from "./filieres.data";
+import FiliereModal from "./FiliereModal";
 
-/* ================== Données par défaut ================== */
-/* 5 catalogues (haut de page) — remplace les href */
-const defaultTopCatalogs = [
-  {
-    label: "Catalogue Institut Cortex 2024–2025",
-    href: "/docs/Catalogue-Institut-2024–2025.pdf",
-  },
-  {
-    label: "Masters ESCA – CCL & CORTEX",
-    href: "/docs/catalogue-masters-esca-ccl-cortex.pdf",
-  },
+function cld(url, w = 1100) {
+  if (typeof url !== "string") return url;
+  if (!url.includes("res.cloudinary.com")) return url;
+  const sep = url.includes("?") ? "&" : "?";
+  return `${url}${sep}f_auto&q_auto&w=${w}`;
+}
 
-  {
-    label: "Formations par Filière",
-    href: "/docs/Catalogue-des-Formations-par-Filiere-CCL CORTEX.pdf",
-  },
-];
+function getCollapsedFeaturedCount() {
+  if (typeof window === "undefined") return 6;
+  if (window.innerWidth < 600) return 2;
+  if (window.innerWidth < 992) return 4;
+  return 6;
+}
 
-/* 3 documents utiles (bas de page) — remplace les href */
-const defaultBottomFiles = [
-  { label: "Fiche d’inscription (PDF)", href: "/docs/fiche-inscription.pdf" },
-  { label: "Fiche tarifs / financement (PDF)", href: "/docs/fiche-tarifs.pdf" },
-  { label: "Guide d’informations (PDF)", href: "/docs/fiche-infos.pdf" },
-];
-
-/* 10 Programmes Bac+3 — titres + débouchés + catégorie + fiche (PDF) */
-const defaultBac3 = [
-  {
-    id: "mgmt-b3",
-    title: "Management & Stratégie d’Entreprise  ",
-    category: "Management",
-    debouches: [
-      "Assistant manager",
-      "Chef de projet junior",
-      "Consultant junior",
-      "... Lire la fiche",
-    ],
-    fiche: "/docs/Catalogue-Institut-2024–2025.pdf",
-  },
-  {
-    id: "fin-b3",
-    title: "Finance & Contrôle de Gestion",
-    category: "Finance",
-    debouches: [
-      "Contrôleur de gestion junior",
-      "Assistant financier",
-      "Analyste junior",
-      "... Lire la fiche",
-    ],
-    fiche: "/docs/Catalogue-Institut-2024–2025.pdf",
-  },
-  {
-    id: "rh-b3",
-    title: "Ressources Humaines ",
-    category: "Ressources Humaines",
-    debouches: [
-      "Assistant RH",
-      "Chargé RH junior",
-      "Talent acquisition junior",
-      "... Lire la fiche",
-    ],
-    fiche: "/docs/Catalogue-Institut-2024–2025.pdf",
-  },
-  {
-    id: "qhse-b3",
-    title: "Qualité, Hygiène, Sécurité & Environnement ",
-    category: "QHSE",
-    debouches: [
-      "Assistant QHSE",
-      "Animateur HSE",
-      "Auditeur interne junior",
-      "... Lire la fiche",
-    ],
-    fiche: "/docs/Catalogue-Institut-2024–2025.pdf",
-  },
-  {
-    id: "isi-b3",
-    title: "Ingénierie des Systèmes d’Information (Bac+3)",
-    category: "Ingénierie & SI",
-    debouches: [
-      "Technicien SI",
-      "Assistant chef de projet SI",
-      "Intégrateur junior",
-      "... Lire la fiche",
-    ],
-    fiche: "/docs/Catalogue-Institut-2024–2025.pdf",
-  },
-  {
-    id: "sante-b3",
-    title: "Gestion Hospitalière & Santé (Bac+3)",
-    category: "Santé",
-    debouches: [
-      "Assistant gestion hospitalière",
-      "Coordonnateur santé",
-      "Gestionnaire junior",
-      "... Lire la fiche",
-    ],
-    fiche: "/docs/Catalogue-Institut-2024–2025.pdf",
-  },
-  {
-    id: "btp-b3",
-    title: "Génie Civil & BTP (Bac+3)",
-    category: "Génie Civil & BTP",
-    debouches: [
-      "Conducteur de travaux junior",
-      "Projeteur",
-      "Technicien méthodes",
-    ],
-    fiche: "/docs/Catalogue-Institut-2024–2025.pdf",
-  },
-  {
-    id: "supply-b3",
-    title: "Logistique & Supply Chain (Bac+3)",
-    category: "Supply Chain",
-    debouches: [
-      "Assistant supply chain",
-      "Gestionnaire stock",
-      "Coordinateur logistique",
-      "... Lire la fiche",
-    ],
-    fiche: "/docs/Catalogue-Institut-2024–2025.pdf",
-  },
-  {
-    id: "mkt-b3",
-    title: "Marketing & Communication Digitale (Bac+3)",
-    category: "Marketing",
-    debouches: [
-      "Community manager",
-      "Assistant marketing",
-      "Chargé de contenu",
-      "... Lire la fiche",
-    ],
-    fiche: "/docs/Catalogue-Institut-2024–2025.pdf",
-  },
-  {
-    id: "ent-b3",
-    title: "Entrepreneuriat & Innovation (Bac+3)",
-    category: "Entrepreneuriat",
-    debouches: [
-      "Fondateur de start-up",
-      "Intrapreneur",
-      "Assistant incubateur",
-      "... Lire la fiche",
-    ],
-    fiche: "/docs/Catalogue-Institut-2024–2025.pdf",
-  },
-];
-
-/* ================== Composant principal ================== */
 export default function CatalogueBac3({
-  topCatalogs = defaultTopCatalogs,
-  programs = defaultBac3,
-  title = "Catalogue 2025–2026 Bac+3",
-  subtitle = "Découvrez nos programmes Bac+3 et leurs débouchés. Téléchargez chaque fiche détaillée.",
+  title = "Catalogue des Programmes 2026",
+  subtitle = "Retrouvez les nouveaux programmes intégrés au site, avec leurs fiches détaillées, modules, publics cibles et accès direct aux documents.",
 }) {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("Tous");
-  const filtersRef = useRef(null);
+  const [selectedFiliere, setSelectedFiliere] = useState(null);
+  const [showAllFeatured, setShowAllFeatured] = useState(false);
+  const [collapsedFeaturedCount, setCollapsedFeaturedCount] = useState(
+    getCollapsedFeaturedCount()
+  );
+
+  const deferredQuery = useDeferredValue(q);
+
+  useEffect(() => {
+    const onResize = () => {
+      if (!showAllFeatured) {
+        setCollapsedFeaturedCount(getCollapsedFeaturedCount());
+      }
+    };
+
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [showAllFeatured]);
+
+  useEffect(() => {
+    setShowAllFeatured(false);
+  }, [cat, deferredQuery]);
+
+  const allPrograms = useMemo(() => {
+    return filieres.flatMap((filiere) =>
+      (filiere.programCards || []).map((program) => ({
+        ...program,
+        category: filiere.title,
+        filiere,
+        heroKey: filiere.heroKey,
+      }))
+    );
+  }, []);
 
   const categories = useMemo(() => {
-    const uniques = Array.from(new Set(programs.map((p) => p.category)));
+    const uniques = Array.from(new Set(allPrograms.map((p) => p.category)));
     return ["Tous", ...uniques];
-  }, [programs]);
+  }, [allPrograms]);
 
   const filtered = useMemo(() => {
-    const s = q.trim().toLowerCase();
-    return programs.filter((p) => {
+    const s = deferredQuery.trim().toLowerCase();
+
+    return allPrograms.filter((p) => {
       const matchCat = cat === "Tous" || p.category === cat;
-      const hay = `${p.title} ${p.category} ${p.debouches.join(
-        " "
-      )}`.toLowerCase();
-      const matchTxt = !s || hay.includes(s);
-      return matchCat && matchTxt;
+
+      const haystack = [
+        p.title,
+        p.type,
+        p.summary,
+        p.category,
+        p.certification,
+        ...(p.modules || []),
+        ...(p.target || []),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      const matchText = !s || haystack.includes(s);
+      return matchCat && matchText;
     });
-  }, [programs, q, cat]);
+  }, [allPrograms, deferredQuery, cat]);
+
+  const visibleFeatured = useMemo(() => {
+    return showAllFeatured
+      ? filtered
+      : filtered.slice(0, collapsedFeaturedCount);
+  }, [filtered, showAllFeatured, collapsedFeaturedCount]);
+
+  const hasMoreFeatured = filtered.length > collapsedFeaturedCount;
+
+  const allDocs = useMemo(() => {
+    return allPrograms
+      .filter((p) => p.docHref)
+      .map((p) => ({
+        label: p.title,
+        href: p.docHref,
+      }));
+  }, [allPrograms]);
+
+  const topDownloads = allDocs.slice(0, 4);
+  const bottomFiles = allDocs.slice(4);
 
   return (
     <Page>
-      {/* En-tête + 5 boutons catalogue */}
       <Head
+        as={motion.header}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45 }}
@@ -194,22 +141,43 @@ export default function CatalogueBac3({
           <p>{subtitle}</p>
         </div>
 
-        <TopDownloads>
-          {topCatalogs.map((c, i) => (
-            <a key={i} href={c.href} download>
-              <Download size={16} /> {c.label}
-            </a>
-          ))}
-        </TopDownloads>
+        {topDownloads.length > 0 && (
+          <TopDownloads>
+            {topDownloads.map((c, i) => (
+              <a
+                key={`${c.label}-${i}`}
+                href={c.href}
+                target="_blank"
+                rel="noreferrer"
+                download
+              >
+                <Download size={16} />
+                <span>{c.label}</span>
+              </a>
+            ))}
+          </TopDownloads>
+        )}
       </Head>
 
-      {/* Filtres + recherche */}
       <Filters
-        ref={filtersRef}
+        as={motion.div}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.1, duration: 0.35 }}
       >
+        <SearchRow>
+          <SearchIconBox>
+            <SearchIcon size={18} />
+          </SearchIconBox>
+
+          <Search
+            placeholder="Rechercher un programme, une filière ou un module…"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            aria-label="Rechercher un programme"
+          />
+        </SearchRow>
+
         <Chips role="tablist" aria-label="Filtrer par catégorie">
           {categories.map((c) => (
             <Chip
@@ -218,80 +186,200 @@ export default function CatalogueBac3({
               aria-selected={cat === c}
               $active={cat === c}
               onClick={() => setCat(c)}
+              type="button"
             >
-              {c === "Tous" ? <Filter size={14} /> : <Tag size={14} />} {c}
+              {c === "Tous" ? <Filter size={14} /> : <Tag size={14} />}
+              {c}
             </Chip>
           ))}
         </Chips>
       </Filters>
 
-      {/* Liste des 10 programmes — cartes “débouchés uniquement” */}
-      <SectionTitle>
-        <span>Bac+3</span> Programmes
-      </SectionTitle>
+      <SectionHeader>
+        <SectionTitle>
+          <Sparkles size={20} />
+          <span>Nouveaux programmes</span>
+        </SectionTitle>
+        <SectionText>
+          Une vue compacte et professionnelle des nouveaux programmes intégrés.
+        </SectionText>
+      </SectionHeader>
 
-      <Grid
-        initial="hidden"
-        animate="show"
-        variants={{
-          hidden: { opacity: 0 },
-          show: { opacity: 1, transition: { staggerChildren: 0.04 } },
-        }}
-      >
-        <AnimatePresence initial={false} mode="popLayout">
-          {filtered.map((p) => (
-            <Card
-              key={p.id}
-              variants={{
-                hidden: { opacity: 0, y: 12 },
-                show: { opacity: 1, y: 0 },
-              }}
-              exit={{ opacity: 0, y: 6 }}
-              whileHover={{ y: -3 }}
-              transition={{ duration: 0.35 }}
-            >
-              <Badge title={`Catégorie : ${p.category}`}>{p.category}</Badge>
-              <h3>{p.title}</h3>
+      {filtered.length === 0 ? (
+        <EmptyState>
+          <Sparkles size={18} />
+          Aucun programme ne correspond à cette recherche.
+        </EmptyState>
+      ) : (
+        <>
+          <FeaturedGrid
+            as={motion.div}
+            initial="hidden"
+            animate="show"
+            variants={{
+              hidden: { opacity: 0 },
+              show: { opacity: 1, transition: { staggerChildren: 0.04 } },
+            }}
+          >
+            {visibleFeatured.map((p) => {
+              const image =
+                (p.heroKey && imagess?.[p.heroKey]) ||
+                imagess?.loreàt ||
+                "/img/placeholder.jpg";
 
-              <Small>Débouchés</Small>
-              <Ul>
-                {p.debouches.map((d, i) => (
-                  <li key={i}>{d}</li>
-                ))}
-              </Ul>
+              return (
+                <FeaturedCard
+                  key={p.id}
+                  as={motion.article}
+                  variants={{
+                    hidden: { opacity: 0, y: 12 },
+                    show: { opacity: 1, y: 0 },
+                  }}
+                  whileHover={{ y: -2 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <FeaturedCover>
+                    <img
+                      src={cld(image, 1000)}
+                      alt={p.title}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <FeaturedShade />
+                    <FeaturedBadge>{p.category}</FeaturedBadge>
+                  </FeaturedCover>
 
-              <Actions>
-                <a className="primary" href={p.fiche} download>
-                  <Download size={16} /> Télécharger la fiche
-                </a>
-              </Actions>
-            </Card>
-          ))}
-        </AnimatePresence>
-      </Grid>
+                  <FeaturedBody>
+                    <TopMeta>
+                      <Badge>{p.type || "Programme"}</Badge>
 
-      {/* Bas de page : 3 documents utiles */}
-      <BottomBox
-        initial={{ opacity: 0, scale: 0.98 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.4 }}
-      >
-        <h4>Documents utiles</h4>
-        <BottomActions>
-          {defaultBottomFiles.map((f, i) => (
-            <a key={i} href={f.href} download>
-              <Download size={16} /> {f.label}
-            </a>
-          ))}
-        </BottomActions>
-      </BottomBox>
+                      {p.duration && (
+                        <MetaPill>
+                          <Clock3 size={14} />
+                          {p.duration}
+                        </MetaPill>
+                      )}
+                    </TopMeta>
+
+                    <CardTitle title={p.title}>{p.title}</CardTitle>
+
+                    {p.summary && (
+                      <CardSummary title={p.summary}>{p.summary}</CardSummary>
+                    )}
+
+                    {p.certification && (
+                      <MiniInfoBox>
+                        <SmallTitle>
+                          <BookOpen size={14} />
+                          Certification
+                        </SmallTitle>
+                        <ClampLine>{p.certification}</ClampLine>
+                      </MiniInfoBox>
+                    )}
+
+                    <Actions compact>
+                      {p.docHref && (
+                        <a
+                          className="primary"
+                          href={p.docHref}
+                          target="_blank"
+                          rel="noreferrer"
+                          download
+                        >
+                          <Download size={16} />
+                          Télécharger
+                        </a>
+                      )}
+
+                      {p.docHref && (
+                        <a
+                          className="ghost"
+                          href={p.docHref}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <ExternalLink size={16} />
+                          Ouvrir
+                        </a>
+                      )}
+
+                      <button
+                        className="secondary"
+                        type="button"
+                        onClick={() => setSelectedFiliere(p.filiere)}
+                      >
+                        <FolderOpen size={16} />
+                        Voir
+                      </button>
+                    </Actions>
+                  </FeaturedBody>
+                </FeaturedCard>
+              );
+            })}
+          </FeaturedGrid>
+
+          {(hasMoreFeatured || showAllFeatured) && (
+            <MoreWrap>
+              <MoreButton
+                type="button"
+                onClick={() => setShowAllFeatured((prev) => !prev)}
+              >
+                {showAllFeatured ? (
+                  <>
+                    <ChevronUp size={16} />
+                    Afficher moins
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown size={16} />
+                    Afficher le reste des nouveaux programmes
+                  </>
+                )}
+              </MoreButton>
+            </MoreWrap>
+          )}
+        </>
+      )}
+
+      {bottomFiles.length > 0 && (
+        <BottomBox
+          as={motion.section}
+          initial={{ opacity: 0, scale: 0.98 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.4 }}
+        >
+          <h4>Autres fiches programmes</h4>
+
+          <BottomActions>
+            {bottomFiles.map((f, i) => (
+              <a
+                key={`${f.label}-${i}`}
+                href={f.href}
+                target="_blank"
+                rel="noreferrer"
+                download
+              >
+                <Download size={16} />
+                <span>{f.label}</span>
+              </a>
+            ))}
+          </BottomActions>
+        </BottomBox>
+      )}
+
+      <FiliereModal
+        open={!!selectedFiliere}
+        onClose={() => setSelectedFiliere(null)}
+        filiere={selectedFiliere}
+      />
     </Page>
   );
 }
 
-/* ================== Styles ================== */
-// APRÈS
+/* =========================
+   Styles
+========================= */
 const Page = styled.div`
   max-width: 1400px;
   margin: 0 auto;
@@ -299,13 +387,13 @@ const Page = styled.div`
   background: linear-gradient(120deg, ${colors.bg} 70%, ${colors.bg1} 60%);
   display: grid;
   gap: 22px;
-  overflow-x: clip;         /* ← coupe les débordements horizontaux */
+  overflow-x: clip;
 `;
 
- 
-const Head = styled(motion.header)`
+const Head = styled.header`
   display: grid;
   gap: 14px;
+
   h1 {
     margin: 0;
     font-size: clamp(32px, 3.6vw, 50px);
@@ -314,24 +402,83 @@ const Head = styled(motion.header)`
     text-align: center;
     margin-top: 6rem;
   }
+
   p {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
+    margin: 1.2rem 0 1.8rem;
     text-align: center;
-    font-size: clamp(20px, 2.4vw, 26px);
+    font-size: clamp(17px, 2vw, 24px);
     color: ${colors.accentGoldLight};
+    line-height: 1.6;
   }
 `;
 
- 
-const Filters = styled(motion.div)`
+const TopDownloads = styled.div`
   display: grid;
-  gap: 12px;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  min-width: 0;
 
-  @media (min-width: 900px) {
-    grid-template-columns: 1fr 360px;
+  a {
+    display: flex;
     align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    padding: 12px 14px;
+    border-radius: 25px 0 25px 0;
+    font-weight: 900;
+    color: ${colors.bg};
+    background: ${colors.accentGold};
+    word-break: break-word;
+    box-shadow: 0 8px 22px rgba(242, 201, 76, 0.22);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
+
+  a:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 26px rgba(242, 201, 76, 0.3);
+  }
+
+  span {
+    line-height: 1.4;
+  }
+`;
+
+const Filters = styled.div`
+  display: grid;
+  gap: 14px;
+`;
+
+const SearchRow = styled.div`
+  width: 100%;
+  max-width: 680px;
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #1f2c44;
+  border-radius: 12px;
+  padding: 4px 10px;
+
+  &:focus-within {
+    border-color: ${colors.semygsecondar};
+    box-shadow: 0 0 0 3px rgba(42, 75, 124, 0.25);
+  }
+`;
+
+const SearchIconBox = styled.div`
+  display: grid;
+  place-items: center;
+  color: ${colors.accentGold};
+`;
+
+const Search = styled.input`
+  width: 100%;
+  height: clamp(36px, 3.2vw, 42px);
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: ${colors.accentGold};
+  font-size: clamp(13px, 1.8vw, 14.5px);
 `;
 
 const Chips = styled.div`
@@ -345,9 +492,8 @@ const Chip = styled.button`
   border-radius: 25px 0 25px 0;
   cursor: pointer;
   font-weight: 700;
-
-  //  border: 1px solid ${(p) =>
-    p.$active ? colors.semygsecondar : "#264066"};
+  border: 1px solid
+    ${(p) => (p.$active ? colors.semygsecondar : "#264066")};
   color: ${colors.text};
   background: ${(p) => (p.$active ? colors.bgSoft : colors.bg)};
   display: flex;
@@ -355,68 +501,192 @@ const Chip = styled.button`
   gap: 8px;
   transition: transform 0.15s ease, border-color 0.15s ease,
     background 0.15s ease;
+
   &:hover {
     transform: translateY(-1px);
     border-color: ${colors.accentGold};
   }
 `;
 
-const SectionTitle = styled.h2`
-  magin-bottom: 3rem;
+const SectionHeader = styled.div`
+  display: grid;
+  gap: 6px;
+`;
 
-  font-size: clamp(28px, 2.8vw, 24px);
+const SectionTitle = styled.h2`
+  margin: 0.3rem 0 0.2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: clamp(24px, 2.8vw, 32px);
+  color: ${colors.text};
+
   span {
     color: ${colors.accentGold};
   }
 `;
 
- 
-// APRÈS
-const Grid = styled(motion.div)`
+const SectionText = styled.p`
+  margin: 0;
+  color: ${colors.text};
+  opacity: 0.9;
+  line-height: 1.6;
+`;
+
+const EmptyState = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: 18px 0 18px 0;
+  border: 1px solid #264066;
+  background: ${colors.bgSoft};
+  color: ${colors.text};
+`;
+
+const FeaturedGrid = styled.div`
   display: grid;
   gap: 16px;
-  margin-bottom: 20rem; /* (corrige la typo 'magin-bottom') */
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
 `;
 
-const Card = styled(motion.article)`
+const FeaturedCard = styled.article`
   border: 1px solid #1f2c44;
-  border-radius: 44px 0 44px 0;
-
+  border-radius: 24px 0 24px 0;
   background: linear-gradient(120deg, ${colors.bgSoft} 55%, ${colors.bg} 50%);
-  padding: 14px;
+  overflow: hidden;
+  display: grid;
+  box-shadow: 0 10px 24px rgba(10, 16, 28, 0.18);
+`;
+
+const FeaturedCover = styled.div`
+  position: relative;
+  aspect-ratio: 16 / 7.2;
+  overflow: hidden;
+  background: ${colors.bg};
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+`;
+
+const FeaturedShade = styled.div`
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(10, 16, 28, 0.08), rgba(10, 16, 28, 0.66)),
+    linear-gradient(120deg, ${colors.semygsecondar}22 20%, transparent 60%);
+`;
+
+const FeaturedBadge = styled.span`
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 7px 10px;
+  border-radius: 14px 0 14px 0;
+  background: rgba(14, 26, 43, 0.82);
+  color: ${colors.accentGold};
+  font-weight: 800;
+  font-size: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+`;
+
+const FeaturedBody = styled.div`
   display: grid;
   gap: 10px;
-  h3 {
-    margin: 0;
-    font-size: 17px;
-    color: ${colors.text};
-  }
+  padding: 12px;
+`;
+
+const TopMeta = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+  flex-wrap: wrap;
 `;
 
 const Badge = styled.span`
   align-self: start;
-
   color: ${colors.accentGold};
   background: linear-gradient(120deg, ${colors.bg} 64%, ${colors.bg1} 50%);
   padding: 6px 10px;
-  font-size: 17px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 800;
   display: inline-block;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 `;
 
-const Small = styled.span`
-  font-size: 12px;
-  color: ${colors.muted};
+const MetaPill = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid #264066;
+  background: ${colors.bg};
+  color: ${colors.accentGold};
+  font-size: 11px;
+  font-weight: 800;
 `;
 
-const Ul = styled.ul`
+const CardTitle = styled.h3`
   margin: 0;
-  padding-left: 18px;
+  font-size: 17px;
+  line-height: 1.35;
   color: ${colors.text};
-  li {
-    margin: 4px 0;
-  }
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 46px;
+`;
+
+const CardSummary = styled.p`
+  margin: 0;
+  color: ${colors.text};
+  line-height: 1.55;
+  opacity: 0.92;
+  font-size: 13px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 40px;
+`;
+
+const MiniInfoBox = styled.div`
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 16px 0 16px 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+`;
+
+const SmallTitle = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  color: ${colors.accentGold};
+`;
+
+const ClampLine = styled.p`
+  margin: 0;
+  color: ${colors.text};
+  line-height: 1.5;
+  font-size: 13px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 `;
 
 const Actions = styled.div`
@@ -425,99 +695,129 @@ const Actions = styled.div`
   margin-top: 4px;
   flex-wrap: wrap;
 
-  .primary {
-    display: flex;
+  .primary,
+  .ghost,
+  .secondary {
+    display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     font-weight: 800;
-    padding: 10px 12px;
-    border-radius: 32px 0 32px 0;
+    padding: ${(p) => (p.compact ? "9px 11px" : "10px 12px")};
+    text-decoration: none;
+    font-size: ${(p) => (p.compact ? "13px" : "14px")};
+    transition: transform 0.15s ease, box-shadow 0.15s ease,
+      border-color 0.15s ease;
+  }
 
+  .primary {
+    border-radius: 24px 0 24px 0;
     background: linear-gradient(
       120deg,
       ${colors.accentGold} 54%,
       ${colors.accentGold}90 20%
     );
     color: #0e1a2b;
-    text-decoration: none;
     box-shadow: 0 8px 22px rgba(242, 201, 76, 0.22);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
+
   .primary:hover {
-    background: linear-gradient(
-      120deg,
-      ${colors.accentGold}90 54%,
-      ${colors.bg2} 20%
-    );
     transform: translateY(-1px);
     box-shadow: 0 10px 26px rgba(242, 201, 76, 0.3);
   }
 
   .ghost {
-    padding: 10px 12px;
-    border-radius: 12px;
-    font-weight: 700;
-    cursor: pointer;
+    border-radius: 24px 0 24px 0;
+    border: 1px solid #264066;
     color: ${colors.text};
     background: ${colors.bg};
-    border: 1px solid #264066;
   }
+
   .ghost:hover {
+    transform: translateY(-1px);
     border-color: ${colors.semygsecondar};
+  }
+
+  .secondary {
+    border-radius: 24px 0 24px 0;
+    border: 1px solid #d9b642;
+    background: transparent;
+    color: ${colors.accentGold};
+    cursor: pointer;
+  }
+
+  .secondary:hover {
+    transform: translateY(-1px);
+    border-color: ${colors.accentGold};
   }
 `;
 
-const BottomBox = styled(motion.section)`
-  // border: 1px solid #1f2c44;
+const MoreWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: -4px;
+`;
+
+const MoreButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border-radius: 24px 0 24px 0;
+  border: 1px solid ${colors.semygsecondar};
+  background: ${colors.bgSoft};
+  color: ${colors.accentGold};
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: ${colors.accentGold};
+    box-shadow: 0 10px 24px rgba(10, 16, 28, 0.22);
+  }
+`;
+
+const BottomBox = styled.section`
   border-radius: 24px 0 24px 0;
   padding: 16px;
-  //  background: linear-gradient(180deg, #0f223a, #102844);
+  display: grid;
+  gap: 12px;
+
   h4 {
     margin: 0 0 10px;
     font-size: 25px;
     margin-top: 2rem;
-
     color: ${colors.accentGold};
-  }
-`;
-// APRÈS
-const TopDownloads = styled.div`
-  display: grid;
-  gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  min-width: 0;                 /* ← évite qu’un enfant force le conteneur à déborder */
-  a{
-    display:flex; align-items:center; gap:10px;
-    text-decoration:none; text-align:center;
-    padding:12px 14px; border-radius:25px 0 25px 0;
-    font-weight:900; color:${colors.bg}; background:${colors.accentGold};
-    word-break: break-word;     /* ← coupe proprement les très longues chaînes */
   }
 `;
 
 const BottomActions = styled.div`
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+
   a {
     display: flex;
     align-items: center;
     gap: 10px;
     text-decoration: none;
     padding: 12px 14px;
-    border-radius: 12px;
     font-weight: 700;
     border-radius: 24px 0 24px 0;
-
-    //border: 1px solid #27436a;
     color: ${colors.text};
     background: rgb(16, 53, 104);
     transition: transform 0.15s ease, border-color 0.15s ease,
       box-shadow 0.15s ease;
   }
+
   a:hover {
     transform: translateY(-1px);
-    border-color: ${colors.semygsecondar};
     box-shadow: 0 8px 22px rgba(10, 16, 28, 0.35);
+  }
+
+  span {
+    line-height: 1.45;
   }
 `;

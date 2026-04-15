@@ -9,6 +9,8 @@ export const fadeInUp = (delay = 0) => ({
   }
 });
 
+
+
 export const stagger = (staggerChildren = 0.08, delayChildren = 0.12) => ({
   hidden: {},
   show: {

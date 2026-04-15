@@ -14,24 +14,19 @@ import {
   Users,
   Laptop2,
   TrendingUp,
-  Download,
   CheckCircle2,
   ExternalLink,
-  Link2,
   ArrowUpRight,
   Layers,
-  ClipboardCheck,
-  AlertTriangle,
 } from "lucide-react";
 
 import colors from "../../Styles/colors";
 
 /**
- * Mets le PDF dans /public/docs/
- * Exemple: public/docs/Formulaire_Demande_Microcredit_Cortex.pdf
+ * Remplace ce lien par le vrai formulaire externe.
  */
-const FORM_DOWNLOAD_URL = "/docs/Formulaire_Demande_Microcredit_Cortex.pdf";
-
+ const FORM_EXTERNAL_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLScczD649VSuYIpBeyTyoJX7MuTjnBww9ipxxm0dbTKd6XqQlQ/viewform?usp=sharing&ouid=113486891856049656183";
 /* =========================
    ANIMATIONS (soft premium)
 ========================= */
@@ -47,26 +42,13 @@ const floatSoft = keyframes`
   100% { transform: translate3d(0,0,0); opacity: .75; }
 `;
 
-const alertPop = keyframes`
-  0% { transform: translateY(6px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-`;
-
 const CREDUCPage = () => {
   const prefersReducedMotion = useReducedMotion();
 
   const col = (key, fallback) =>
     colors && colors[key] ? colors[key] : fallback;
 
-  const [pdfStatus, setPdfStatus] = useState({
-    checking: true,
-    ok: false,
-    error: "",
-  });
-
-  const [copied, setCopied] = useState(false);
   const [showTop, setShowTop] = useState(false);
-
   const topRef = useRef(null);
 
   const content = useMemo(
@@ -84,7 +66,7 @@ const CREDUCPage = () => {
         {
           icon: <HandCoins size={18} />,
           label: "Montant",
-          value: "1 000 000 → 5 000 000 GNF",
+          value: "500 000 → 1 000 000 GNF",
           helper: "Selon profil et besoin",
         },
         {
@@ -95,9 +77,9 @@ const CREDUCPage = () => {
         },
         {
           icon: <Percent size={18} />,
-          label: "Taux social",
-          value: "5% / mois",
-          helper: "Taux réduit (partenariat éducatif)",
+          label: "Taux Fixe",
+          value: "10% / an",
+          helper: "Taux fixe, sans frais cachés",
         },
       ],
       sections: [
@@ -181,90 +163,31 @@ const CREDUCPage = () => {
       ],
       steps: [
         {
-          icon: <Download size={18} />,
-          title: "Télécharger",
-          text: "Récupère le formulaire d’inscription.",
+          icon: <ExternalLink size={18} />,
+          title: "Ouvrir le lien",
+          text: "Clique sur le bouton pour accéder au formulaire externe.",
         },
         {
           icon: <FileText size={18} />,
           title: "Remplir",
-          text: "Complète les informations et pièces requises.",
+          text: "Complète le formulaire directement sur la page externe.",
         },
         {
-          icon: <Users size={18} />,
-          title: "Déposer",
-          text: "Dépose le dossier selon la procédure interne.",
+          icon: <CheckCircle2 size={18} />,
+          title: "Valider",
+          text: "Soumets ensuite la demande depuis le formulaire en ligne.",
         },
       ],
     }),
     []
   );
 
-  // Vérifie si le PDF est bien servi (senior UX: évite “bouton mort”)
-  useEffect(() => {
-    let alive = true;
-    const ctrl = new AbortController();
-
-    const check = async () => {
-      try {
-        setPdfStatus({ checking: true, ok: false, error: "" });
-
-        // GET avec Range pour éviter de télécharger tout le fichier.
-        const res = await fetch(FORM_DOWNLOAD_URL, {
-          method: "GET",
-          headers: { Range: "bytes=0-0" },
-          signal: ctrl.signal,
-        });
-
-        // 206 (Partial Content) ou 200 (OK) => bon.
-        const ok = res.status === 206 || res.status === 200;
-
-        if (!alive) return;
-        if (ok) setPdfStatus({ checking: false, ok: true, error: "" });
-        else
-          setPdfStatus({
-            checking: false,
-            ok: false,
-            error: `Fichier introuvable (HTTP ${res.status})`,
-          });
-      } catch (e) {
-        if (!alive) return;
-        setPdfStatus({
-          checking: false,
-          ok: false,
-          error:
-            "Impossible de vérifier le fichier. Vérifie le chemin dans /public/docs.",
-        });
-      }
-    };
-
-    check();
-
-    return () => {
-      alive = false;
-      ctrl.abort();
-    };
-  }, []);
-
-  // Back-to-top + CTA mobile: comportement propre
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 520);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  const copyLink = async () => {
-    try {
-      await navigator.clipboard.writeText(
-        window.location.origin + FORM_DOWNLOAD_URL
-      );
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      setCopied(false);
-    }
-  };
 
   const scrollToTop = () => {
     topRef.current?.scrollIntoView({
@@ -280,8 +203,6 @@ const CREDUCPage = () => {
         animate: { opacity: 1, y: 0 },
         transition: { duration: 0.55, ease: "easeOut" },
       };
-
-  const downloadDisabled = pdfStatus.checking || !pdfStatus.ok;
 
   return (
     <Wrap
@@ -391,58 +312,30 @@ const CREDUCPage = () => {
 
             <SideHead>
               <SideTitle>
-                <Download size={18} /> Formulaire
+                <ExternalLink size={18} /> Formulaire
               </SideTitle>
-              <SideDesc>PDF officiel de demande microcrédit Cortex.</SideDesc>
+              <SideDesc>
+                Accède directement au formulaire d’inscription en ligne.
+              </SideDesc>
             </SideHead>
-
-            {!pdfStatus.ok && !pdfStatus.checking && (
-              <InlineAlert role="status">
-                <AlertTriangle size={16} />
-                <span>{pdfStatus.error}</span>
-              </InlineAlert>
-            )}
 
             <CTAGroup>
               <PrimaryBtn
-                href={downloadDisabled ? undefined : FORM_DOWNLOAD_URL}
-                onClick={(e) => downloadDisabled && e.preventDefault()}
+                href={FORM_EXTERNAL_URL}
                 target="_blank"
                 rel="noreferrer"
-                download
-                aria-disabled={downloadDisabled}
-                $disabled={downloadDisabled}
                 $a={col("brandNavy", col("bg2", "#0E2D4F"))}
                 $b={col("brandBlue", col("bg1", "#1C3F6E"))}
                 $accent={col("accent", "#F36F21")}
                 $reduce={prefersReducedMotion}
               >
-                <Download size={18} />
-                {pdfStatus.checking ? "Vérification…" : "Télécharger le PDF"}
+                <ExternalLink size={18} />
+                Ouvrir le formulaire
               </PrimaryBtn>
 
-              <SecondaryRow>
-                <SecondaryBtn
-                  href={downloadDisabled ? undefined : FORM_DOWNLOAD_URL}
-                  onClick={(e) => downloadDisabled && e.preventDefault()}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-disabled={downloadDisabled}
-                  $disabled={downloadDisabled}
-                >
-                  <ExternalLink size={16} /> Ouvrir
-                </SecondaryBtn>
-
-                <SecondaryBtn as="button" type="button" onClick={copyLink}>
-                  {copied ? <ClipboardCheck size={16} /> : <Link2 size={16} />}
-                  {copied ? "Lien copié" : "Copier le lien"}
-                </SecondaryBtn>
-              </SecondaryRow>
-
-              <MicroHint>
-                Si le bouton ne fonctionne pas : place le PDF dans{" "}
-                <code>/public/docs</code> et vérifie le nom.
-              </MicroHint>
+              <InfoHint>
+                Le formulaire d’inscription s’ouvre au click.
+              </InfoHint>
             </CTAGroup>
           </SideCard>
         </HeroGrid>
@@ -599,9 +492,8 @@ const CREDUCPage = () => {
             <DownloadLeft>
               <DownloadTitle>Formulaire d’inscription</DownloadTitle>
               <DownloadText>
-                Télécharge le PDF, remplis-le, puis dépose-le selon la procédure
-                interne. Pour gagner du temps, utilise les sections “Accès
-                rapide” ci-dessus.
+                Clique sur le bouton pour ouvrir le formulaire , remplis
+                les informations demandées, puis valide directement en ligne.
               </DownloadText>
 
               <Steps>
@@ -621,45 +513,21 @@ const CREDUCPage = () => {
 
             <DownloadRight>
               <PrimaryBtn
-                href={downloadDisabled ? undefined : FORM_DOWNLOAD_URL}
-                onClick={(e) => downloadDisabled && e.preventDefault()}
+                href={FORM_EXTERNAL_URL}
                 target="_blank"
                 rel="noreferrer"
-                download
-                aria-disabled={downloadDisabled}
-                $disabled={downloadDisabled}
                 $a={col("brandNavy", col("bg2", "#0E2D4F"))}
                 $b={col("brandBlue", col("bg1", "#1C3F6E"))}
                 $accent={col("accent", "#F36F21")}
                 $reduce={prefersReducedMotion}
               >
-                <Download size={18} />
-                {pdfStatus.checking ? "Vérification…" : "Télécharger"}
+                <ExternalLink size={18} />
+                Ouvrir le formulaire
               </PrimaryBtn>
 
-              <SecondaryRow>
-                <SecondaryBtn
-                  href={downloadDisabled ? undefined : FORM_DOWNLOAD_URL}
-                  onClick={(e) => downloadDisabled && e.preventDefault()}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-disabled={downloadDisabled}
-                  $disabled={downloadDisabled}
-                >
-                  <ExternalLink size={16} /> Ouvrir
-                </SecondaryBtn>
-                <SecondaryBtn as="button" type="button" onClick={copyLink}>
-                  {copied ? <ClipboardCheck size={16} /> : <Link2 size={16} />}
-                  {copied ? "Lien copié" : "Copier"}
-                </SecondaryBtn>
-              </SecondaryRow>
-
-              {!pdfStatus.ok && !pdfStatus.checking && (
-                <InlineAlert role="status" style={{ marginTop: 10 }}>
-                  <AlertTriangle size={16} />
-                  <span>{pdfStatus.error}</span>
-                </InlineAlert>
-              )}
+              <InfoHint>
+                Le formulaire sera rempli et validé sur une page.
+              </InfoHint>
             </DownloadRight>
           </DownloadCard>
         </Section>
@@ -685,31 +553,21 @@ const CREDUCPage = () => {
         <DockInner>
           <DockLeft>
             <DockTitle>Formulaire CRÉDUC</DockTitle>
-            <DockMeta>
-              {pdfStatus.checking
-                ? "Vérification…"
-                : pdfStatus.ok
-                ? "PDF prêt"
-                : "PDF manquant"}
-            </DockMeta>
+            <DockMeta>Accès direct au formulaire externe</DockMeta>
           </DockLeft>
 
           <DockRight>
             <DockBtn
-              href={downloadDisabled ? undefined : FORM_DOWNLOAD_URL}
-              onClick={(e) => downloadDisabled && e.preventDefault()}
+              href={FORM_EXTERNAL_URL}
               target="_blank"
               rel="noreferrer"
-              download
-              aria-disabled={downloadDisabled}
-              $disabled={downloadDisabled}
               $a={col("brandNavy", col("bg2", "#0E2D4F"))}
               $b={col("brandBlue", col("bg1", "#1C3F6E"))}
               $accent={col("accent", "#F36F21")}
               $reduce={prefersReducedMotion}
             >
-              <Download size={18} />
-              Télécharger
+              <ExternalLink size={18} />
+              Ouvrir
             </DockBtn>
           </DockRight>
         </DockInner>
@@ -770,7 +628,6 @@ const AmbientGlow = styled.div`
   position: absolute;
   inset: -90px -90px auto -90px;
   height: 280px;
-  //background: linear-gradient(90deg, ${(p) => p.$a}, ${(p) => p.$b}08);
   filter: blur(44px);
   opacity: 0.16;
   animation: ${floatSoft} 7s ease-in-out infinite;
@@ -1046,31 +903,10 @@ const Divider = styled.div`
   background: rgba(255, 255, 255, 0.1);
 `;
 
-const InlineAlert = styled.div`
-  margin-top: 10px;
-  padding: 10px 10px;
-  border-radius: 12px 0 12px 0;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(243, 111, 33, 0.12);
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  font-size: 13px;
-  animation: ${alertPop} 220ms ease-out;
-`;
-
 const CTAGroup = styled.div`
   margin-top: 10px;
   display: grid;
   gap: 10px;
-`;
-
-const btnDisabled = css`
-  opacity: 0.55;
-  cursor: not-allowed;
-  transform: none !important;
-  box-shadow: none !important;
-  pointer-events: none;
 `;
 
 const PrimaryBtn = styled.a`
@@ -1109,59 +945,12 @@ const PrimaryBtn = styled.a`
     outline: 2px solid ${(p) => p.$accent};
     outline-offset: 2px;
   }
-
-  ${(p) => p.$disabled && btnDisabled}
 `;
 
-const SecondaryRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-`;
-
-const SecondaryBtn = styled.a`
-  display: inline-flex;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px 0 12px 0;
-  padding: 10px 12px;
-  font-weight: 800;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(0, 0, 0, 0.14);
-  text-decoration: none;
-  transition: transform 140ms ease, box-shadow 140ms ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
-  }
-
-  &:focus-visible {
-    outline: 2px solid rgba(243, 111, 33, 0.7);
-    outline-offset: 2px;
-  }
-
-  ${(p) => p.$disabled && btnDisabled}
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
-`;
-
-const MicroHint = styled.div`
+const InfoHint = styled.div`
   font-size: 12px;
-  opacity: 0.75;
+  opacity: 0.78;
   line-height: 1.45;
-
-  code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-      "Liberation Mono", "Courier New", monospace;
-    font-size: 12px;
-    opacity: 0.95;
-  }
 `;
 
 const Section = styled.section`
@@ -1445,18 +1234,6 @@ const DownloadRight = styled.div`
   }
 `;
 
-const SmallHint = styled.div`
-  font-size: 12px;
-  opacity: 0.75;
-  line-height: 1.45;
-
-  code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-      "Liberation Mono", "Courier New", monospace;
-    font-size: 12px;
-  }
-`;
-
 const FooterNote = styled.div`
   margin-top: 12px;
   padding: 12px 14px;
@@ -1558,4 +1335,3 @@ const TopBtn = styled.button`
     bottom: 16px;
   }
 `;
-//déploies sur un serveu
