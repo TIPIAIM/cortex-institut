@@ -212,13 +212,11 @@ export const filieres = [
   },
 ];
 
-/** Dictionnaire d’accès rapide par slug */
-export const filieresBySlug = Object.fromEntries(
+ export const filieresBySlug = Object.fromEntries(
   filieres.map((f) => [f.slug, f])
 );
 
-/** Helper : récupérer une filière par slug (ou null) */
-export const getFiliereBySlug = (slug) => filieresBySlug[slug] || null;
+ export const getFiliereBySlug = (slug) => filieresBySlug[slug] || null;
 
 /**
  * Helper : découper les filières en colonnes pour méga-menu
