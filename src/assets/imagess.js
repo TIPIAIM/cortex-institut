@@ -16,6 +16,20 @@ export const imagess = {
 //bàtiment
 bàtiment : 'https://res.cloudinary.com/dueu8nf5j/image/upload/v1756902801/gestp%C3%A0trimoinimmobilier_peochm.png',
 
+
+//dàns càmpus cortex et institut cortex 
+//
+logocàmpuscortex:'https://res.cloudinary.com/dueu8nf5j/image/upload/q_auto/f_auto/v1776338479/CampusCortex.jpg_nrxitx.jpg',
+lesclàssekortex1:'https://res.cloudinary.com/dueu8nf5j/image/upload/q_auto/f_auto/v1776338475/lescl%C3%A0ssekortex2_x7alqh.jpg',
+lesclàssekortex2:'https://res.cloudinary.com/dueu8nf5j/image/upload/v1776338475/lescl%C3%A0ssekortex2_x7alqh.jpg',
+lesclàssekortex3:'https://res.cloudinary.com/dueu8nf5j/image/upload/q_auto/f_auto/v1776338480/lescl%C3%A0ssekortex3_mdc0mk.jpg',
+lesclàssekortex4:'',
+lesclàssekortex5:'',
+lesclàssekortex6:'',
+lesclàssekortex7:'',
+lesclàssekortex8:'',
+lesclàssekortex9:'',
+
   //Responsable administrative et Financière du Groupe Noni
   ResponsableadministrativeetFinancière:
     "https://res.cloudinary.com/dueu8nf5j/image/upload/v1756898225/ResponsabledministrativeetFinanci%C3%A8reNoni%C3%A0rreter_zb9xpj.jpg",

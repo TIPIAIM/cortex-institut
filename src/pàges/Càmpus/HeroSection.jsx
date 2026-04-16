@@ -47,7 +47,7 @@ const HeroContainer = styled.section`
     left: 0;
     right: 0;
     bottom: 0;
-    background: url(${imagess.bàtiment}) center/cover;
+    background: url(${imagess.lesclàssekortex1}) center/cover;
     opacity: 0.1;
     z-index: 1;
   }
@@ -118,7 +118,7 @@ const HeroSection = ({ onScrollClick }) => {
     <HeroContainer>
       <HeroContent>
         <Logo 
-          src={imagess.logoCortex} 
+          src={imagess.logocàmpuscortex} 
           alt="Campus Cortex" 
         />
         <Title

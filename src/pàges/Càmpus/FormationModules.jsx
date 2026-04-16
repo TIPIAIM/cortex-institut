@@ -484,7 +484,7 @@ const FormationModules = () => {
               <strong>6 mois de stage encadré</strong> en entreprise avec possibilité d'embauche immédiate
             </MethodologyText>
             <MethodologyImage
-              src={imagess.mànegem}
+              src={imagess.lesclàssekortex2}
               alt="Méthodologie de formation"
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}

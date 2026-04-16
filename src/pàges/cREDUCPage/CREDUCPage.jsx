@@ -66,19 +66,19 @@ const CREDUCPage = () => {
         {
           icon: <HandCoins size={18} />,
           label: "Montant",
-          value: "500 000 → 1 000 000 GNF",
+          value: "500 000 → 10 000 000 GNF",
           helper: "Selon profil et besoin",
         },
         {
           icon: <Clock3 size={18} />,
           label: "Durée",
-          value: "1 → 12 mois",
+          value: "1 → 6 mois",
           helper: "Flexible",
         },
         {
           icon: <Percent size={18} />,
           label: "Taux Fixe",
-          value: "10% / an",
+          value: "10%",
           helper: "Taux fixe, sans frais cachés",
         },
       ],
@@ -221,26 +221,29 @@ const CREDUCPage = () => {
         <HeroGrid as={motion.section} {...pageMotion}>
           <HeroCard $border={col("stroke", "rgba(255,255,255,.14)")}>
             <HeroHeader>
-              <TitleRow>
-                <BrandMark
-                  aria-hidden="true"
-                  $accent={col("accent", "#F36F21")}
-                  $navy={col("brandNavy", col("bg2", "#0E2D4F"))}
-                />
-                <div>
-                  <Kicker>Institut Cortex</Kicker>
-                  <H1>
-                    <GradientText
-                      $a={col("brandNavy", col("bg2", "#0E2D4F"))}
-                      $b={col("brandBlue", col("accent", "#F36F21"))}
-                      $reduce={prefersReducedMotion}
-                    >
-                      {content.title}
-                    </GradientText>
-                  </H1>
-                </div>
-              </TitleRow>
+            <TitleRow>
+  <LogoBox aria-hidden="true">
+    <BrandLogo
+      src="/img/LogoCREDUC.jpeg"
+      alt="Logo CRÉDUC"
+      loading="eager"
+      decoding="async"
+    />
+  </LogoBox>
 
+  <div>
+    <Kicker>Institut Cortex</Kicker>
+    <H1>
+      <GradientText
+        $a={col("brandNavy", col("bg2", "#0E2D4F"))}
+        $b={col("brandBlue", col("accent", "#F36F21"))}
+        $reduce={prefersReducedMotion}
+      >
+        {content.title}
+      </GradientText>
+    </H1>
+  </div>
+</TitleRow>
               <Subtitle>{content.subtitle}</Subtitle>
 
               <Pills role="list" aria-label="Points clés">
@@ -315,7 +318,7 @@ const CREDUCPage = () => {
                 <ExternalLink size={18} /> Formulaire
               </SideTitle>
               <SideDesc>
-                Accède directement au formulaire d’inscription en ligne.
+                Accède directement au formulaire de demande de crédit en ligne.
               </SideDesc>
             </SideHead>
 
@@ -334,7 +337,7 @@ const CREDUCPage = () => {
               </PrimaryBtn>
 
               <InfoHint>
-                Le formulaire d’inscription s’ouvre au click.
+              formulaire de demande de crédit s’ouvre au click.
               </InfoHint>
             </CTAGroup>
           </SideCard>
@@ -490,7 +493,7 @@ const CREDUCPage = () => {
             $border={col("stroke", "rgba(255,255,255,.14)")}
           >
             <DownloadLeft>
-              <DownloadTitle>Formulaire d’inscription</DownloadTitle>
+              <DownloadTitle>formulaire de demande de crédit</DownloadTitle>
               <DownloadText>
                 Clique sur le bouton pour ouvrir le formulaire , remplis
                 les informations demandées, puis valide directement en ligne.
@@ -681,10 +684,10 @@ const TitleRow = styled.div`
   align-items: center;
   gap: 12px;
 `;
-
-const BrandMark = styled.div`
-  width: 44px;
-  height: 44px;
+const LogoBox = styled.div`
+  width: 58px;
+  height: 58px;
+  
   border-radius: 12px 0 12px 0;
   background: linear-gradient(
     135deg,
@@ -693,7 +696,26 @@ const BrandMark = styled.div`
   );
   box-shadow: 0 16px 38px rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.16);
+ 
+   display: grid;
+  place-items: center;
+  overflow: hidden;
+  flex: 0 0 auto;
+
+  @media (max-width: 640px) {
+    width: 52px;
+    height: 52px;
+    padding: 5px;
+  }
 `;
+
+const BrandLogo = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+`;
+ 
 
 const Kicker = styled.div`
   font-size: 13px;

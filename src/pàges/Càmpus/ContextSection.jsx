@@ -103,7 +103,7 @@ const ContextSection = () => {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <Image src={imagess.khse} alt="Directeur Institut Cortex" />
+          <Image src={imagess.lesclàssekortex3} alt="Directeur Institut Cortex" />
         </ImageContainer>
       </Container>
     </Section>

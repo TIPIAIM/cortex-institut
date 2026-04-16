@@ -416,7 +416,7 @@ export default function HeaderPro() {
         {/* Brand (logo public) */}
         <Brand to="/" aria-label="Institut CORTEX – Accueil">
           <img
-            src="/img/cortexlogoblànc.avif"
+            src="/img/CortexHolding.jpeg"
             alt="Institut CORTEX"
             className="logo"
             width="56"
