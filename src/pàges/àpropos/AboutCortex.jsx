@@ -530,14 +530,14 @@ function AboutPage() {
   return (
     <Page>
       <SEO
-        title="À propos — Institut CORTEX & Groupe NONI"
-        description="Institut CORTEX : centre d’excellence (formations, masters, certifications, recherche appliquée & conseil) porté par le Groupe NONI. Vision, valeurs, équipe & engagements."
+        title="À propos — Institut CORTEX & Cortex Holding"
+        description="Institut CORTEX : centre d’excellence (formations, masters, certifications, recherche appliquée & conseil) porté par le Cortex Holding. Vision, valeurs, équipe & engagements."
         image={OG_IMAGE}
         url={CANONICAL}
         siteName="Institut CORTEX"
         keywords={[
           "Institut Cortex",
-          "Groupe NONI",
+          "Cortex Holding",
           "À propos",
           "Formation continue",
           "Certifications",
@@ -567,10 +567,10 @@ function AboutPage() {
       {/* Hero */}
       <Hero $cover={heroCover}>
         <HeroInner {...fadeUp}>
-          <h1>À propos — Institut CORTEX & Groupe NONI</h1>
+          <h1>À propos — Institut CORTEX & Cortex Holding</h1>
           <p>
             CORTEX : centre d’excellence en formation, recherche appliquée et
-            conseil. Porté par le Groupe NONI, engagé pour une performance
+            conseil. Porté par le Cortex Holding, engagé pour une performance
             durable, humaine et innovante.
           </p>
           <div className="ctaRow">
@@ -629,9 +629,9 @@ function AboutPage() {
       </Section>
 
       {/* NONI */}
-      <Section aria-label="Groupe NONI — Objectif & Principes">
+      <Section aria-label="Cortex Holding — Objectif & Principes">
         <DeferInView height={360}>
-          <H2 {...fadeUp}>Groupe NONI — Objectif & Principes</H2>
+          <H2 {...fadeUp}>Cortex Holding — Objectif & Principes</H2>
           <NoniWrap>
             <Card {...fadeUp}>
               <b>Objectif & vision</b>
@@ -688,7 +688,7 @@ function AboutPage() {
                   },
                   {
                     img: imagess.DirecteurduGroupe4,
-                    name: "Direction Groupe NONI",
+                    name: "Direction Cortex Holding",
                   },
                 ].map((p, i) => (
                   <Portrait key={i} {...fadeStagger(i)}>
