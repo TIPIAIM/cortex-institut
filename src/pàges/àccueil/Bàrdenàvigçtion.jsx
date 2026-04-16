@@ -13,12 +13,12 @@ import colors from "../../Styles/colors";
 
 // --------- Config nav ----------
 const NAV = [
-//  { label: "Accueil", to: "/" },
+  { label: "Accueil", to: "/" },
   { label: "Contact", to: "/contact" },
   { label: "Institut-Cortex", to: "/programmes" },
   { label: "Campus-Cortex", to: "/campuscortex" },
   { label: "CREDUC-Guinée", to: "/CreducPage" },
-  { label: "Innov-edition", to: "/" },
+  // { label: "Innov-edition", to: "/" },
 
   { label: "À propos", to: "/apropos" },
 ];
