@@ -124,7 +124,7 @@ const InfoPanel = styled(motion.aside)`
   background: linear-gradient(120deg, ${colors.bg2}80 60%, ${colors.bg1} 60%);
   padding: clamp(14px, 3vw, 22px);
   display: grid;
-  
+
   gap: 12px;
   align-content: start;
 `;
@@ -168,14 +168,14 @@ const Whats = styled(motion.a)`
   display: inline-flex;
   align-items: center;
   gap: 10px;
- // background: red;
+  // background: red;
   color: ${colors.accentGold3};
   text-decoration: none;
   padding: 12px 16px;
   border-radius: 12px;
   font-weight: 800;
   box-shadow: 0 8px 22px rgba(37, 211, 102, 0.25);
-  border: 1px solid ;
+  border: 1px solid;
   width: fit-content;
   &:hover {
     filter: brightness(0.95);
@@ -186,11 +186,7 @@ const Whats = styled(motion.a)`
 const Form = styled(motion.form)`
   border: 1px solid ${colors.bg1};
   border-radius: 0 24px 0 24px;
-  background: linear-gradient(
-    120deg,
-    ${colors.bg2}80 70%,
-    ${colors.bg2}30 50%
-  );
+  background: linear-gradient(120deg, ${colors.bg2}80 70%, ${colors.bg2}30 50%);
   padding: clamp(16px, 3.5vw, 26px);
   display: grid;
   gap: 12px;
@@ -336,10 +332,16 @@ function DeferInView({ height = 280, children }) {
 }
 
 /* ===================== Données contact ===================== */
-const EMAIL = "commerciale@institut-cortex.com";
-const EMAILl = "direction@institut-cortex.com";
-const PHONE = "+224623211974";
-const WHATSAPP = "+224623211974";
+//const EMAIL = "commerciale@institut-cortex.com";
+//const EMAILl = "direction@institut-cortex.com";
+//const PHONE = "+224623211974";
+//const WHATSAPP = "+224623211974";
+
+const EMAIL = "soumanneuf@gmail.com";
+const EMAILl = "soumanneuf@gmail.com";
+const PHONE = "+22462413839";
+const WHATSAPP = "+22462321197";
+
 const WA_NUM = WHATSAPP.replace(/\D/g, "");
 
 /* ===================== Validation (espaces autorisés) ===================== */
@@ -673,7 +675,7 @@ export default function ContactCortex() {
                   <Help $error={invalid("phone")}>
                     {invalid("phone")
                       ? "Numéro invalide (espaces autorisés)."
-                      : " " }
+                      : " "}
                   </Help>
                 </Field>
 
