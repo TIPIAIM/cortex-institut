@@ -483,13 +483,13 @@ export default function HeaderPro() {
         {/* Right actions (burger à droite) */}
         <Right>
           {/* <GhostBtn to="/contact" aria-label="Nous appeler">
-            <Phone size={16} /> +224 623 21 19 74
+            <Phone size={16} /> +224 623 21 19 74 contact@institut-cortex.com
           </GhostBtn>*/}
           <GhostBtn
-            to="mailto:contact@institut-cortex.com"
+            to="mailto:contac@institut-cortex.com"
             aria-label="Nous écrire"
           >
-            <Mail size={16} /> contact@institut-cortex.com
+            <Mail size={16} />
           </GhostBtn>
           <Burger
             aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}

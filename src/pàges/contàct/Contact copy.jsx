@@ -544,24 +544,24 @@ export default function ContactCortex() {
                   <div>
                     <b style={{ color: colors.semygprimar }}>Commerciale</b>
                     <br />
-{     /*               <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
-*/}                  </div>
+                    <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+                  </div>
                 </Item>
                 <Item>
                   <Mail size={20} />
                   <div>
                     <b style={{ color: colors.semygprimar }}>Direction</b>
                     <br />
-{    /*                <a href={`mailto:${EMAILl}`}>{EMAILl}</a>
-*/}                  </div>
+                    <a href={`mailto:${EMAILl}`}>{EMAILl}</a>
+                  </div>
                 </Item>
                 <Item>
                   <Phone size={20} />
                   <div>
                     <b style={{ color: colors.semygprimar }}>Téléphone</b>
                     <br />
-{ /*                   <a href={`tel:${PHONE}`}>{PHONE}</a>
-*/}                  </div>
+                    <a href={`tel:${PHONE}`}>{PHONE}</a>
+                  </div>
                 </Item>
                 <Item>
                   <MapPin size={20} />
@@ -714,7 +714,6 @@ export default function ContactCortex() {
               </Field>
 
               <Actions>
-{/*
                 <Submit
                   type="submit"
                   disabled={sending || !isValid || !online}
@@ -729,7 +728,6 @@ export default function ContactCortex() {
                     ? "Envoyer"
                     : "Hors ligne"}
                 </Submit>
-                */}
               </Actions>
             </Form>
           </DeferInView>
