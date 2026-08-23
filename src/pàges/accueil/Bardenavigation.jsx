@@ -15,13 +15,14 @@ import colors from "../../Styles/colors";
 const NAV = [
   { label: "Accueil", to: "/" },
   { label: "Contact", to: "/contact" },
+  //À propos
+  { label: "Cortex Holding", to: "/apropos" },
+
   { label: "Institut-Cortex", to: "/programmes" },
   { label: "Campus-Cortex", to: "/campuscortex" },
   { label: "Tônôn", to: "/CreducPage" },
   { label: "Innov Éditions", to: "/innoveditions" },
   // { label: "Innov-edition", to: "/" },
-//À propos
-  { label: "Cortex Holding", to: "/apropos" },
 ];
 
 /* ---------- Global lock quand le menu est ouvert ---------- */
