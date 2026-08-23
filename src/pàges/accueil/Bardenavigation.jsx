@@ -17,10 +17,11 @@ const NAV = [
   { label: "Contact", to: "/contact" },
   { label: "Institut-Cortex", to: "/programmes" },
   { label: "Campus-Cortex", to: "/campuscortex" },
-  { label: "CREDUC-Guinée", to: "/CreducPage" },
+  { label: "Tônôn", to: "/CreducPage" },
+  { label: "Innov Éditions", to: "/innoveditions" },
   // { label: "Innov-edition", to: "/" },
-
-  { label: "À propos", to: "/apropos" },
+//À propos
+  { label: "Cortex Holding", to: "/apropos" },
 ];
 
 /* ---------- Global lock quand le menu est ouvert ---------- */
@@ -331,7 +332,7 @@ const FootCTA = styled(Link)`
 `;
 
 // ------Taux social---------- Component ----------------
-export default function HeaderPro() {
+export default function Bardenavigation() {
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const [dropOpen, setDropOpen] = useState(false);

@@ -7,6 +7,7 @@ import { Briefcase, Star } from "lucide-react";
 import colors from "../../Styles/colors";
 import { imagess } from "../../assets/imagess";
 import SEO from "../../SEO";
+import CortexHolding from "../CortexHolding/CortexHolding";
 
 /* ------------ Helper Cloudinary ------------ */
 function cld(url, w = 1200) {
@@ -564,21 +565,11 @@ function AboutPage() {
         />
       </SEO>
 
-      {/* Hero */}
-      <Hero $cover={heroCover}>
-        <HeroInner {...fadeUp}>
-          <h1>À propos — Institut CORTEX & Cortex Holding</h1>
-          <p>
-            CORTEX : centre d’excellence en formation, recherche appliquée et
-            conseil. Porté par le Cortex Holding, engagé pour une performance
-            durable, humaine et innovante.
-          </p>
-          <div className="ctaRow">
-            <CTAGhost to="/programmes">Voir les programmes</CTAGhost>
-            <CTAGhost to="/contact">Contact</CTAGhost>
-          </div>
-        </HeroInner>
-      </Hero>
+     
+ 
+
+         <CortexHolding/>
+   
 
       {/* CORTEX */}
       <Section aria-label="CORTEX — Mission, Vision & Piliers">

@@ -1,4 +1,4 @@
-// src/pages/CREDUCPage.jsx
+ // src/pages/CREDUCPage.jsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { motion, useReducedMotion } from "framer-motion";
@@ -18,29 +18,65 @@ import {
   ExternalLink,
   ArrowUpRight,
   Layers,
+  Sparkles,
 } from "lucide-react";
 
 import colors from "../../Styles/colors";
 
-/**
- * Remplace ce lien par le vrai formulaire externe.
- */
- const FORM_EXTERNAL_URL =
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+const FORM_EXTERNAL_URL =
   "https://docs.google.com/forms/d/e/1FAIpQLScczD649VSuYIpBeyTyoJX7MuTjnBww9ipxxm0dbTKd6XqQlQ/viewform?usp=sharing&ouid=113486891856049656183";
-/* =========================
-   ANIMATIONS (soft premium)
-========================= */
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
 const gradientShift = keyframes`
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 `;
 
 const floatSoft = keyframes`
-  0% { transform: translate3d(0,0,0); opacity: .75; }
-  50% { transform: translate3d(0,-10px,0); opacity: .95; }
-  100% { transform: translate3d(0,0,0); opacity: .75; }
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.5;
+  }
+
+  50% {
+    transform: translate3d(0, -8px, 0);
+    opacity: 0.8;
+  }
 `;
+
+const pulseSoft = keyframes`
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.2;
+  }
+
+  50% {
+    transform: scale(1.06);
+    opacity: 0.35;
+  }
+`;
+
+/* =========================================================
+   COMPONENT
+========================================================= */
 
 const CREDUCPage = () => {
   const prefersReducedMotion = useReducedMotion();
@@ -51,17 +87,36 @@ const CREDUCPage = () => {
   const [showTop, setShowTop] = useState(false);
   const topRef = useRef(null);
 
+  /* -------------------------------------------------------
+     DONNÉES
+  ------------------------------------------------------- */
+
   const content = useMemo(
     () => ({
-      title: "CRÉDUC",
+      title: "TÔNÔN",
+
       subtitle:
         "Microcrédit éducatif interne réservé aux apprenants de l’Institut Cortex, pour financer une formation même lorsque les moyens ne sont pas immédiats.",
+
       highlights: [
-        { icon: <HandCoins size={18} />, label: "Crédit éducatif ciblé" },
-        { icon: <Users size={18} />, label: "Réservé aux apprenants Cortex" },
-        { icon: <Clock3 size={18} />, label: "Remboursement progressif" },
-        { icon: <TrendingUp size={18} />, label: "Orienté emploi & insertion" },
+        {
+          icon: <HandCoins size={18} />,
+          label: "Crédit éducatif ciblé",
+        },
+        {
+          icon: <Users size={18} />,
+          label: "Réservé aux apprenants Cortex",
+        },
+        {
+          icon: <Clock3 size={18} />,
+          label: "Remboursement progressif",
+        },
+        {
+          icon: <TrendingUp size={18} />,
+          label: "Orienté emploi & insertion",
+        },
       ],
+
       kpis: [
         {
           icon: <HandCoins size={18} />,
@@ -77,11 +132,12 @@ const CREDUCPage = () => {
         },
         {
           icon: <Percent size={18} />,
-          label: "Taux Fixe",
+          label: "Taux fixe",
           value: "10%",
           helper: "Taux fixe, sans frais cachés",
         },
       ],
+
       sections: [
         {
           id: "financement",
@@ -105,6 +161,7 @@ const CREDUCPage = () => {
           ],
         },
       ],
+
       accordions: [
         {
           id: "docs",
@@ -142,6 +199,7 @@ const CREDUCPage = () => {
           ],
         },
       ],
+
       benefits: [
         {
           icon: <CheckCircle2 size={18} />,
@@ -151,7 +209,10 @@ const CREDUCPage = () => {
           icon: <CheckCircle2 size={18} />,
           text: "Se former même sans fonds disponibles",
         },
-        { icon: <CheckCircle2 size={18} />, text: "Flexibilité de paiement" },
+        {
+          icon: <CheckCircle2 size={18} />,
+          text: "Flexibilité de paiement",
+        },
         {
           icon: <Laptop2 size={18} />,
           text: "Accès à un ordinateur et outils de travail",
@@ -161,6 +222,7 @@ const CREDUCPage = () => {
           text: "Historique financier utile pour futurs crédits",
         },
       ],
+
       steps: [
         {
           icon: <ExternalLink size={18} />,
@@ -182,11 +244,33 @@ const CREDUCPage = () => {
     []
   );
 
+  /* -------------------------------------------------------
+     SCROLL
+  ------------------------------------------------------- */
+
   useEffect(() => {
-    const onScroll = () => setShowTop(window.scrollY > 520);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (ticking) return;
+
+      ticking = true;
+
+      window.requestAnimationFrame(() => {
+        setShowTop(window.scrollY > 520);
+        ticking = false;
+      });
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   const scrollToTop = () => {
@@ -196,13 +280,51 @@ const CREDUCPage = () => {
     });
   };
 
+  /* -------------------------------------------------------
+     MOTION
+  ------------------------------------------------------- */
+
   const pageMotion = prefersReducedMotion
     ? {}
     : {
-        initial: { opacity: 0, y: 12 },
-        animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.55, ease: "easeOut" },
+        initial: {
+          opacity: 0,
+          y: 12,
+        },
+        animate: {
+          opacity: 1,
+          y: 0,
+        },
+        transition: {
+          duration: 0.45,
+          ease: "easeOut",
+        },
       };
+
+  const revealMotion = prefersReducedMotion
+    ? {}
+    : {
+        initial: {
+          opacity: 0,
+          y: 12,
+        },
+        whileInView: {
+          opacity: 1,
+          y: 0,
+        },
+        viewport: {
+          once: true,
+          amount: 0.18,
+        },
+        transition: {
+          duration: 0.4,
+          ease: "easeOut",
+        },
+      };
+
+  /* =======================================================
+     RENDER
+  ======================================================= */
 
   return (
     <Wrap
@@ -217,45 +339,93 @@ const CREDUCPage = () => {
         $b={col("brandBlue", "#2A4B7C")}
       />
 
+      <AmbientOrb
+        aria-hidden="true"
+        $accent={col("accent", "#F36F21")}
+      />
+
       <Shell>
+        {/* =================================================
+            HERO
+        ================================================= */}
+
         <HeroGrid as={motion.section} {...pageMotion}>
-          <HeroCard $border={col("stroke", "rgba(255,255,255,.14)")}>
+          <HeroCard
+            $border={col(
+              "stroke",
+              "rgba(255,255,255,.14)"
+            )}
+          >
             <HeroHeader>
-            <TitleRow>
-  <LogoBox aria-hidden="true">
-    <BrandLogo
-      src="/img/LogoCREDUC.jpeg"
-      alt="Logo CRÉDUC"
-      loading="eager"
-      decoding="async"
-    />
-  </LogoBox>
+              <TitleRow>
+                <LogoBox
+                  $navy={col(
+                    "brandNavy",
+                    col("bg2", "#0E2D4F")
+                  )}
+                  $accent={col(
+                    "accent",
+                    "#F36F21"
+                  )}
+                >
+                  <BrandLogo
+                    src="/img/tonon.jpeg"
+                    alt="Logo TÔNÔN"
+                    loading="eager"
+                    decoding="async"
+                  />
+                </LogoBox>
 
-  <div>
-    <Kicker>Institut Cortex</Kicker>
-    <H1>
-      <GradientText
-        $a={col("brandNavy", col("bg2", "#0E2D4F"))}
-        $b={col("brandBlue", col("accent", "#F36F21"))}
-        $reduce={prefersReducedMotion}
-      >
-        {content.title}
-      </GradientText>
-    </H1>
-  </div>
-</TitleRow>
-              <Subtitle>{content.subtitle}</Subtitle>
+                <TitleContent>
+                  <Eyebrow>
+                    <Sparkles size={13} />
+                    Institut Cortex
+                  </Eyebrow>
 
-              <Pills role="list" aria-label="Points clés">
-                {content.highlights.map((h, idx) => (
+                  <H1>
+                    <GradientText
+                      $a={col(
+                        "brandNavy",
+                        col("bg2", "#0E2D4F")
+                      )}
+                      $b={col(
+                        "brandBlue",
+                        col("accent", "#F36F21")
+                      )}
+                      $reduce={prefersReducedMotion}
+                    >
+                      {content.title}
+                    </GradientText>
+                  </H1>
+                </TitleContent>
+              </TitleRow>
+
+              <Subtitle>
+                {content.subtitle}
+              </Subtitle>
+
+              <Pills
+                role="list"
+                aria-label="Points clés"
+              >
+                {content.highlights.map((h) => (
                   <Pill
-                    key={idx}
+                    key={h.label}
                     role="listitem"
-                    $border={col("stroke", "rgba(255,255,255,.14)")}
+                    $border={col(
+                      "stroke",
+                      "rgba(255,255,255,.14)"
+                    )}
                   >
-                    <PillIcon $accent={col("accent", "#F36F21")}>
+                    <PillIcon
+                      $accent={col(
+                        "accent",
+                        "#F36F21"
+                      )}
+                    >
                       {h.icon}
                     </PillIcon>
+
                     <span>{h.label}</span>
                   </Pill>
                 ))}
@@ -263,51 +433,94 @@ const CREDUCPage = () => {
             </HeroHeader>
 
             <KpiGrid aria-label="Informations principales">
-              {content.kpis.map((k, idx) => (
+              {content.kpis.map((k) => (
                 <KpiCard
-                  key={idx}
-                  $card={col("bgducàbinet1", "rgba(255,255,255,.06)")}
-                  $border={col("stroke", "rgba(255,255,255,.14)")}
+                  key={k.label}
+                  $card={col(
+                    "bgducàbinet1",
+                    "rgba(255,255,255,.06)"
+                  )}
+                  $border={col(
+                    "stroke",
+                    "rgba(255,255,255,.14)"
+                  )}
                 >
                   <KpiHead>
-                    <KpiIcon $accent={col("accent", "#F36F21")}>
+                    <KpiIcon
+                      $accent={col(
+                        "accent",
+                        "#F36F21"
+                      )}
+                    >
                       {k.icon}
                     </KpiIcon>
-                    <KpiLabel>{k.label}</KpiLabel>
+
+                    <KpiLabel>
+                      {k.label}
+                    </KpiLabel>
                   </KpiHead>
-                  <KpiValue>{k.value}</KpiValue>
-                  <KpiHelper>{k.helper}</KpiHelper>
+
+                  <KpiValue>
+                    {k.value}
+                  </KpiValue>
+
+                  <KpiHelper>
+                    {k.helper}
+                  </KpiHelper>
                 </KpiCard>
               ))}
             </KpiGrid>
           </HeroCard>
 
+          {/* =================================================
+              SIDEBAR
+          ================================================= */}
+
           <SideCard
-            $border={col("stroke", "rgba(255,255,255,.14)")}
-            $card={col("bg1", "rgba(255,255,255,.06)")}
+            $border={col(
+              "stroke",
+              "rgba(255,255,255,.14)"
+            )}
+            $card={col(
+              "bg1",
+              "rgba(255,255,255,.06)"
+            )}
           >
             <SideHead>
               <SideTitle>
-                <Layers size={18} /> Accès rapide
+                <Layers size={18} />
+                Accès rapide
               </SideTitle>
-              <SideDesc>Va directement aux sections importantes.</SideDesc>
+
+              <SideDesc>
+                Va directement aux sections importantes.
+              </SideDesc>
             </SideHead>
 
-            <TOC aria-label="Aller à">
+            <TOC aria-label="Navigation rapide">
               <TOCLink href="#financement">
-                <ArrowUpRight size={16} /> Financement
+                <ArrowUpRight size={16} />
+                Financement
               </TOCLink>
+
               <TOCLink href="#public">
-                <ArrowUpRight size={16} /> Public concerné
+                <ArrowUpRight size={16} />
+                Public concerné
               </TOCLink>
+
               <TOCLink href="#conditions">
-                <ArrowUpRight size={16} /> Conditions & garanties
+                <ArrowUpRight size={16} />
+                Conditions & garanties
               </TOCLink>
+
               <TOCLink href="#avantages">
-                <ArrowUpRight size={16} /> Avantages
+                <ArrowUpRight size={16} />
+                Avantages
               </TOCLink>
+
               <TOCLink href="#formulaire">
-                <ArrowUpRight size={16} /> Formulaire
+                <ArrowUpRight size={16} />
+                Formulaire
               </TOCLink>
             </TOC>
 
@@ -315,10 +528,13 @@ const CREDUCPage = () => {
 
             <SideHead>
               <SideTitle>
-                <ExternalLink size={18} /> Formulaire
+                <ExternalLink size={18} />
+                Formulaire
               </SideTitle>
+
               <SideDesc>
-                Accède directement au formulaire de demande de crédit en ligne.
+                Accède directement au formulaire de
+                demande de crédit en ligne.
               </SideDesc>
             </SideHead>
 
@@ -326,118 +542,196 @@ const CREDUCPage = () => {
               <PrimaryBtn
                 href={FORM_EXTERNAL_URL}
                 target="_blank"
-                rel="noreferrer"
-                $a={col("brandNavy", col("bg2", "#0E2D4F"))}
-                $b={col("brandBlue", col("bg1", "#1C3F6E"))}
-                $accent={col("accent", "#F36F21")}
+                rel="noopener noreferrer"
+                $a={col(
+                  "brandNavy",
+                  col("bg2", "#0E2D4F")
+                )}
+                $b={col(
+                  "brandBlue",
+                  col("bg1", "#1C3F6E")
+                )}
+                $accent={col(
+                  "accent",
+                  "#F36F21"
+                )}
                 $reduce={prefersReducedMotion}
               >
                 <ExternalLink size={18} />
                 Ouvrir le formulaire
+                <ArrowUpRight size={16} />
               </PrimaryBtn>
 
               <InfoHint>
-              formulaire de demande de crédit s’ouvre au click.
+                Le formulaire s’ouvre dans un nouvel
+                onglet.
               </InfoHint>
             </CTAGroup>
           </SideCard>
         </HeroGrid>
 
+        {/* =================================================
+            FINANCEMENT
+        ================================================= */}
+
         <Section id="financement">
           <SectionCard
             as={motion.article}
-            {...(prefersReducedMotion
-              ? {}
-              : {
-                  initial: { opacity: 0, y: 10 },
-                  whileInView: { opacity: 1, y: 0 },
-                  viewport: { once: true, amount: 0.25 },
-                })}
-            $card={col("bg1", "rgba(255,255,255,.06)")}
-            $border={col("stroke", "rgba(255,255,255,.14)")}
+            {...revealMotion}
+            $card={col(
+              "bg1",
+              "rgba(255,255,255,.06)"
+            )}
+            $border={col(
+              "stroke",
+              "rgba(255,255,255,.14)"
+            )}
           >
             <SectionHead>
-              <SectionIcon $accent={col("accent", "#F36F21")}>
+              <SectionIcon
+                $accent={col(
+                  "accent",
+                  "#F36F21"
+                )}
+              >
                 {content.sections[0].icon}
               </SectionIcon>
-              <SectionTitle>{content.sections[0].title}</SectionTitle>
+
+              <SectionTitle>
+                {content.sections[0].title}
+              </SectionTitle>
             </SectionHead>
 
             <List>
-              {content.sections[0].items.map((it, i) => (
-                <Li key={i}>
-                  <Dot $accent={col("accent", "#F36F21")} aria-hidden="true" />
-                  <span>{it}</span>
-                </Li>
-              ))}
+              {content.sections[0].items.map(
+                (item) => (
+                  <Li key={item}>
+                    <Dot
+                      $accent={col(
+                        "accent",
+                        "#F36F21"
+                      )}
+                    />
+
+                    <span>{item}</span>
+                  </Li>
+                )
+              )}
             </List>
           </SectionCard>
         </Section>
+
+        {/* =================================================
+            PUBLIC
+        ================================================= */}
 
         <Section id="public">
           <SectionCard
             as={motion.article}
-            {...(prefersReducedMotion
-              ? {}
-              : {
-                  initial: { opacity: 0, y: 10 },
-                  whileInView: { opacity: 1, y: 0 },
-                  viewport: { once: true, amount: 0.25 },
-                })}
-            $card={col("bg1", "rgba(255,255,255,.06)")}
-            $border={col("stroke", "rgba(255,255,255,.14)")}
+            {...revealMotion}
+            $card={col(
+              "bg1",
+              "rgba(255,255,255,.06)"
+            )}
+            $border={col(
+              "stroke",
+              "rgba(255,255,255,.14)"
+            )}
           >
             <SectionHead>
-              <SectionIcon $accent={col("accent", "#F36F21")}>
+              <SectionIcon
+                $accent={col(
+                  "accent",
+                  "#F36F21"
+                )}
+              >
                 {content.sections[1].icon}
               </SectionIcon>
-              <SectionTitle>{content.sections[1].title}</SectionTitle>
+
+              <SectionTitle>
+                {content.sections[1].title}
+              </SectionTitle>
             </SectionHead>
 
             <List>
-              {content.sections[1].items.map((it, i) => (
-                <Li key={i}>
-                  <Dot $accent={col("accent", "#F36F21")} aria-hidden="true" />
-                  <span>{it}</span>
-                </Li>
-              ))}
+              {content.sections[1].items.map(
+                (item) => (
+                  <Li key={item}>
+                    <Dot
+                      $accent={col(
+                        "accent",
+                        "#F36F21"
+                      )}
+                    />
+
+                    <span>{item}</span>
+                  </Li>
+                )
+              )}
             </List>
           </SectionCard>
         </Section>
 
+        {/* =================================================
+            CONDITIONS
+        ================================================= */}
+
         <Section id="conditions">
           <BlockTitle>
-            <ShieldCheck size={18} /> Conditions & garanties
+            <ShieldCheck size={18} />
+            Conditions & garanties
           </BlockTitle>
 
           <AccordionWrap>
-            {content.accordions.map((a) => (
+            {content.accordions.map((accordion) => (
               <Details
-                key={a.id}
-                $card={col("bg1", "rgba(255,255,255,.06)")}
-                $border={col("stroke", "rgba(255,255,255,.14)")}
+                key={accordion.id}
+                $card={col(
+                  "bg1",
+                  "rgba(255,255,255,.06)"
+                )}
+                $border={col(
+                  "stroke",
+                  "rgba(255,255,255,.14)"
+                )}
               >
                 <Summary>
                   <SummaryLeft>
-                    <SummaryIcon $accent={col("accent", "#F36F21")}>
-                      {a.icon}
+                    <SummaryIcon
+                      $accent={col(
+                        "accent",
+                        "#F36F21"
+                      )}
+                    >
+                      {accordion.icon}
                     </SummaryIcon>
-                    <span>{a.title}</span>
+
+                    <span>
+                      {accordion.title}
+                    </span>
                   </SummaryLeft>
-                  <Chevron aria-hidden="true">⌄</Chevron>
+
+                  <Chevron aria-hidden="true">
+                    ⌄
+                  </Chevron>
                 </Summary>
 
                 <DetailsBody>
                   <List>
-                    {a.items.map((it, i) => (
-                      <Li key={i}>
-                        <Dot
-                          $accent={col("accent", "#F36F21")}
-                          aria-hidden="true"
-                        />
-                        <span>{it}</span>
-                      </Li>
-                    ))}
+                    {accordion.items.map(
+                      (item) => (
+                        <Li key={item}>
+                          <Dot
+                            $accent={col(
+                              "accent",
+                              "#F36F21"
+                            )}
+                          />
+
+                          <span>{item}</span>
+                        </Li>
+                      )
+                    )}
                   </List>
                 </DetailsBody>
               </Details>
@@ -445,128 +739,256 @@ const CREDUCPage = () => {
           </AccordionWrap>
         </Section>
 
+        {/* =================================================
+            AVANTAGES
+        ================================================= */}
+
         <Section id="avantages">
           <BenefitsCard
             as={motion.section}
-            {...(prefersReducedMotion
-              ? {}
-              : {
-                  initial: { opacity: 0, y: 10 },
-                  whileInView: { opacity: 1, y: 0 },
-                  viewport: { once: true, amount: 0.25 },
-                })}
-            $card={col("bg1", "rgba(255,255,255,.06)")}
-            $border={col("stroke", "rgba(255,255,255,.14)")}
+            {...revealMotion}
+            $card={col(
+              "bg1",
+              "rgba(255,255,255,.06)"
+            )}
+            $border={col(
+              "stroke",
+              "rgba(255,255,255,.14)"
+            )}
           >
             <BenefitsHead>
-              <BenefitsTitle>Avantages pour l’étudiant</BenefitsTitle>
-              <MiniNote>Simple, rapide, orienté réussite.</MiniNote>
+              <div>
+                <BenefitsKicker>
+                  <CheckCircle2 size={14} />
+                  Pourquoi TÔNÔN ?
+                </BenefitsKicker>
+
+                <BenefitsTitle>
+                  Avantages pour l’étudiant
+                </BenefitsTitle>
+              </div>
+
+              <MiniNote>
+                Simple, rapide, orienté réussite.
+              </MiniNote>
             </BenefitsHead>
 
             <BenefitsGrid>
-              {content.benefits.map((b, idx) => (
-                <BenefitItem
-                  key={idx}
-                  $soft={col("bg2", "rgba(255,255,255,.05)")}
-                >
-                  <BenefitIcon $accent={col("accent", "#F36F21")}>
-                    {b.icon}
-                  </BenefitIcon>
-                  <span>{b.text}</span>
-                </BenefitItem>
-              ))}
+              {content.benefits.map(
+                (benefit) => (
+                  <BenefitItem
+                    key={benefit.text}
+                    $soft={col(
+                      "bg2",
+                      "rgba(255,255,255,.05)"
+                    )}
+                  >
+                    <BenefitIcon
+                      $accent={col(
+                        "accent",
+                        "#F36F21"
+                      )}
+                    >
+                      {benefit.icon}
+                    </BenefitIcon>
+
+                    <span>
+                      {benefit.text}
+                    </span>
+                  </BenefitItem>
+                )
+              )}
             </BenefitsGrid>
           </BenefitsCard>
         </Section>
 
+        {/* =================================================
+            FORMULAIRE
+        ================================================= */}
+
         <Section id="formulaire">
           <DownloadCard
             as={motion.section}
-            {...(prefersReducedMotion
-              ? {}
-              : {
-                  initial: { opacity: 0, y: 10 },
-                  whileInView: { opacity: 1, y: 0 },
-                  viewport: { once: true, amount: 0.25 },
-                })}
-            $card={col("bg1", "rgba(255,255,255,.06)")}
-            $border={col("stroke", "rgba(255,255,255,.14)")}
+            {...revealMotion}
+            $card={col(
+              "bg1",
+              "rgba(255,255,255,.06)"
+            )}
+            $border={col(
+              "stroke",
+              "rgba(255,255,255,.14)"
+            )}
           >
             <DownloadLeft>
-              <DownloadTitle>formulaire de demande de crédit</DownloadTitle>
+              <DownloadKicker>
+                <ExternalLink size={14} />
+                DEMANDE EN LIGNE
+              </DownloadKicker>
+
+              <DownloadTitle>
+                Formulaire de demande de crédit
+              </DownloadTitle>
+
               <DownloadText>
-                Clique sur le bouton pour ouvrir le formulaire , remplis
-                les informations demandées, puis valide directement en ligne.
+                Clique sur le bouton pour ouvrir le
+                formulaire externe, remplis les
+                informations demandées, puis valide
+                directement en ligne.
               </DownloadText>
 
               <Steps>
-                {content.steps.map((s, i) => (
-                  <Step key={i}>
-                    <StepIcon $accent={col("accent", "#F36F21")}>
-                      {s.icon}
-                    </StepIcon>
-                    <div>
-                      <StepTitle>{s.title}</StepTitle>
-                      <StepText>{s.text}</StepText>
-                    </div>
-                  </Step>
-                ))}
+                {content.steps.map(
+                  (step, index) => (
+                    <Step key={step.title}>
+                      <StepNumber>
+                        0{index + 1}
+                      </StepNumber>
+
+                      <StepIcon
+                        $accent={col(
+                          "accent",
+                          "#F36F21"
+                        )}
+                      >
+                        {step.icon}
+                      </StepIcon>
+
+                      <div>
+                        <StepTitle>
+                          {step.title}
+                        </StepTitle>
+
+                        <StepText>
+                          {step.text}
+                        </StepText>
+                      </div>
+                    </Step>
+                  )
+                )}
               </Steps>
             </DownloadLeft>
 
             <DownloadRight>
+              <FormVisual>
+                <FormVisualIcon>
+                  <FileText size={30} />
+                </FormVisualIcon>
+
+                <FormVisualTitle>
+                  Votre demande
+                </FormVisualTitle>
+
+                <FormVisualText>
+                  Remplissez le formulaire
+                  directement en ligne.
+                </FormVisualText>
+              </FormVisual>
+
               <PrimaryBtn
                 href={FORM_EXTERNAL_URL}
                 target="_blank"
-                rel="noreferrer"
-                $a={col("brandNavy", col("bg2", "#0E2D4F"))}
-                $b={col("brandBlue", col("bg1", "#1C3F6E"))}
-                $accent={col("accent", "#F36F21")}
+                rel="noopener noreferrer"
+                $a={col(
+                  "brandNavy",
+                  col("bg2", "#0E2D4F")
+                )}
+                $b={col(
+                  "brandBlue",
+                  col("bg1", "#1C3F6E")
+                )}
+                $accent={col(
+                  "accent",
+                  "#F36F21"
+                )}
                 $reduce={prefersReducedMotion}
               >
                 <ExternalLink size={18} />
                 Ouvrir le formulaire
+                <ArrowUpRight size={16} />
               </PrimaryBtn>
 
               <InfoHint>
-                Le formulaire sera rempli et validé sur une page.
+                Vous serez redirigé vers le formulaire
+                externe dans un nouvel onglet.
               </InfoHint>
             </DownloadRight>
           </DownloadCard>
         </Section>
 
+        {/* =================================================
+            FOOTER NOTE
+        ================================================= */}
+
         <FooterNote
-          aria-label="Note"
-          $border={col("stroke", "rgba(255,255,255,.12)")}
-          $soft={col("bg2", "rgba(255,255,255,.05)")}
+          aria-label="Note TÔNÔN"
+          $border={col(
+            "stroke",
+            "rgba(255,255,255,.12)"
+          )}
+          $soft={col(
+            "bg2",
+            "rgba(255,255,255,.05)"
+          )}
         >
-          <FooterBadge $accent={col("accent", "#F36F21")}>CRÉDUC</FooterBadge>
+          <FooterBadge
+            $accent={col(
+              "accent",
+              "#F36F21"
+            )}
+          >
+            TÔNÔN
+          </FooterBadge>
+
           <span>
-            “Tu veux apprendre ? Nous finançons ta formation… chez Cortex.”
+            “Tu veux apprendre ? Nous finançons ta
+            formation… chez Cortex.”
           </span>
         </FooterNote>
       </Shell>
 
-      {/* Sticky CTA mobile */}
+      {/* ===================================================
+          MOBILE CTA
+      =================================================== */}
+
       <MobileDock
         aria-label="Actions rapides"
-        $border={col("stroke", "rgba(255,255,255,.14)")}
-        $card={col("bg1", "rgba(7, 23, 39, .72)")}
+        $border={col(
+          "stroke",
+          "rgba(255,255,255,.14)"
+        )}
+        $card={col(
+          "bg1",
+          "rgba(7, 23, 39, .78)"
+        )}
       >
         <DockInner>
           <DockLeft>
-            <DockTitle>Formulaire CRÉDUC</DockTitle>
-            <DockMeta>Accès direct au formulaire externe</DockMeta>
+            <DockTitle>
+              Formulaire TÔNÔN
+            </DockTitle>
+
+            <DockMeta>
+              Accès direct au formulaire externe
+            </DockMeta>
           </DockLeft>
 
           <DockRight>
             <DockBtn
               href={FORM_EXTERNAL_URL}
               target="_blank"
-              rel="noreferrer"
-              $a={col("brandNavy", col("bg2", "#0E2D4F"))}
-              $b={col("brandBlue", col("bg1", "#1C3F6E"))}
-              $accent={col("accent", "#F36F21")}
+              rel="noopener noreferrer"
+              $a={col(
+                "brandNavy",
+                col("bg2", "#0E2D4F")
+              )}
+              $b={col(
+                "brandBlue",
+                col("bg1", "#1C3F6E")
+              )}
+              $accent={col(
+                "accent",
+                "#F36F21"
+              )}
               $reduce={prefersReducedMotion}
             >
               <ExternalLink size={18} />
@@ -576,20 +998,34 @@ const CREDUCPage = () => {
         </DockInner>
       </MobileDock>
 
-      {/* Back-to-top */}
+      {/* ===================================================
+          BACK TO TOP
+      =================================================== */}
+
       <TopBtn
         as={motion.button}
         type="button"
         onClick={scrollToTop}
         aria-label="Revenir en haut"
-        $accent={col("accent", "#F36F21")}
+        $accent={col(
+          "accent",
+          "#F36F21"
+        )}
         $show={showTop}
         {...(prefersReducedMotion
           ? {}
           : {
-              initial: { opacity: 0, y: 10 },
-              animate: { opacity: showTop ? 1 : 0, y: showTop ? 0 : 10 },
-              transition: { duration: 0.2 },
+              initial: {
+                opacity: 0,
+                y: 10,
+              },
+              animate: {
+                opacity: showTop ? 1 : 0,
+                y: showTop ? 0 : 10,
+              },
+              transition: {
+                duration: 0.2,
+              },
             })}
       >
         <ArrowUpRight size={18} />
@@ -600,41 +1036,114 @@ const CREDUCPage = () => {
 
 export default CREDUCPage;
 
-/* =========================
-   STYLES
-========================= */
+/* =========================================================
+   SHARED VISUAL SYSTEM
+========================================================= */
 
 const glass = css`
-  background: linear-gradient(
-    180deg,
-    rgba(235, 221, 221, 0.01),
-    rgba(255, 255, 255, 0.06)
-  );
-  backdrop-filter: blur(14px);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.065),
+      rgba(255, 255, 255, 0.025)
+    );
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 `;
 
 const Wrap = styled.div`
   min-height: 100vh;
-  background: radial-gradient(
-      980px 520px at 18% 8%,
-      rgba(4, 1, 24, 0.81),
+
+  position: relative;
+
+  overflow-x: clip;
+
+  background:
+    radial-gradient(
+      850px 480px at 12% 4%,
+      rgba(243, 111, 33, 0.09),
       transparent 55%
     ),
-    radial-gradient(900px 520px at 84% 18%, rgb(11, 0, 51), transparent 55%),
-    linear-gradient(180deg, ${(p) => p.$bg} 0%, #06121e 100%);
+    radial-gradient(
+      900px 500px at 88% 16%,
+      rgba(28, 63, 110, 0.16),
+      transparent 58%
+    ),
+    linear-gradient(
+      180deg,
+      ${(p) => p.$bg} 0%,
+      #06121e 100%
+    );
+
   color: rgba(255, 255, 255, 0.92);
-  overflow-x: hidden;
-  position: relative;
+
+  scroll-behavior: smooth;
+
+  @media (prefers-reduced-motion: reduce) {
+    scroll-behavior: auto;
+  }
 `;
 
 const AmbientGlow = styled.div`
   position: absolute;
-  inset: -90px -90px auto -90px;
-  height: 280px;
-  filter: blur(44px);
-  opacity: 0.16;
-  animation: ${floatSoft} 7s ease-in-out infinite;
+
+  top: -120px;
+  left: -120px;
+
+  width: 460px;
+  height: 300px;
+
+  border-radius: 50%;
+
+  background: radial-gradient(
+    circle,
+    ${(p) => p.$a}33,
+    ${(p) => p.$b}10,
+    transparent 70%
+  );
+
+  filter: blur(30px);
+
   pointer-events: none;
+
+  animation: ${floatSoft} 8s ease-in-out infinite;
+
+  @media (max-width: 700px) {
+    width: 300px;
+    height: 220px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+`;
+
+const AmbientOrb = styled.div`
+  position: absolute;
+
+  right: -150px;
+  top: 25%;
+
+  width: 330px;
+  height: 330px;
+
+  border-radius: 50%;
+
+  border: 1px solid
+    ${(p) => p.$accent}18;
+
+  box-shadow:
+    inset 0 0 60px
+      ${(p) => p.$accent}08;
+
+  pointer-events: none;
+
+  animation: ${pulseSoft} 9s ease-in-out infinite;
+
+  @media (max-width: 700px) {
+    display: none;
+  }
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
@@ -643,654 +1152,1267 @@ const AmbientGlow = styled.div`
 
 const Shell = styled.div`
   position: relative;
-  max-width: 1120px;
+
+  z-index: 2;
+
+  width: min(1160px, 100%);
+
   margin: 0 auto;
-  padding: 26px 16px 120px;
+
+  padding:
+    28px
+    clamp(14px, 3vw, 24px)
+    120px;
 
   @media (min-width: 900px) {
-    padding: 34px 20px 120px;
+    padding-top: 38px;
   }
 `;
 
+/* =========================================================
+   HERO
+========================================================= */
+
 const HeroGrid = styled(motion.div)`
   display: grid;
-  gap: 12px;
+
+  gap: 14px;
 
   @media (min-width: 980px) {
-    grid-template-columns: 1.65fr 0.95fr;
+    grid-template-columns:
+      minmax(0, 1.6fr)
+      minmax(300px, 0.82fr);
+
     align-items: start;
   }
 `;
 
 const HeroCard = styled.div`
   ${glass};
-  border-radius: 12px 0 12px 0;
-  border: 1px solid ${(p) => p.$border};
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.35);
-  padding: 18px;
 
-  @media (min-width: 900px) {
-    padding: 22px;
-  }
+  border-radius: 26px 0 26px 0;
+
+  border: 1px solid ${(p) => p.$border};
+
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.34);
+
+  padding: clamp(18px, 3vw, 26px);
+
+  contain: layout paint;
 `;
 
 const HeroHeader = styled.div`
   display: grid;
-  gap: 10px;
+
+  gap: 12px;
 `;
 
 const TitleRow = styled.div`
   display: flex;
+
   align-items: center;
-  gap: 12px;
+
+  gap: 14px;
 `;
+
+const TitleContent = styled.div`
+  min-width: 0;
+`;
+
 const LogoBox = styled.div`
-  width: 58px;
-  height: 58px;
-  
-  border-radius: 12px 0 12px 0;
-  background: linear-gradient(
-    135deg,
-    ${(p) => p.$navy}20 50%,
-    ${(p) => p.$accent}20 50%
-  );
-  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.16);
- 
-   display: grid;
-  place-items: center;
-  overflow: hidden;
+  width: 62px;
+  height: 62px;
+
   flex: 0 0 auto;
 
-  @media (max-width: 640px) {
-    width: 52px;
-    height: 52px;
-    padding: 5px;
+  display: grid;
+  place-items: center;
+
+  overflow: hidden;
+
+  padding: 5px;
+
+  border-radius: 18px 0 18px 0;
+
+  background:
+    linear-gradient(
+      135deg,
+      ${(p) => p.$navy}24,
+      ${(p) => p.$accent}1c
+    );
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.14);
+
+  box-shadow:
+    0 15px 36px rgba(0, 0, 0, 0.28);
+
+  @media (max-width: 560px) {
+    width: 54px;
+    height: 54px;
   }
 `;
 
 const BrandLogo = styled.img`
+  display: block;
+
   width: 100%;
   height: 100%;
+
   object-fit: contain;
-  display: block;
 `;
- 
 
-const Kicker = styled.div`
-  font-size: 13px;
-  letter-spacing: 0.16em;
+const Eyebrow = styled.div`
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  margin-bottom: 3px;
+
+  color: rgba(255, 255, 255, 0.58);
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.13em;
+
   text-transform: uppercase;
-  opacity: 0.85;
-`;
 
-const H1 = styled.h1`
-  margin: 2px 0 0;
-  font-size: 28px;
-  line-height: 1.05;
-
-  @media (min-width: 900px) {
-    font-size: 34px;
+  svg {
+    color: #f36f21;
   }
 `;
 
+const H1 = styled.h1`
+  margin: 0;
+
+  font-size: clamp(2rem, 5vw, 3.2rem);
+
+  line-height: 0.98;
+
+  letter-spacing: -0.045em;
+
+  font-weight: 950;
+`;
+
 const GradientText = styled.span`
-  background: linear-gradient(
-    90deg,
-    ${(p) => p.$a},
-    ${(p) => p.$b},
-    ${(p) => p.$a}
-  );
+  display: inline-block;
+
+  background:
+    linear-gradient(
+      90deg,
+      ${(p) => p.$a},
+      ${(p) => p.$b},
+      ${(p) => p.$a}
+    );
+
   background-size: 200% 200%;
+
   -webkit-background-clip: text;
   background-clip: text;
+
   color: transparent;
+
   animation: ${(p) =>
     p.$reduce
       ? "none"
       : css`
-          ${gradientShift} 7s ease-in-out infinite
+          ${gradientShift} 8s ease-in-out infinite
         `};
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `;
 
 const Subtitle = styled.p`
-  margin: 2px 0 0;
+  max-width: 76ch;
+
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.72);
+
   font-size: 14px;
-  line-height: 1.6;
-  opacity: 0.9;
-  max-width: 78ch;
+
+  line-height: 1.72;
 `;
 
 const Pills = styled.div`
   display: flex;
+
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 8px;
+
+  gap: 8px;
+
+  margin-top: 3px;
 `;
 
 const Pill = styled.div`
   display: inline-flex;
+
   align-items: center;
-  gap: 10px;
+
+  gap: 8px;
+
+  min-height: 38px;
+
+  padding: 6px 10px;
+
   border-radius: 999px;
+
   border: 1px solid ${(p) => p.$border};
-  background: rgba(0, 0, 0, 0.14);
-  padding: 9px 12px;
-  font-size: 13px;
+
+  background: rgba(0, 0, 0, 0.13);
+
+  color: rgba(255, 255, 255, 0.82);
+
+  font-size: 12px;
+
+  line-height: 1.3;
 `;
 
 const PillIcon = styled.span`
-  width: 30px;
-  height: 30px;
-  border-radius: 999px;
+  width: 28px;
+  height: 28px;
+
+  flex: 0 0 auto;
+
   display: grid;
   place-items: center;
-  background: rgba(243, 111, 33, 0.12);
+
+  border-radius: 50%;
+
   color: ${(p) => p.$accent};
+
+  background: rgba(243, 111, 33, 0.11);
 `;
 
 const KpiGrid = styled.div`
-  margin-top: 14px;
   display: grid;
+
   gap: 10px;
 
-  @media (min-width: 900px) {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+  margin-top: 16px;
+
+  @media (min-width: 700px) {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
   }
 `;
 
 const KpiCard = styled.div`
-  border-radius: 12px 0 12px 0;
+  min-width: 0;
+
+  padding: 14px;
+
+  border-radius: 18px 0 18px 0;
+
   border: 1px solid ${(p) => p.$border};
+
   background: ${(p) => p.$card};
-  padding: 12px;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
-  transition: transform 160ms ease, box-shadow 160ms ease;
+
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.18);
+
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
 
   &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.3);
+    transform: translateY(-3px);
+
+    border-color:
+      rgba(243, 111, 33, 0.3);
+
+    box-shadow:
+      0 18px 40px rgba(0, 0, 0, 0.25);
   }
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
+
+    &:hover {
+      transform: none;
+    }
   }
 `;
 
 const KpiHead = styled.div`
   display: flex;
+
   align-items: center;
-  gap: 10px;
+
+  gap: 9px;
 `;
 
 const KpiIcon = styled.div`
   width: 34px;
   height: 34px;
-  border-radius: 12px 0 12px 0;
-  background: rgba(243, 111, 33, 0.12);
-  color: ${(p) => p.$accent};
+
+  flex: 0 0 auto;
+
   display: grid;
   place-items: center;
+
+  border-radius: 11px 0 11px 0;
+
+  color: ${(p) => p.$accent};
+
+  background: rgba(243, 111, 33, 0.11);
 `;
 
 const KpiLabel = styled.div`
-  font-size: 13px;
-  opacity: 0.85;
+  color: rgba(255, 255, 255, 0.62);
+
+  font-size: 12px;
+
+  font-weight: 700;
 `;
 
 const KpiValue = styled.div`
-  margin-top: 8px;
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: 0.01em;
+  margin-top: 9px;
+
+  color: #fff;
+
+  font-size: clamp(15px, 2vw, 18px);
+
+  line-height: 1.3;
+
+  font-weight: 900;
+
+  letter-spacing: -0.01em;
 `;
 
 const KpiHelper = styled.div`
   margin-top: 4px;
-  font-size: 13px;
-  opacity: 0.78;
+
+  color: rgba(255, 255, 255, 0.48);
+
+  font-size: 11px;
 `;
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
 
 const SideCard = styled.aside`
   ${glass};
-  border-radius: 12px 0 12px 0;
+
+  border-radius: 24px 0 24px 0;
+
   border: 1px solid ${(p) => p.$border};
-  box-shadow: 0 16px 56px rgba(0, 0, 0, 0.28);
-  padding: 14px;
-  position: relative;
+
+  box-shadow:
+    0 18px 55px rgba(0, 0, 0, 0.27);
+
+  padding: 16px;
 
   @media (min-width: 980px) {
     position: sticky;
-    top: 16px;
+
+    top: 18px;
   }
 `;
 
 const SideHead = styled.div`
   display: grid;
-  gap: 4px;
+
+  gap: 5px;
 `;
 
 const SideTitle = styled.div`
   display: inline-flex;
+
   align-items: center;
+
   gap: 8px;
-  font-weight: 900;
+
+  color: #fff;
+
   font-size: 14px;
+
+  font-weight: 900;
+
+  svg {
+    color: #f36f21;
+  }
 `;
 
 const SideDesc = styled.div`
-  font-size: 13px;
-  opacity: 0.82;
-  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.55);
+
+  font-size: 12px;
+
+  line-height: 1.5;
 `;
 
 const TOC = styled.nav`
-  margin-top: 10px;
   display: grid;
-  gap: 8px;
+
+  gap: 7px;
+
+  margin-top: 12px;
 `;
 
 const TOCLink = styled.a`
-  text-decoration: none;
-  color: rgba(255, 255, 255, 0.92);
-  font-size: 13px;
-  display: inline-flex;
+  display: flex;
+
   align-items: center;
+
   gap: 8px;
-  padding: 10px 10px;
-  border-radius: 12px 0 12px 0;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.14);
-  transition: transform 140ms ease, box-shadow 140ms ease;
+
+  min-height: 42px;
+
+  padding: 9px 10px;
+
+  border-radius: 13px 0 13px 0;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.08);
+
+  background: rgba(0, 0, 0, 0.12);
+
+  color: rgba(255, 255, 255, 0.78);
+
+  text-decoration: none;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+
+  svg {
+    color: #f36f21;
+  }
 
   &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
+    transform: translateX(3px);
+
+    background: rgba(243, 111, 33, 0.07);
+
+    border-color:
+      rgba(243, 111, 33, 0.2);
+
+    color: #fff;
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(243, 111, 33, 0.7);
+    outline: 2px solid
+      rgba(243, 111, 33, 0.7);
+
     outline-offset: 2px;
   }
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
+
+    &:hover {
+      transform: none;
+    }
   }
 `;
 
 const Divider = styled.div`
-  margin: 12px 0;
   height: 1px;
-  background: rgba(255, 255, 255, 0.1);
+
+  margin: 15px 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.1),
+      transparent
+    );
 `;
 
 const CTAGroup = styled.div`
-  margin-top: 10px;
   display: grid;
-  gap: 10px;
+
+  gap: 9px;
+
+  margin-top: 10px;
 `;
 
 const PrimaryBtn = styled.a`
   display: inline-flex;
-  gap: 10px;
+
   align-items: center;
+
   justify-content: center;
-  text-decoration: none;
-  border-radius: 12px 0 12px 0;
-  padding: 12px 14px;
-  font-weight: 900;
-  font-size: 14px;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: linear-gradient(90deg, ${(p) => p.$a}, ${(p) => p.$b});
+
+  gap: 8px;
+
+  min-height: 48px;
+
+  padding: 11px 14px;
+
+  border-radius: 15px 0 15px 0;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.14);
+
+  color: #fff;
+
+  background:
+    linear-gradient(
+      100deg,
+      ${(p) => p.$a},
+      ${(p) => p.$b},
+      ${(p) => p.$a}
+    );
+
   background-size: 200% 200%;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
-  transition: transform 160ms ease, box-shadow 160ms ease;
+
+  box-shadow:
+    0 15px 38px rgba(0, 0, 0, 0.28);
+
+  text-decoration: none;
+
+  font-size: 13px;
+
+  font-weight: 900;
+
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+
   animation: ${(p) =>
     p.$reduce
       ? "none"
       : css`
-          ${gradientShift} 7s ease-in-out infinite
+          ${gradientShift} 9s ease-in-out infinite
         `};
 
   &:hover {
-    transform: translateY(-1px) scale(1.01);
-    box-shadow: 0 22px 70px rgba(0, 0, 0, 0.45);
+    transform: translateY(-2px);
+
+    box-shadow:
+      0 20px 48px rgba(0, 0, 0, 0.36);
   }
 
   &:active {
-    transform: translateY(0) scale(0.99);
+    transform: translateY(0);
   }
 
   &:focus-visible {
     outline: 2px solid ${(p) => p.$accent};
-    outline-offset: 2px;
+
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+
+    transition: none;
+
+    &:hover,
+    &:active {
+      transform: none;
+    }
   }
 `;
 
 const InfoHint = styled.div`
-  font-size: 12px;
-  opacity: 0.78;
-  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.45);
+
+  font-size: 11px;
+
+  line-height: 1.5;
 `;
 
+/* =========================================================
+   SECTIONS
+========================================================= */
+
 const Section = styled.section`
-  margin-top: 14px;
-  scroll-margin-top: 90px;
+  margin-top: 16px;
+
+  scroll-margin-top: 85px;
 `;
 
 const SectionCard = styled.article`
-  border-radius: 12px 0 12px 0;
-  border: 1px solid ${(p) => p.$border};
-  background: ${(p) => p.$card};
   ${glass};
-  padding: 14px;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.25);
+
+  padding: clamp(16px, 3vw, 22px);
+
+  border-radius: 22px 0 22px 0;
+
+  border: 1px solid ${(p) => p.$border};
+
+  box-shadow:
+    0 15px 42px rgba(0, 0, 0, 0.2);
 `;
 
 const SectionHead = styled.div`
   display: flex;
+
   align-items: center;
-  gap: 10px;
+
+  gap: 11px;
 `;
 
 const SectionIcon = styled.div`
-  width: 34px;
-  height: 34px;
-  border-radius: 12px 0 12px 0;
-  background: rgba(243, 111, 33, 0.14);
-  color: ${(p) => p.$accent};
+  width: 42px;
+  height: 42px;
+
+  flex: 0 0 auto;
+
   display: grid;
   place-items: center;
+
+  border-radius: 13px 0 13px 0;
+
+  color: ${(p) => p.$accent};
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(243, 111, 33, 0.16),
+      rgba(243, 111, 33, 0.05)
+    );
+
+  border: 1px solid
+    rgba(243, 111, 33, 0.12);
 `;
 
 const SectionTitle = styled.h2`
   margin: 0;
-  font-size: 15px;
-  line-height: 1.2;
+
+  color: #fff;
+
+  font-size: clamp(1rem, 2vw, 1.15rem);
+
+  line-height: 1.3;
+
+  font-weight: 900;
 `;
 
 const BlockTitle = styled.h2`
-  margin: 18px 0 10px;
-  font-size: 15px;
   display: inline-flex;
+
   align-items: center;
+
   gap: 8px;
+
+  margin: 22px 0 10px;
+
+  color: #fff;
+
+  font-size: 15px;
+
+  font-weight: 900;
+
+  svg {
+    color: #f36f21;
+  }
 `;
 
 const List = styled.ul`
-  list-style: none;
-  margin: 12px 0 0;
-  padding: 0;
   display: grid;
-  gap: 10px;
+
+  gap: 9px;
+
+  margin: 15px 0 0;
+
+  padding: 0;
+
+  list-style: none;
 `;
 
 const Li = styled.li`
   display: flex;
-  gap: 10px;
+
   align-items: flex-start;
-  font-size: 14px;
-  line-height: 1.55;
-  opacity: 0.92;
+
+  gap: 11px;
+
+  color: rgba(255, 255, 255, 0.7);
+
+  font-size: 13px;
+
+  line-height: 1.65;
 `;
 
 const Dot = styled.span`
-  width: 8px;
-  height: 8px;
-  margin-top: 7px;
-  border-radius: 999px;
-  background: ${(p) => p.$accent};
-  box-shadow: 0 0 0 4px rgba(243, 111, 33, 0.14);
+  width: 7px;
+  height: 7px;
+
   flex: 0 0 auto;
+
+  margin-top: 7px;
+
+  border-radius: 50%;
+
+  background: ${(p) => p.$accent};
+
+  box-shadow:
+    0 0 0 4px
+      rgba(243, 111, 33, 0.1);
 `;
+
+/* =========================================================
+   ACCORDION
+========================================================= */
 
 const AccordionWrap = styled.div`
   display: grid;
-  gap: 10px;
+  gap: 9px;
+`;
+
+const Chevron = styled.span`
+  flex: 0 0 auto;
+
+  color: rgba(255, 255, 255, 0.55);
+
+  font-size: 18px;
+
+  transition: transform 180ms ease;
 `;
 
 const Details = styled.details`
-  border-radius: 12px 0 12px 0;
-  border: 1px solid ${(p) => p.$border};
-  background: ${(p) => p.$card};
-  ${glass};
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.25);
   overflow: hidden;
 
-  &[open] summary > span:last-child {
+  border-radius: 17px 0 17px 0;
+
+  border: 1px solid ${(p) => p.$border};
+
+  background: ${(p) => p.$card};
+
+  ${glass};
+
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.16);
+
+  &[open] {
+    border-color: rgba(243, 111, 33, 0.2);
+  }
+
+  &[open] ${Chevron} {
     transform: rotate(180deg);
   }
 `;
 
 const Summary = styled.summary`
-  list-style: none;
-  cursor: pointer;
-  padding: 12px 14px;
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
+
   gap: 12px;
+
+  min-height: 58px;
+
+  padding: 9px 13px;
+
+  cursor: pointer;
+
+  list-style: none;
 
   &::-webkit-details-marker {
     display: none;
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(243, 111, 33, 0.7);
-    outline-offset: 2px;
+    outline: 2px solid rgba(243, 111, 33, 0.65);
+    outline-offset: -2px;
   }
 `;
 
 const SummaryLeft = styled.div`
-  display: inline-flex;
+  display: flex;
+
   align-items: center;
+
   gap: 10px;
-  font-size: 14px;
-  line-height: 1.25;
+
+  min-width: 0;
+
+  color: rgba(255, 255, 255, 0.84);
+
+  font-size: 13px;
+
+  line-height: 1.4;
+
   font-weight: 800;
 `;
 
 const SummaryIcon = styled.div`
-  width: 34px;
-  height: 34px;
-  border-radius: 12px 0 12px 0;
-  background: rgba(243, 111, 33, 0.14);
-  color: ${(p) => p.$accent};
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 auto;
+
   display: grid;
   place-items: center;
-  flex: 0 0 auto;
-`;
 
-const Chevron = styled.span`
-  font-size: 16px;
-  opacity: 0.85;
-  transition: transform 200ms ease;
+  border-radius: 11px 0 11px 0;
+
+  color: ${(p) => p.$accent};
+
+  background: rgba(243, 111, 33, 0.11);
 `;
 
 const DetailsBody = styled.div`
-  padding: 0 14px 14px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 15px 15px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
 `;
+/* =========================================================
+   BENEFITS
+========================================================= */
 
 const BenefitsCard = styled.section`
-  border-radius: 12px 0 12px 0;
-  border: 1px solid ${(p) => p.$border};
-  background: ${(p) => p.$card};
   ${glass};
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.25);
-  padding: 14px;
+
+  padding: clamp(16px, 3vw, 22px);
+
+  border-radius: 22px 0 22px 0;
+
+  border: 1px solid ${(p) => p.$border};
+
+  box-shadow:
+    0 15px 42px rgba(0, 0, 0, 0.2);
 `;
 
 const BenefitsHead = styled.div`
   display: flex;
+
   align-items: flex-start;
+
   justify-content: space-between;
-  gap: 10px;
+
+  gap: 14px;
+
   flex-wrap: wrap;
+`;
+
+const BenefitsKicker = styled.div`
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  margin-bottom: 4px;
+
+  color: #f36f21;
+
+  font-size: 10px;
+
+  font-weight: 900;
+
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
 `;
 
 const BenefitsTitle = styled.h2`
   margin: 0;
-  font-size: 15px;
+
+  color: #fff;
+
+  font-size: 17px;
+
+  font-weight: 900;
 `;
 
 const MiniNote = styled.div`
-  font-size: 13px;
-  opacity: 0.85;
-  padding: 6px 10px;
+  padding: 7px 10px;
+
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.12);
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.09);
+
+  background: rgba(0, 0, 0, 0.1);
+
+  color: rgba(255, 255, 255, 0.55);
+
+  font-size: 11px;
 `;
 
 const BenefitsGrid = styled.div`
-  margin-top: 12px;
   display: grid;
-  gap: 10px;
 
-  @media (min-width: 900px) {
-    grid-template-columns: repeat(2, 1fr);
+  gap: 9px;
+
+  margin-top: 15px;
+
+  @media (min-width: 760px) {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
   }
 `;
 
 const BenefitItem = styled.div`
   display: flex;
-  gap: 10px;
+
   align-items: flex-start;
-  border-radius: 12px 0 12px 0;
-  padding: 12px;
+
+  gap: 10px;
+
+  min-height: 58px;
+
+  padding: 11px;
+
+  border-radius: 15px 0 15px 0;
+
   background: ${(p) => p.$soft};
-  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.07);
+
+  color: rgba(255, 255, 255, 0.72);
+
+  font-size: 13px;
+
+  line-height: 1.5;
+
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+
+    border-color:
+      rgba(243, 111, 33, 0.2);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
 `;
 
 const BenefitIcon = styled.div`
   width: 34px;
   height: 34px;
-  border-radius: 12px 0 12px 0;
-  background: rgba(243, 111, 33, 0.14);
-  color: ${(p) => p.$accent};
+
+  flex: 0 0 auto;
+
   display: grid;
   place-items: center;
-  flex: 0 0 auto;
+
+  border-radius: 10px 0 10px 0;
+
+  color: ${(p) => p.$accent};
+
+  background:
+    rgba(243, 111, 33, 0.11);
 `;
 
+/* =========================================================
+   FORMULAIRE
+========================================================= */
+
 const DownloadCard = styled.section`
-  border-radius: 12px 0 12px 0;
-  border: 1px solid ${(p) => p.$border};
-  background: ${(p) => p.$card};
   ${glass};
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.25);
-  padding: 14px;
+
   display: grid;
-  gap: 12px;
+
+  gap: 18px;
+
+  padding: clamp(17px, 3vw, 25px);
+
+  border-radius: 25px 0 25px 0;
+
+  border: 1px solid ${(p) => p.$border};
+
+  box-shadow:
+    0 20px 55px rgba(0, 0, 0, 0.25);
 
   @media (min-width: 900px) {
-    grid-template-columns: 1.25fr 0.75fr;
-    align-items: start;
+    grid-template-columns:
+      minmax(0, 1.25fr)
+      minmax(280px, 0.75fr);
+
+    align-items: center;
   }
 `;
 
-const DownloadLeft = styled.div``;
+const DownloadLeft = styled.div`
+  min-width: 0;
+`;
+
+const DownloadKicker = styled.div`
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  margin-bottom: 7px;
+
+  color: #f36f21;
+
+  font-size: 10px;
+
+  font-weight: 900;
+
+  letter-spacing: 0.12em;
+
+  text-transform: uppercase;
+`;
 
 const DownloadTitle = styled.h2`
   margin: 0;
-  font-size: 15px;
+
+  color: #fff;
+
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+
+  line-height: 1.15;
+
+  font-weight: 900;
+
+  letter-spacing: -0.025em;
 `;
 
 const DownloadText = styled.p`
-  margin: 6px 0 0;
-  font-size: 14px;
-  line-height: 1.6;
-  opacity: 0.88;
+  max-width: 66ch;
+
+  margin: 8px 0 0;
+
+  color: rgba(255, 255, 255, 0.63);
+
+  font-size: 13px;
+
+  line-height: 1.7;
 `;
 
 const Steps = styled.div`
-  margin-top: 12px;
   display: grid;
-  gap: 10px;
+
+  gap: 8px;
+
+  margin-top: 16px;
 `;
 
 const Step = styled.div`
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(0, 0, 0, 0.12);
-  border-radius: 12px 0 12px 0;
-  padding: 12px;
+  display: grid;
+
+  grid-template-columns:
+    auto
+    auto
+    1fr;
+
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 10px;
+
+  border-radius: 14px 0 14px 0;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.07);
+
+  background: rgba(0, 0, 0, 0.11);
+`;
+
+const StepNumber = styled.div`
+  color: #f36f21;
+
+  font-size: 10px;
+
+  font-weight: 900;
+
+  letter-spacing: 0.04em;
 `;
 
 const StepIcon = styled.div`
   width: 34px;
   height: 34px;
-  border-radius: 12px 0 12px 0;
-  background: rgba(243, 111, 33, 0.14);
-  color: ${(p) => p.$accent};
+
   display: grid;
   place-items: center;
-  flex: 0 0 auto;
+
+  border-radius: 10px 0 10px 0;
+
+  color: ${(p) => p.$accent};
+
+  background:
+    rgba(243, 111, 33, 0.11);
 `;
 
 const StepTitle = styled.div`
+  color: rgba(255, 255, 255, 0.88);
+
+  font-size: 12px;
+
   font-weight: 900;
-  font-size: 13px;
 `;
 
 const StepText = styled.div`
   margin-top: 2px;
-  font-size: 13px;
-  opacity: 0.85;
+
+  color: rgba(255, 255, 255, 0.48);
+
+  font-size: 11px;
+
   line-height: 1.45;
 `;
 
 const DownloadRight = styled.div`
   display: grid;
-  gap: 10px;
+
+  gap: 11px;
 
   @media (min-width: 900px) {
-    align-content: start;
-    justify-items: end;
-    text-align: right;
+    justify-items: stretch;
   }
 `;
 
+const FormVisual = styled.div`
+  position: relative;
+
+  overflow: hidden;
+
+  padding: 20px;
+
+  border-radius: 20px 0 20px 0;
+
+  background:
+    radial-gradient(
+      circle at 90% 0%,
+      rgba(243, 111, 33, 0.16),
+      transparent 45%
+    ),
+    rgba(0, 0, 0, 0.14);
+
+  border: 1px solid
+    rgba(243, 111, 33, 0.12);
+`;
+
+const FormVisualIcon = styled.div`
+  width: 52px;
+  height: 52px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 12px;
+
+  border-radius: 15px 0 15px 0;
+
+  color: #f36f21;
+
+  background:
+    rgba(243, 111, 33, 0.11);
+`;
+
+const FormVisualTitle = styled.div`
+  color: #fff;
+
+  font-size: 16px;
+
+  font-weight: 900;
+`;
+
+const FormVisualText = styled.div`
+  margin-top: 4px;
+
+  color: rgba(255, 255, 255, 0.48);
+
+  font-size: 12px;
+
+  line-height: 1.5;
+`;
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
 const FooterNote = styled.div`
-  margin-top: 12px;
-  padding: 12px 14px;
-  border-radius: 12px 0 12px 0;
-  border: 1px solid ${(p) => p.$border};
-  background: ${(p) => p.$soft};
   display: flex;
-  gap: 10px;
+
   align-items: center;
-  font-size: 13px;
-  opacity: 0.92;
+
+  gap: 10px;
+
+  margin-top: 14px;
+
+  padding: 13px 15px;
+
+  border-radius: 17px 0 17px 0;
+
+  border: 1px solid ${(p) => p.$border};
+
+  background: ${(p) => p.$soft};
+
+  color: rgba(255, 255, 255, 0.62);
+
+  font-size: 12px;
+
+  line-height: 1.5;
+
+  @media (max-width: 560px) {
+    align-items: flex-start;
+  }
 `;
 
 const FooterBadge = styled.span`
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  padding: 6px 10px;
+  flex: 0 0 auto;
+
+  padding: 6px 9px;
+
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(243, 111, 33, 0.14);
+
+  border: 1px solid
+    rgba(243, 111, 33, 0.18);
+
+  background:
+    rgba(243, 111, 33, 0.1);
+
   color: ${(p) => p.$accent};
+
+  font-size: 10px;
+
+  font-weight: 900;
+
+  letter-spacing: 0.08em;
 `;
 
-/* ===== Mobile Dock CTA ===== */
+/* =========================================================
+   MOBILE DOCK
+========================================================= */
+
 const MobileDock = styled.div`
   position: fixed;
+
   left: 12px;
   right: 12px;
   bottom: 12px;
+
   z-index: 50;
-  border-radius: 12px 0 12px 0;
+
+  border-radius: 17px 0 17px 0;
+
   border: 1px solid ${(p) => p.$border};
+
   background: ${(p) => p.$card};
+
   backdrop-filter: blur(16px);
-  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(16px);
+
+  box-shadow:
+    0 20px 70px rgba(0, 0, 0, 0.45);
 
   @media (min-width: 980px) {
     display: none;
@@ -1299,61 +2421,135 @@ const MobileDock = styled.div`
 
 const DockInner = styled.div`
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 12px;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    auto;
+
+  gap: 10px;
+
   align-items: center;
-  padding: 12px;
+
+  padding: 10px;
 `;
 
 const DockLeft = styled.div`
+  min-width: 0;
+
   display: grid;
+
   gap: 2px;
 `;
 
 const DockTitle = styled.div`
+  overflow: hidden;
+
+  color: #fff;
+
+  font-size: 12px;
+
   font-weight: 900;
-  font-size: 13px;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
 `;
 
 const DockMeta = styled.div`
-  font-size: 12px;
-  opacity: 0.78;
+  overflow: hidden;
+
+  color: rgba(255, 255, 255, 0.45);
+
+  font-size: 10px;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
 `;
 
-const DockRight = styled.div``;
+const DockRight = styled.div`
+  flex: 0 0 auto;
+`;
 
 const DockBtn = styled(PrimaryBtn)`
-  padding: 11px 12px;
-  font-size: 13px;
-  border-radius: 12px 0 12px 0;
+  min-height: 42px;
+
+  padding:
+    9px
+    11px;
+
+  border-radius: 13px 0 13px 0;
+
+  font-size: 11px;
+
+  white-space: nowrap;
 `;
 
-/* ===== Back to top ===== */
+/* =========================================================
+   BACK TO TOP
+========================================================= */
+
 const TopBtn = styled.button`
   position: fixed;
-  right: 14px;
-  bottom: 92px;
+
+  right: 15px;
+  bottom: 90px;
+
   z-index: 55;
+
   width: 44px;
   height: 44px;
-  border-radius: 12px 0 12px 0;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(0, 0, 0, 0.3);
-  color: rgba(255, 255, 255, 0.92);
+
   display: grid;
   place-items: center;
-  cursor: pointer;
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
 
-  opacity: ${(p) => (p.$show ? 1 : 0)};
-  pointer-events: ${(p) => (p.$show ? "auto" : "none")};
+  border-radius: 13px 0 13px 0;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.13);
+
+  background: rgba(0, 0, 0, 0.34);
+
+  color: rgba(255, 255, 255, 0.9);
+
+  cursor: pointer;
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.32);
+
+  opacity: ${(p) =>
+    p.$show ? 1 : 0};
+
+  pointer-events: ${(p) =>
+    p.$show ? "auto" : "none"};
+
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+
+    background:
+      rgba(243, 111, 33, 0.18);
+  }
 
   &:focus-visible {
-    outline: 2px solid ${(p) => p.$accent};
-    outline-offset: 2px;
+    outline: 2px solid
+      ${(p) => p.$accent};
+
+    outline-offset: 3px;
   }
 
   @media (min-width: 980px) {
-    bottom: 16px;
+    bottom: 18px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
   }
 `;

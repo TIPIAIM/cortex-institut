@@ -15,8 +15,10 @@ const PartnersStrip = lazy(() => import("./PartnersStrip"));
 const TestimonialsWall = lazy(() => import("./Temoignàge"));
 const RealisationsZigzag = lazy(() => import("./RealisationsZigzag"));
 const FinalBandCTA = lazy(() => import("./FinalBandCTA"));
+const CortexHolding = lazy(() => import("../CortexHolding/CortexHolding"));
 
 /* ===================== FX légers ===================== */
+
 const shimmer = keyframes`
   0% { background-position: -180% 0; }
   100% { background-position: 180% 0; }
@@ -161,6 +163,7 @@ function HomeBase() {
 
       {/* Above the fold, non-lazy */}
       <HeroIntro />
+
 
       {/* Below the fold : monté à l’apparition + lazy + suspense */}
       <SectionWrap as="section" aria-label="Pourquoi CORTEX">
