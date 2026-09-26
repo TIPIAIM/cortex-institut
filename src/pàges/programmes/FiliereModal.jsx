@@ -20,27 +20,19 @@ import { openProgrammeContactModal } from "./programmeContact";
 const cleanTitle = (value = "") => value.replace(/^\d{1,2}\.\s*/i, "");
 
 const visualMap = {
-  "management-business": () =>
-    imagess?.mànegem || imagess?.DirecteurInstitutCortex1,
+  "management-business": () => imagess?.mànegem || imagess?.DirecteurInstitutCortex1,
   "logistique-supply-chain": () =>
     imagess?.loreàt || imagess?.Responsablecommercialegroupe2,
   "digital-technologie-ia": () => imagess?.ingénierie || imagess?.àutàbleàu,
-  "industrie-mines-operations": () =>
-    imagess?.bàtiment || imagess?.DirecteurduGroupe4,
-  "agribusiness-economie-verte": () =>
-    imagess?.loreàt || imagess?.DirecteurInstitutCortex2,
-  "projet-conseil": () =>
-    imagess?.àutàbleàu || imagess?.Responsablecommercialegroupe2,
-  "finance-comptabilite-banque": () =>
-    imagess?.finànce || imagess?.DirecteurduGroupe4,
-  "finance-management-public": () =>
-    imagess?.finànce || imagess?.DirecteurduGroupe1,
+  "industrie-mines-operations": () => imagess?.bàtiment || imagess?.DirecteurduGroupe4,
+  "agribusiness-economie-verte": () => imagess?.loreàt || imagess?.DirecteurInstitutCortex2,
+  "projet-conseil": () => imagess?.àutàbleàu || imagess?.Responsablecommercialegroupe2,
+  "finance-comptabilite-banque": () => imagess?.finànce || imagess?.DirecteurduGroupe4,
+  "finance-management-public": () => imagess?.finànce || imagess?.DirecteurduGroupe1,
 };
 
 function visualFor(school) {
-  return (
-    visualMap[school?.slug]?.() || imagess?.loreàt || "/img/cortex-logo.png"
-  );
+  return visualMap[school?.slug]?.() || imagess?.loreàt || "/img/cortex-logo.png";
 }
 
 function ProgramContent({ program, reduceMotion, catalogue, school }) {
@@ -50,7 +42,7 @@ function ProgramContent({ program, reduceMotion, catalogue, school }) {
       initial={reduceMotion ? false : { opacity: 0, y: 8 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.12 }}
-      transition={{ duration: reduceMotion ? 0 : 0.28 }}
+      transition={{ duration: reduceMotion ? 0 : .28 }}
     >
       <ProgramHead>
         <div>
@@ -298,12 +290,10 @@ export default function FiliereModal({ open, onClose, catalogue, school }) {
                 initial={reduceMotion ? false : { opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.08 }}
-                transition={{ duration: reduceMotion ? 0 : 0.3 }}
+                transition={{ duration: reduceMotion ? 0 : .3 }}
               >
                 <BlockHead>
-                  <BlockNumber>
-                    {String(index + 1).padStart(2, "0")}
-                  </BlockNumber>
+                  <BlockNumber>{String(index + 1).padStart(2, "0")}</BlockNumber>
                   <div>
                     <BlockKicker>BLOC DE COMPÉTENCES</BlockKicker>
                     <BlockTitle>{block.title}</BlockTitle>
@@ -382,8 +372,8 @@ export default function FiliereModal({ open, onClose, catalogue, school }) {
 
             {school.slug === "finance-management-public" && (
               <SourceNote>
-                <Landmark size={17} /> Cette offre figure dans le catalogue
-                Cortex Executive Academy.
+                <Landmark size={17} /> Cette offre figure dans le catalogue Cortex
+                Executive Academy.
               </SourceNote>
             )}
           </Body>
@@ -422,16 +412,14 @@ const Shell = styled.div`
   min-width: 0;
   min-height: 100%;
   overflow-x: clip;
+  box-sizing: border-box;
   overflow-wrap: anywhere;
   color: ${colors.text};
-  background: radial-gradient(
-      620px 380px at 100% 0%,
-      rgba(243, 111, 33, 0.055),
-      transparent 68%
-    ),
+  background:
+    radial-gradient(620px 380px at 100% 0%, rgba(243,111,33,.055), transparent 68%),
     linear-gradient(180deg, ${colors.bg}, ${colors.bgSoft});
 `;
-//blur
+
 const Hero = styled.header`
   display: grid;
   grid-template-columns: 1fr;
@@ -439,28 +427,25 @@ const Hero = styled.header`
     "visual"
     "copy";
   width: 100%;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255,255,255,.08);
   background: linear-gradient(135deg, ${colors.bg1}, ${colors.bg});
 
   /* Desktop : vrai bandeau plein écran. Aucun max-height : aucun texte n'est coupé. */
   @media (min-width: 1081px) {
-    grid-template-columns: minmax(0, 1.12fr) minmax(420px, 0.88fr);
+    grid-template-columns: minmax(0, 52%) minmax(0, 48%);
     grid-template-areas: "copy visual";
     align-items: stretch;
-     min-height: 360px;
+    min-height: clamp(340px, 42vh, 480px);
     border-radius: 0;
     overflow: visible;
-    background: radial-gradient(
-        980px 420px at 0% 0%,
-        rgba(42, 75, 124, 0.24),
-        transparent 70%
-      ),
+    background:
+      radial-gradient(980px 420px at 0% 0%, rgba(42,75,124,.24), transparent 70%),
       linear-gradient(135deg, ${colors.bg1}, ${colors.bg});
   }
 
   @media (min-width: 1600px) {
-    grid-template-columns: minmax(0, 1.18fr) minmax(520px, 0.82fr);
-    min-height: 390px;
+    grid-template-columns: minmax(0, 54%) minmax(0, 46%);
+    min-height: clamp(380px, 44vh, 520px);
   }
 `;
 
@@ -469,14 +454,15 @@ const HeroCopy = styled.div`
   position: relative;
   z-index: 2;
   min-width: 0;
- 
+  padding: 22px 14px 24px;
+
   h1 {
     max-width: 920px;
     margin: 13px 0 0;
     color: ${colors.text};
     font-size: clamp(28px, 8vw, 42px);
     line-height: 1.03;
-    letter-spacing: -0.04em;
+    letter-spacing: -.04em;
     overflow-wrap: anywhere;
   }
 
@@ -492,13 +478,13 @@ const HeroCopy = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: clamp(42px, 5vw, 78px) clamp(44px, 6vw, 96px);
+    padding: clamp(34px, 4vh, 58px) clamp(28px, 3vw, 56px);
 
     h1 {
       max-width: none;
-      font-size: clamp(40px, 4.1vw, 68px);
+      font-size: clamp(38px, 3.6vw, 62px);
       line-height: 1.01;
-      letter-spacing: -0.047em;
+      letter-spacing: -.047em;
     }
   }
 `;
@@ -518,12 +504,12 @@ const CatalogueBadge = styled.span`
   padding: 7px 9px;
   border-radius: 999px;
   color: ${colors.accentGold3};
-  border: 1px solid rgba(243, 111, 33, 0.28);
-  background: rgba(243, 111, 33, 0.08);
+  border: 1px solid rgba(243,111,33,.28);
+  background: rgba(243,111,33,.08);
   font-size: 10px;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: .07em;
 `;
 
 const Duration = styled.span`
@@ -558,7 +544,7 @@ const Summary = styled.p`
   }
 
   @media (min-width: 1081px) {
-    max-width: none;
+    max-width: 900px;
     font-size: 16px;
     line-height: 1.72;
   }
@@ -606,20 +592,20 @@ const HeroApply = styled.button`
   gap: 8px;
   padding: 0 14px;
   border-radius: 15px 0 15px 0;
-  border: 1px solid rgba(243, 111, 33, 0.78);
+  border: 1px solid rgba(243,111,33,.78);
   color: ${colors.bg};
   background: ${colors.accentGold};
   font-size: 12px;
   font-weight: 950;
-  box-shadow: 0 14px 32px rgba(243, 111, 33, 0.18);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  box-shadow: 0 14px 32px rgba(243,111,33,.18);
+  transition: transform .18s ease, box-shadow .18s ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 
   &:hover,
   &:focus-visible {
     transform: translateY(-2px);
-    box-shadow: 0 18px 38px rgba(243, 111, 33, 0.24);
+    box-shadow: 0 18px 38px rgba(243,111,33,.24);
     outline: none;
   }
 
@@ -650,8 +636,8 @@ const Stat = styled.span`
   gap: 6px;
   padding: 9px 10px;
   border-radius: 14px 0 14px 0;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255,255,255,.09);
+  background: rgba(255,255,255,.04);
 
   svg,
   strong {
@@ -700,13 +686,13 @@ const HeroVisual = styled.div`
 
   @media (min-width: 1081px) {
     align-self: stretch;
-    min-height: 360px;
+    min-height: clamp(340px, 42vh, 480px);
     max-height: none;
     aspect-ratio: auto;
 
     img {
-      min-height: 360px;
-      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      min-height: clamp(340px, 42vh, 480px);
+      transition: transform .6s cubic-bezier(.22,1,.36,1);
     }
 
     &:hover img {
@@ -715,10 +701,10 @@ const HeroVisual = styled.div`
   }
 
   @media (min-width: 1600px) {
-    min-height: 390px;
+    min-height: clamp(380px, 44vh, 520px);
 
     img {
-      min-height: 390px;
+      min-height: clamp(380px, 44vh, 520px);
     }
   }
 `;
@@ -727,20 +713,14 @@ const VisualShade = styled.div`
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(
-      180deg,
-      rgba(7, 23, 39, 0.06),
-      rgba(4, 9, 18, 0.58)
-    ),
-    radial-gradient(
-      460px 220px at 0% 50%,
-      rgba(13, 29, 74, 0.3),
-      transparent 72%
-    );
+  background:
+    linear-gradient(180deg, rgba(7,23,39,.06), rgba(4,9,18,.58)),
+    radial-gradient(460px 220px at 0% 50%, rgba(13,29,74,.3), transparent 72%);
 
   @media (min-width: 901px) {
-    background: linear-gradient(90deg, rgba(7, 23, 39, 0.44), transparent 48%),
-      linear-gradient(180deg, transparent 48%, rgba(4, 9, 18, 0.55));
+    background:
+      linear-gradient(90deg, rgba(7,23,39,.44), transparent 48%),
+      linear-gradient(180deg, transparent 48%, rgba(4,9,18,.55));
   }
 `;
 
@@ -755,7 +735,7 @@ const VisualSeal = styled.span`
   border-radius: 16px 0 16px 0;
   color: ${colors.bg};
   background: ${colors.accentGold};
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
+  box-shadow: 0 14px 34px rgba(0,0,0,.28);
 
   @media (min-width: 641px) {
     right: 20px;
@@ -772,12 +752,12 @@ const MobileQuickNav = styled.nav`
   z-index: 12;
   display: block;
   width: 100%;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(7, 23, 39, 0.94);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: rgba(7,23,39,.94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 
-  @media (min-width: 1081px) {
+  @media (min-width: 900px) {
     display: none;
   }
 `;
@@ -806,9 +786,9 @@ const MobileQuickLink = styled.a`
   gap: 7px;
   padding: 0 11px;
   border-radius: 12px 0 12px 0;
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255,255,255,.09);
   color: ${colors.muted};
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(255,255,255,.035);
   font-size: 10px;
   line-height: 1.2;
   font-weight: 800;
@@ -825,7 +805,7 @@ const MobileQuickLink = styled.a`
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(243, 111, 33, 0.35);
+    outline: 2px solid rgba(243,111,33,.35);
     outline-offset: 2px;
   }
 `;
@@ -846,22 +826,22 @@ const ContentLayout = styled.div`
     gap: 18px;
   }
 
-  /* Desktop : largeur plein écran réelle.
-     La respiration vient des paddings internes, pas d'un max-width. */
-  @media (min-width: 1081px) {
+  /* Tablette / desktop : surface réellement plein écran.
+     Aucune largeur maximale ; seulement un gutter de sécurité. */
+  @media (min-width: 900px) {
     width: 100%;
     max-width: none;
     margin: 0;
-    grid-template-columns: clamp(280px, 18vw, 330px) minmax(0, 1fr);
-    gap: clamp(28px, 2.4vw, 46px);
-    padding: clamp(30px, 3.2vw, 54px) clamp(28px, 3.2vw, 64px) 84px;
+    grid-template-columns: clamp(250px, 20vw, 310px) minmax(0, 1fr);
+    gap: clamp(18px, 2vw, 34px);
+    padding: clamp(22px, 2.4vw, 38px) clamp(18px, 2.2vw, 34px) 72px;
   }
 
-  @media (min-width: 1600px) {
-    grid-template-columns: clamp(300px, 17vw, 350px) minmax(0, 1fr);
-    gap: clamp(34px, 2.6vw, 52px);
-    padding-left: clamp(40px, 3.5vw, 72px);
-    padding-right: clamp(40px, 3.5vw, 72px);
+  @media (min-width: 1440px) {
+    grid-template-columns: clamp(285px, 18vw, 340px) minmax(0, 1fr);
+    gap: clamp(24px, 2.2vw, 40px);
+    padding-left: clamp(24px, 2.4vw, 46px);
+    padding-right: clamp(24px, 2.4vw, 46px);
   }
 `;
 
@@ -869,7 +849,7 @@ const SideRail = styled.aside`
   display: none;
   min-width: 0;
 
-  @media (min-width: 1081px) {
+  @media (min-width: 900px) {
     display: block;
     position: sticky;
     top: 24px;
@@ -884,17 +864,14 @@ const RailCard = styled.nav`
   max-height: calc(100dvh - 48px);
   overflow: auto;
   overscroll-behavior: contain;
-  border: 1px solid rgba(255, 255, 255, 0.085);
+  border: 1px solid rgba(255,255,255,.085);
   border-radius: 24px 0 24px 0;
-  background: linear-gradient(
-    180deg,
-    rgba(13, 29, 74, 0.88),
-    rgba(7, 23, 39, 0.78)
-  );
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
+  background:
+    linear-gradient(180deg, rgba(13,29,74,.88), rgba(7,23,39,.78));
+  box-shadow: 0 18px 48px rgba(0,0,0,.18);
   backdrop-filter: blur(16px);
   scrollbar-width: thin;
-  scrollbar-color: rgba(243, 111, 33, 0.36) transparent;
+  scrollbar-color: rgba(243,111,33,.36) transparent;
 `;
 
 const RailTitle = styled.div`
@@ -902,7 +879,7 @@ const RailTitle = styled.div`
   color: ${colors.accentGold};
   font-size: 11px;
   font-weight: 900;
-  letter-spacing: 0.1em;
+  letter-spacing: .1em;
   text-transform: uppercase;
 `;
 
@@ -914,12 +891,12 @@ const RailLink = styled.a`
   padding: 9px 10px;
   border-radius: 12px 0 12px 0;
   color: ${colors.muted};
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(255,255,255,.025);
   font-size: 11px;
   line-height: 1.42;
   white-space: normal;
   overflow-wrap: anywhere;
-  transition: color 0.16s ease, background 0.16s ease, transform 0.16s ease;
+  transition: color .16s ease, background .16s ease, transform .16s ease;
 
   > span {
     color: ${colors.accentGold};
@@ -929,7 +906,7 @@ const RailLink = styled.a`
   &:hover,
   &:focus-visible {
     color: ${colors.text};
-    background: rgba(243, 111, 33, 0.07);
+    background: rgba(243,111,33,.07);
     transform: translateX(2px);
     outline: none;
   }
@@ -945,17 +922,17 @@ const RailApply = styled.button`
   gap: 7px;
   padding: 10px;
   border-radius: 13px 0 13px 0;
-  border: 1px solid rgba(243, 111, 33, 0.68);
+  border: 1px solid rgba(243,111,33,.68);
   color: ${colors.bg};
   background: ${colors.accentGold};
   font-size: 11px;
   font-weight: 950;
-  transition: transform 0.16s ease, box-shadow 0.16s ease;
+  transition: transform .16s ease, box-shadow .16s ease;
 
   &:hover,
   &:focus-visible {
     transform: translateY(-1px);
-    box-shadow: 0 10px 24px rgba(243, 111, 33, 0.18);
+    box-shadow: 0 10px 24px rgba(243,111,33,.18);
     outline: none;
   }
 `;
@@ -968,9 +945,9 @@ const BackButton = styled.button`
   gap: 7px;
   padding: 10px;
   border-radius: 13px 0 13px 0;
-  border: 1px solid rgba(243, 111, 33, 0.24);
+  border: 1px solid rgba(243,111,33,.24);
   color: ${colors.accentGold};
-  background: rgba(243, 111, 33, 0.07);
+  background: rgba(243,111,33,.07);
   cursor: pointer;
   font-size: 11px;
   font-weight: 850;
@@ -986,8 +963,8 @@ const Body = styled.div`
     gap: 18px;
   }
 
-  @media (min-width: 1081px) {
-    gap: 24px;
+  @media (min-width: 900px) {
+    gap: 22px;
   }
 
   & * {
@@ -998,35 +975,28 @@ const Body = styled.div`
 const Block = styled.section`
   scroll-margin-top: 64px;
   min-width: 0;
-  border: 1px solid rgba(255, 255, 255, 0.085);
+  border: 1px solid rgba(255,255,255,.085);
   border-radius: 18px 0 18px 0;
   padding: 15px 12px;
   background: linear-gradient(
     145deg,
-    rgba(255, 255, 255, 0.045),
-    rgba(255, 255, 255, 0.015)
+    rgba(255,255,255,.045),
+    rgba(255,255,255,.015)
   );
 
   @media (min-width: 641px) {
     border-radius: 24px 0 24px 0;
-    padding: clamp(18px, 3vw, 28px);
+    padding: clamp(18px,3vw,28px);
   }
 
-  @media (min-width: 1081px) {
+  @media (min-width: 900px) {
     scroll-margin-top: 24px;
     padding: 26px 28px 30px;
     border-radius: 26px 0 26px 0;
-    background: radial-gradient(
-        520px 180px at 0% 0%,
-        rgba(42, 75, 124, 0.11),
-        transparent 72%
-      ),
-      linear-gradient(
-        145deg,
-        rgba(255, 255, 255, 0.04),
-        rgba(255, 255, 255, 0.018)
-      );
-    box-shadow: 0 14px 38px rgba(0, 0, 0, 0.1);
+    background:
+      radial-gradient(520px 180px at 0% 0%, rgba(42,75,124,.11), transparent 72%),
+      linear-gradient(145deg, rgba(255,255,255,.04), rgba(255,255,255,.018));
+    box-shadow: 0 14px 38px rgba(0,0,0,.10);
   }
 `;
 
@@ -1066,7 +1036,7 @@ const BlockKicker = styled.span`
   color: ${colors.accentGold3};
   font-size: 8px;
   font-weight: 900;
-  letter-spacing: 0.11em;
+  letter-spacing: .11em;
 `;
 
 const BlockTitle = styled.h3`
@@ -1091,7 +1061,7 @@ const ProgramList = styled.div`
   grid-template-columns: minmax(0, 1fr);
   gap: 10px;
 
-  @media (min-width: 1540px) {
+  @media (min-width: 1280px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
   }
@@ -1100,9 +1070,9 @@ const ProgramList = styled.div`
 const ProgramCard = styled.article`
   min-width: 0;
   padding: 14px 11px;
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255,255,255,.07);
   border-radius: 16px 0 16px 0;
-  background: rgba(7, 23, 39, 0.46);
+  background: rgba(7,23,39,.46);
 
   @media (min-width: 641px) {
     padding: 16px;
@@ -1111,14 +1081,13 @@ const ProgramCard = styled.article`
 
   @media (min-width: 1081px) {
     padding: 18px;
-    background: rgba(7, 23, 39, 0.52);
-    transition: border-color 0.2s ease, transform 0.2s ease,
-      background 0.2s ease;
+    background: rgba(7,23,39,.52);
+    transition: border-color .2s ease, transform .2s ease, background .2s ease;
 
     &:hover {
       transform: translateY(-2px);
-      border-color: rgba(243, 111, 33, 0.18);
-      background: rgba(7, 23, 39, 0.64);
+      border-color: rgba(243,111,33,.18);
+      background: rgba(7,23,39,.64);
     }
   }
 `;
@@ -1142,7 +1111,7 @@ const ProgramLabel = styled.span`
   color: ${colors.accentGold3};
   font-size: 9px;
   font-weight: 900;
-  letter-spacing: 0.11em;
+  letter-spacing: .11em;
 `;
 
 const ProgramTitle = styled.h4`
@@ -1174,22 +1143,21 @@ const ProgramAction = styled.button`
   gap: 7px;
   padding: 9px 11px;
   border-radius: 13px 0 13px 0;
-  border: 1px solid rgba(243, 111, 33, 0.26);
+  border: 1px solid rgba(243,111,33,.26);
   color: ${colors.accentGold};
-  background: rgba(243, 111, 33, 0.055);
+  background: rgba(243,111,33,.055);
   font-size: 11px;
   line-height: 1.25;
   font-weight: 900;
-  transition: transform 0.16s ease, border-color 0.16s ease,
-    background 0.16s ease;
+  transition: transform .16s ease, border-color .16s ease, background .16s ease;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 
   &:hover,
   &:focus-visible {
     transform: translateY(-1px);
-    border-color: rgba(243, 111, 33, 0.5);
-    background: rgba(243, 111, 33, 0.09);
+    border-color: rgba(243,111,33,.5);
+    background: rgba(243,111,33,.09);
     outline: none;
   }
 
@@ -1205,7 +1173,7 @@ const ModuleGrid = styled.div`
   gap: 7px;
 
   @media (min-width: 761px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2,minmax(0,1fr));
     gap: 8px;
   }
 
@@ -1223,7 +1191,7 @@ const Module = styled.div`
   padding: 10px;
   border-radius: 12px;
   color: ${colors.muted};
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(255,255,255,.025);
   font-size: 12px;
   line-height: 1.48;
   overflow-wrap: anywhere;
@@ -1262,12 +1230,12 @@ const Pathways = styled.section`
   scroll-margin-top: 64px;
   min-width: 0;
   padding: 15px 12px;
-  border: 1px solid rgba(243, 111, 33, 0.18);
+  border: 1px solid rgba(243,111,33,.18);
   border-radius: 18px 0 18px 0;
-  background: rgba(243, 111, 33, 0.035);
+  background: rgba(243,111,33,.035);
 
   @media (min-width: 641px) {
-    padding: clamp(18px, 3vw, 28px);
+    padding: clamp(18px,3vw,28px);
     border-radius: 24px 0 24px 0;
   }
 
@@ -1295,7 +1263,7 @@ const PathGrid = styled.div`
   gap: 7px;
 
   @media (min-width: 761px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2,minmax(0,1fr));
     gap: 8px;
   }
 
@@ -1313,7 +1281,7 @@ const Path = styled.div`
   align-items: start;
   padding: 10px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(255,255,255,.035);
   color: ${colors.text};
   font-size: 12px;
   line-height: 1.45;
@@ -1337,11 +1305,11 @@ const LevelGrid = styled.div`
   gap: 8px;
 
   @media (min-width: 701px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2,minmax(0,1fr));
   }
 
   @media (min-width: 1260px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3,minmax(0,1fr));
     gap: 10px;
   }
 `;
@@ -1349,9 +1317,9 @@ const LevelGrid = styled.div`
 const Level = styled.article`
   min-width: 0;
   padding: 13px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255,255,255,.08);
   border-radius: 15px 0 15px 0;
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(255,255,255,.025);
 
   b {
     display: block;
@@ -1389,8 +1357,8 @@ const LevelIcon = styled.span`
   place-items: center;
   border-radius: 12px 0 12px 0;
   color: ${colors.accentGold};
-  background: rgba(243, 111, 33, 0.08);
-  border: 1px solid rgba(243, 111, 33, 0.18);
+  background: rgba(243,111,33,.08);
+  border: 1px solid rgba(243,111,33,.18);
 `;
 
 const SourceNote = styled.div`
@@ -1400,9 +1368,9 @@ const SourceNote = styled.div`
   gap: 8px;
   padding: 12px;
   border-radius: 14px 0 14px 0;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255,255,255,.08);
   color: ${colors.muted};
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(255,255,255,.025);
   font-size: 12px;
   line-height: 1.45;
 
@@ -1418,15 +1386,17 @@ const MobileActionBar = styled.div`
   bottom: 0;
   display: block;
   width: 100%;
-  padding: 8px max(10px, env(safe-area-inset-right, 0px))
+  padding:
+    8px
+    max(10px, env(safe-area-inset-right, 0px))
     max(8px, env(safe-area-inset-bottom, 0px))
     max(10px, env(safe-area-inset-left, 0px));
-  border-top: 1px solid rgba(255, 255, 255, 0.09);
-  background: rgba(7, 23, 39, 0.94);
+  border-top: 1px solid rgba(255,255,255,.09);
+  background: rgba(7,23,39,.94);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 
-  @media (min-width: 1081px) {
+  @media (min-width: 900px) {
     display: none;
   }
 `;
@@ -1448,13 +1418,13 @@ const MobileApply = styled.button`
   gap: 7px;
   padding: 0 14px;
   border-radius: 14px 0 14px 0;
-  border: 1px solid rgba(243, 111, 33, 0.72);
+  border: 1px solid rgba(243,111,33,.72);
   color: ${colors.bg};
   background: ${colors.accentGold};
   font-size: 12px;
   font-weight: 950;
   cursor: pointer;
-  box-shadow: 0 10px 26px rgba(243, 111, 33, 0.18);
+  box-shadow: 0 10px 26px rgba(243,111,33,.18);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 `;
@@ -1467,12 +1437,13 @@ const MobileBack = styled.button`
   gap: 6px;
   padding: 0 13px;
   border-radius: 14px 0 14px 0;
-  border: 1px solid rgba(255, 255, 255, 0.11);
+  border: 1px solid rgba(255,255,255,.11);
   color: ${colors.text};
-  background: rgba(255, 255, 255, 0.045);
+  background: rgba(255,255,255,.045);
   font-size: 11px;
   font-weight: 850;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 `;
+

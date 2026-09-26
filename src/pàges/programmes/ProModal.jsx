@@ -32,33 +32,20 @@ export default function ProModal({
     if (!open || typeof document === "undefined") return undefined;
 
     lastActiveRef.current = document.activeElement;
-
     const html = document.documentElement;
     const body = document.body;
     const previous = {
       htmlOverflow: html.style.overflow,
       bodyOverflow: body.style.overflow,
       bodyPaddingRight: body.style.paddingRight,
-      overscrollBehavior: html.style.overscrollBehavior,
     };
-
     const scrollbarWidth = window.innerWidth - html.clientWidth;
 
     html.style.overflow = "hidden";
-    html.style.overscrollBehavior = "none";
     body.style.overflow = "hidden";
+    if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`;
 
-    if (scrollbarWidth > 0) {
-      body.style.paddingRight = `${scrollbarWidth}px`;
-    }
-
-    const timer = window.setTimeout(() => {
-      closeRef.current?.focus({ preventScroll: true });
-      panelRef.current?.querySelector("[data-modal-scroll]")?.scrollTo?.({
-        top: 0,
-        behavior: "auto",
-      });
-    }, 35);
+    const timer = window.setTimeout(() => closeRef.current?.focus(), 30);
 
     const onKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -69,13 +56,10 @@ export default function ProModal({
 
       if (event.key !== "Tab" || !panelRef.current) return;
 
-      const focusables = [
-        ...panelRef.current.querySelectorAll(FOCUSABLE),
-      ].filter(
+      const focusables = [...panelRef.current.querySelectorAll(FOCUSABLE)].filter(
         (node) =>
           !node.hasAttribute("disabled") &&
-          node.getAttribute("aria-hidden") !== "true" &&
-          node.getClientRects().length > 0
+          node.getAttribute("aria-hidden") !== "true"
       );
 
       if (!focusables.length) return;
@@ -98,16 +82,13 @@ export default function ProModal({
       window.clearTimeout(timer);
       window.removeEventListener("keydown", onKeyDown);
       html.style.overflow = previous.htmlOverflow;
-      html.style.overscrollBehavior = previous.overscrollBehavior;
       body.style.overflow = previous.bodyOverflow;
       body.style.paddingRight = previous.bodyPaddingRight;
-      lastActiveRef.current?.focus?.({ preventScroll: true });
+      lastActiveRef.current?.focus?.();
     };
   }, [open]);
 
   if (typeof document === "undefined") return null;
-
-  const requestClose = () => onCloseRef.current?.();
 
   return createPortal(
     <AnimatePresence>
@@ -116,12 +97,12 @@ export default function ProModal({
           <Overlay
             type="button"
             aria-label="Fermer la fenêtre"
-            onClick={requestClose}
+            onClick={onClose}
             as={motion.button}
             initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={reduceMotion ? undefined : { opacity: 0 }}
-            transition={{ duration: reduceMotion ? 0 : 0.18 }}
+            transition={{ duration: reduceMotion ? 0 : .18 }}
           />
 
           <Wrapper $full={fullScreen}>
@@ -137,26 +118,15 @@ export default function ProModal({
               initial={
                 reduceMotion
                   ? false
-                  : {
-                      opacity: 0,
-                      y: fullScreen ? 8 : 18,
-                      scale: fullScreen ? 1 : 0.985,
-                    }
+                  : { opacity: 0, y: 18, scale: fullScreen ? 1 : 0.985 }
               }
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={
                 reduceMotion
                   ? undefined
-                  : {
-                      opacity: 0,
-                      y: fullScreen ? 6 : 12,
-                      scale: fullScreen ? 1 : 0.985,
-                    }
+                  : { opacity: 0, y: 12, scale: fullScreen ? 1 : 0.985 }
               }
-              transition={{
-                duration: reduceMotion ? 0 : 0.22,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+              transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
             >
               <AccentLine aria-hidden="true" />
 
@@ -168,21 +138,17 @@ export default function ProModal({
                 <Close
                   ref={closeRef}
                   type="button"
-                  onClick={requestClose}
+                  onClick={onClose}
                   aria-label="Fermer"
                   as={motion.button}
-                  whileHover={
-                    reduceMotion ? undefined : { rotate: 4, scale: 1.04 }
-                  }
-                  whileTap={reduceMotion ? undefined : { scale: 0.92 }}
+                  whileHover={reduceMotion ? undefined : { rotate: 4, scale: 1.04 }}
+                  whileTap={reduceMotion ? undefined : { scale: .92 }}
                 >
                   <X size={20} />
                 </Close>
               </Header>
 
-              <Content id={describedById} data-modal-scroll>
-                {children}
-              </Content>
+              <Content id={describedById}>{children}</Content>
             </Panel>
           </Wrapper>
         </Layer>
@@ -196,9 +162,6 @@ const Layer = styled.div`
   position: fixed;
   inset: 0;
   z-index: 1000;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
 `;
 
 const Overlay = styled.button`
@@ -209,9 +172,7 @@ const Overlay = styled.button`
   border: 0;
   background: rgba(4, 9, 18, 0.76);
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   cursor: default;
-  touch-action: none;
 `;
 
 const Wrapper = styled.div`
@@ -219,51 +180,39 @@ const Wrapper = styled.div`
   inset: 0;
   display: grid;
   place-items: center;
-  padding: ${({ $full }) => ($full ? "0" : "6px")};
+  padding: ${({ $full }) => ($full ? "0" : "18px")};
   pointer-events: none;
-
-  @media (min-width: 641px) {
-    padding: ${({ $full }) => ($full ? "0" : "18px")};
-  }
 `;
 
 const Panel = styled.section`
   position: relative;
   pointer-events: auto;
-  min-width: 0;
-  width: ${({ $full, $maxWidth }) =>
-    $full ? "100%" : `min(calc(100% - 4px), ${$maxWidth}px)`};
-  height: ${({ $full }) => ($full ? "100vh" : "auto")};
-  height: ${({ $full }) => ($full ? "100dvh" : "auto")};
-  max-height: ${({ $full }) => ($full ? "100dvh" : "calc(100dvh - 12px)")};
+  width: min(100%, ${({ $maxWidth }) => `${$maxWidth}px`});
+  max-height: min(94dvh, 1040px);
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: ${({ $full }) => ($full ? "0" : "20px 0 20px 0")};
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 26px 0 26px 0;
   background:
-    radial-gradient(
-      680px 360px at 100% 0%,
-      rgba(243, 111, 33, 0.09),
-      transparent 62%
-    ),
+    radial-gradient(680px 360px at 100% 0%, rgba(243,111,33,.09), transparent 62%),
     linear-gradient(145deg, ${colors.bgSoft}, ${colors.bg});
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.58);
-  contain: layout paint;
-
-  @media (min-width: 641px) {
-    width: min(100%, ${({ $maxWidth }) => `${$maxWidth}px`});
-    max-height: ${({ $full }) =>
-      $full ? "100dvh" : "min(94dvh, 1040px)"};
-    border-radius: ${({ $full }) => ($full ? "0" : "26px 0 26px 0")};
-  }
+  box-shadow: 0 38px 100px rgba(0,0,0,.58);
 
   ${({ $full }) =>
     $full &&
     css`
+      /* Plein écran réel : le panneau n'est plus limité par le wrapper. */
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100dvh;
       max-width: none;
       max-height: none;
+      margin: 0;
       border: 0;
+      border-radius: 0;
+      box-shadow: none;
     `}
 `;
 
@@ -275,12 +224,7 @@ const AccentLine = styled.div`
   width: 100%;
   height: 3px;
   pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    ${colors.accentGold},
-    ${colors.accentGold3},
-    transparent 78%
-  );
+  background: linear-gradient(90deg, ${colors.accentGold}, ${colors.accentGold3}, transparent 78%);
 `;
 
 const Header = styled.header`
@@ -289,74 +233,49 @@ const Header = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  min-height: 58px;
-  padding:
-    max(10px, env(safe-area-inset-top, 0px))
-    max(10px, env(safe-area-inset-right, 0px))
-    9px
-    max(12px, env(safe-area-inset-left, 0px));
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(13, 29, 74, 0.92);
+  gap: 16px;
+  min-height: 66px;
+  padding: 12px clamp(16px, 3vw, 28px);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: rgba(13,29,74,.86);
   backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-
-  @media (min-width: 641px) {
-    min-height: 66px;
-    gap: 16px;
-    padding: 12px clamp(16px, 3vw, 28px);
-  }
 `;
 
 const Title = styled.h2`
   margin: 0;
   min-width: 0;
-  color: ${colors.text};
-  font-size: 14px;
-  line-height: 1.25;
-  font-weight: 850;
   overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-
-  @media (min-width: 641px) {
-    font-size: clamp(15px, 2vw, 20px);
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    display: block;
-  }
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: ${colors.text};
+  font-size: clamp(15px, 2vw, 20px);
+  font-weight: 850;
 `;
 
 const Close = styled.button`
   flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
-  border-radius: 15px 0 15px 0;
-  border: 1px solid rgba(243, 111, 33, 0.34);
+  border-radius: 14px 0 14px 0;
+  border: 1px solid rgba(243,111,33,.32);
   color: ${colors.accentGold};
-  background: rgba(14, 26, 43, 0.96);
+  background: rgba(14,26,43,.92);
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
 
   &:focus-visible {
-    outline: 3px solid rgba(243, 111, 33, 0.22);
-    outline-offset: 2px;
+    outline: 3px solid rgba(243,111,33,.2);
+    outline-offset: 3px;
   }
 `;
 
 const Content = styled.div`
+  width: 100%;
   min-width: 0;
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: auto;
   overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
   scrollbar-gutter: stable;
   scroll-behavior: smooth;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  touch-action: pan-y;
 `;
