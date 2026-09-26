@@ -2,10 +2,10 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import { Eye, Calendar, Users, ArrowRight, ExternalLink, Star } from "lucide-react";
 import colors from "../../Styles/colors";
 import { imagess } from "../../assets/imagess";
+import { openProgrammeContactModal } from "../programmes/programmeContact.js";
 
 // Animations
 const fadeInUp = {
@@ -236,7 +236,9 @@ const Actions = styled(motion.div)`
 
  
 
-const SecondaryButton = styled(Link)`
+const SecondaryButton = styled.button`
+  appearance: none;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -397,7 +399,15 @@ export default function RealisationsZigzag({
               <Actions
                 variants={contentHover}
               >                
-                <SecondaryButton to="/contact">
+                <SecondaryButton
+                  type="button"
+                  onClick={() =>
+                    openProgrammeContactModal({
+                      intent: "information",
+                      source: "realisations-zigzag",
+                    })
+                  }
+                >
                   <ExternalLink size={18} />
                   Nous contacter
                 </SecondaryButton>

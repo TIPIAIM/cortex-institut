@@ -3,12 +3,13 @@ import React from "react";
 import styled from "styled-components";
 import { motion } from "framer-motion";
 import {
-  Sparkles,
+  
   GraduationCap,
   BriefcaseBusiness,
   TrendingUp,
   ArrowRight,
   BadgeCheck,
+  BookAlert,
 } from "lucide-react";
 import colors from "../../Styles/colors";
 import { imagess } from "../../assets/imagess";
@@ -51,7 +52,7 @@ const ContextSection = () => {
           viewport={{ once: true, amount: 0.2 }}
         >
           <Eyebrow>
-            <Sparkles size={16} />
+            <BookAlert size={16} />
             Campus Cortex
           </Eyebrow>
 

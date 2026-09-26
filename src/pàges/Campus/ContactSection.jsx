@@ -10,8 +10,8 @@ import {
   Download,
   ArrowUpRight,
   BadgeCheck,
-  Sparkles,
-  FileText,
+   FileText,
+  BookAIcon,
 } from "lucide-react";
 import colors from "../../Styles/colors";
 
@@ -85,7 +85,7 @@ const ContactSection = () => {
             transition={{ duration: 0.45 }}
             viewport={{ once: true, amount: 0.2 }}
           >
-            <Sparkles size={15} />
+            <BookAIcon size={15} />
             Campus Cortex
           </Eyebrow>
 

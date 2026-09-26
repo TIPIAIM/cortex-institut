@@ -18,7 +18,7 @@ import {
   ExternalLink,
   ArrowUpRight,
   Layers,
-  Sparkles,
+  BookCheck,
 } from "lucide-react";
 
 import colors from "../../Styles/colors";
@@ -378,7 +378,7 @@ const CREDUCPage = () => {
 
                 <TitleContent>
                   <Eyebrow>
-                    <Sparkles size={13} />
+                    <BookCheck size={13} />
                     Institut Cortex
                   </Eyebrow>
 

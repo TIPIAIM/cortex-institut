@@ -19,6 +19,7 @@ import {
   X,
 } from "lucide-react";
 import colors from "../../Styles/colors";
+import { openProgrammeContactModal } from "../programmes/programmeContact.js";
 
 /* ===================== Animations ===================== */
 const fadeGrid = keyframes`
@@ -150,7 +151,12 @@ const Line = styled(motion.div)`
     color: ${colors.accentGold};
     flex-shrink: 0;
   }
-  a {
+  a,
+  button {
+    appearance: none;
+    padding: 0;
+    border: 0;
+    background: transparent;
     color: ${colors.text};
     text-decoration: none;
     border-bottom: 1px dashed #27406666;
@@ -165,16 +171,24 @@ const Line = styled(motion.div)`
 const LinkList = styled.div`
   display: grid;
   gap: 8px;
-  a {
+  a,
+  button {
+    appearance: none;
+    padding: 0;
+    border: 0;
+    background: transparent;
     color: ${colors.text};
     text-decoration: none;
     font-size: 0.95rem;
     border-bottom: 1px dashed transparent;
     width: fit-content;
   }
-  a:hover {
+  a:hover,
+  button:hover,
+  button:focus-visible {
     border-bottom-color: #27406688;
     color: ${colors.accentGold};
+    outline: none;
   }
 `;
 
@@ -542,9 +556,17 @@ export default function Footer() {
               <a href="/apropos">
                 <Users size={14} style={{ marginRight: 6 }} /> À propos
               </a>
-              <a href="/contact">
+              <button
+                type="button"
+                onClick={() =>
+                  openProgrammeContactModal({
+                    intent: "information",
+                    source: "footer-contact",
+                  })
+                }
+              >
                 <Mail size={14} style={{ marginRight: 6 }} /> Contact
-              </a>
+              </button>
             </LinkList>
           </Column>
 

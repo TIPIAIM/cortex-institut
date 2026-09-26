@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {  MessageCircle, Star, ArrowRight, Users, Award, Aperture } from "lucide-react";
 import colors from "../../Styles/colors";
+import { openProgrammeContactModal } from "../programmes/programmeContact.js";
 
 // Animations
 const fadeInUp = {
@@ -197,6 +198,7 @@ const CTAGhost = styled(motion(Link))`
   font-weight: 800;
   font-size: 16px;
   text-decoration: none;
+  cursor: pointer;
   transition: all 0.3s ease;
   background: transparent;
   color: ${colors.text};
@@ -291,8 +293,15 @@ export default function FinalBandCTA() {
             <ArrowRight size={18} />
           </CTA>
           
-          <CTAGhost 
-            to="/contact"
+          <CTAGhost
+            as="button"
+            type="button"
+            onClick={() =>
+              openProgrammeContactModal({
+                intent: "information",
+                source: "home-final-cta",
+              })
+            }
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

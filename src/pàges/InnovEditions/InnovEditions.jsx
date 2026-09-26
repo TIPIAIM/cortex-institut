@@ -16,7 +16,7 @@ import {
   Mail,
   PenLine,
   Send,
-  Sparkles,
+  BookCheck,
   Truck,
 } from "lucide-react";
 import colors from "../../Styles/colors";
@@ -60,7 +60,7 @@ const MAIN_ACTIVITIES = [
     text: "Développement de supports de formation numérique pour accompagner les nouveaux usages de l’apprentissage.",
   },
   {
-    icon: Sparkles,
+    icon: BookCheck,
     title: "Événements littéraires et éducatifs",
     text: "Organisation d’événements littéraires et éducatifs pour promouvoir l’éducation et la culture.",
   },
@@ -167,7 +167,7 @@ const InnovEditionsSection = () => {
         <Hero>
           <HeroContent>
             <Eyebrow>
-              <Sparkles size={15} aria-hidden="true" />
+              <BookCheck size={15} aria-hidden="true" />
               INNOV ÉDITIONS
             </Eyebrow>
 
@@ -275,7 +275,7 @@ const InnovEditionsSection = () => {
 
         <SectionHeader>
           <SectionKicker>
-            <Sparkles size={15} aria-hidden="true" />
+            <BookCheck size={15} aria-hidden="true" />
             Nos activités
           </SectionKicker>
 

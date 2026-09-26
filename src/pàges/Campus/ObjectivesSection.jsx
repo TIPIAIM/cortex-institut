@@ -6,10 +6,11 @@ import {
   Target,
   Users,
   TrendingUp,
-  Sparkles,
+  
   BadgeCheck,
   ArrowRight,
   ShieldCheck,
+  BookCheck,
 } from "lucide-react";
 import colors from "../../Styles/colors";
 
@@ -72,7 +73,7 @@ const ObjectivesSection = () => {
             transition={{ duration: 0.45 }}
             viewport={{ once: true, amount: 0.2 }}
           >
-            <Sparkles size={15} />
+            <BookCheck size={15} />
             Campus Cortex
           </Eyebrow>
 

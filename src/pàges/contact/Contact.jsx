@@ -499,7 +499,7 @@ export default function ContactCortex() {
       <ContactHero
         title="Contact — Institut CORTEX+"
         subtitle="Programmes, certifications, partenariats : décrivez votre besoin, nous répondons sous 24–48h ouvrées."
-        email="contact@cortex.com"
+        email="contact@institut-cortex.com"
         phone="+224 623 21 19 74"
         whatsapp="+224 623 21 19 74"
       />
@@ -516,8 +516,7 @@ export default function ContactCortex() {
       <Wrap>
         {/* Header avec description */}
         <Head>
-          <Title>Institut CORTEX</Title>
-          <Lead>
+           <Lead>
             Décrivez votre besoin (programmes, certifications, partenariats,
             recherche appliquée). Notre équipe vous répond sous 24–48h ouvrées.
           </Lead>
@@ -544,24 +543,24 @@ export default function ContactCortex() {
                   <div>
                     <b style={{ color: colors.semygprimar }}>Commerciale</b>
                     <br />
-{     /*               <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
-*/}                  </div>
+                    <a href={`mailto:${EMAIL}`}>{EMAIL}</a>
+                  </div>
                 </Item>
                 <Item>
                   <Mail size={20} />
                   <div>
                     <b style={{ color: colors.semygprimar }}>Direction</b>
                     <br />
-{    /*                <a href={`mailto:${EMAILl}`}>{EMAILl}</a>
-*/}                  </div>
+                    <a href={`mailto:${EMAILl}`}>{EMAILl}</a>
+                  </div>
                 </Item>
                 <Item>
                   <Phone size={20} />
                   <div>
                     <b style={{ color: colors.semygprimar }}>Téléphone</b>
                     <br />
-{ /*                   <a href={`tel:${PHONE}`}>{PHONE}</a>
-*/}                  </div>
+                    <a href={`tel:${PHONE}`}>{PHONE}</a>
+                  </div>
                 </Item>
                 <Item>
                   <MapPin size={20} />
@@ -714,7 +713,6 @@ export default function ContactCortex() {
               </Field>
 
               <Actions>
-{/*
                 <Submit
                   type="submit"
                   disabled={sending || !isValid || !online}
@@ -729,7 +727,6 @@ export default function ContactCortex() {
                     ? "Envoyer"
                     : "Hors ligne"}
                 </Submit>
-                */}
               </Actions>
             </Form>
           </DeferInView>

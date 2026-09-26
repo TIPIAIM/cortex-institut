@@ -1,0 +1,1049 @@
+import { useCallback, useEffect, useMemo, useState } from "react";
+import styled from "styled-components";
+import { motion, useReducedMotion } from "framer-motion";
+import { send } from "@emailjs/browser";
+import {
+  ArrowRight,
+  BadgeCheck,
+  BookOpen,
+  BriefcaseBusiness,
+  CheckCircle2,
+  GraduationCap,
+  Mail,
+  MessageCircle,
+  Phone,
+  Send,
+  
+  UsersRound,
+} from "lucide-react";
+import colors from "../../Styles/colors";
+import ProModal from "./ProModal";
+import { catalogues, getCatalogueSchools } from "./filieres.data";
+import { CONTACT_MODAL_EVENT, flattenSchoolPrograms } from "./programmeContact";
+
+const EMAILJS = {
+  serviceId: import.meta.env.VITE_EMAILJS_SERVICE_IDC,
+  templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_IDC,
+  publicKey: import.meta.env.VITE_EMAILJS_USER_IDC,
+};
+
+const CONTACT = {
+  email: "commerciale@institut-cortex.com",
+  phone: "+224623211974",
+  whatsapp: "+224623211974",
+};
+
+const INTENTS = [
+  {
+    id: "inscription",
+    label: "Inscription",
+    helper: "Je veux rejoindre un programme",
+    icon: GraduationCap,
+  },
+  {
+    id: "information",
+    label: "Être conseillé(e)",
+    helper: "J’ai besoin d’orientation",
+    icon: MessageCircle,
+  },
+  {
+    id: "partenariat",
+    label: "Partenariat",
+    helper: "Je représente une organisation",
+    icon: BriefcaseBusiness,
+  },
+];
+
+const sanitize = (value = "") =>
+  String(value)
+    .replace(/<[^>]*>?/gm, "")
+    .replace(/\u00A0/g, " ");
+
+const validEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+const validPhone = (value) => !value || /^[\d()+.\-\s]{6,}$/.test(value);
+
+function getInitialForm(detail = {}) {
+  return {
+    intent: detail.intent || "information",
+    catalogueId: detail.catalogueId || "",
+    schoolSlug: detail.schoolSlug || "",
+    programTitle: detail.programTitle || "",
+    name: "",
+    email: "",
+    phone: "",
+    organisation: "",
+    message: "",
+    robot: "",
+  };
+}
+
+export default function ContactAdmissionModal() {
+  const reduceMotion = useReducedMotion();
+  const [open, setOpen] = useState(false);
+  const [source, setSource] = useState("site");
+  const [form, setForm] = useState(() => getInitialForm());
+  const [touched, setTouched] = useState({});
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const handleOpen = (event) => {
+      const detail = event?.detail || {};
+      setSource(detail.source || "site");
+      setForm(getInitialForm(detail));
+      setTouched({});
+      setSent(false);
+      setError("");
+      setOpen(true);
+    };
+
+    window.addEventListener(CONTACT_MODAL_EVENT, handleOpen);
+    return () => window.removeEventListener(CONTACT_MODAL_EVENT, handleOpen);
+  }, []);
+
+  const activeCatalogue = useMemo(
+    () =>
+      catalogues.find((catalogue) => catalogue.id === form.catalogueId) || null,
+    [form.catalogueId]
+  );
+
+  const schools = useMemo(
+    () => getCatalogueSchools(activeCatalogue),
+    [activeCatalogue]
+  );
+
+  const selectedSchool = useMemo(
+    () => schools.find((school) => school.slug === form.schoolSlug) || null,
+    [schools, form.schoolSlug]
+  );
+
+  const programs = useMemo(
+    () => flattenSchoolPrograms(selectedSchool),
+    [selectedSchool]
+  );
+
+  useEffect(() => {
+    if (!form.schoolSlug) return;
+    if (!schools.some((school) => school.slug === form.schoolSlug)) {
+      setForm((prev) => ({ ...prev, schoolSlug: "", programTitle: "" }));
+    }
+  }, [schools, form.schoolSlug]);
+
+  useEffect(() => {
+    if (!form.programTitle) return;
+    if (!programs.some((program) => program.title === form.programTitle)) {
+      setForm((prev) => ({ ...prev, programTitle: "" }));
+    }
+  }, [programs, form.programTitle]);
+
+  const selectedIntent =
+    INTENTS.find((intent) => intent.id === form.intent) || INTENTS[1];
+
+  const contextLabel = useMemo(() => {
+    const values = [
+      activeCatalogue?.shortLabel,
+      selectedSchool?.title,
+      form.programTitle,
+    ].filter(Boolean);
+    return values.join(" · ");
+  }, [activeCatalogue, selectedSchool, form.programTitle]);
+
+  const subject = useMemo(() => {
+    if (form.intent === "inscription") {
+      return `Demande d'inscription${
+        form.programTitle ? ` — ${form.programTitle}` : ""
+      }`;
+    }
+    if (form.intent === "partenariat") return "Demande de partenariat";
+    return `Demande d'information${
+      selectedSchool?.title ? ` — ${selectedSchool.title}` : ""
+    }`;
+  }, [form.intent, form.programTitle, selectedSchool]);
+
+  const isValid = useMemo(() => {
+    const base =
+      form.name.trim().length >= 2 &&
+      validEmail(form.email) &&
+      validPhone(form.phone) &&
+      form.robot === "";
+
+    if (!base) return false;
+    if (form.intent === "inscription") return Boolean(form.catalogueId);
+    if (form.intent === "partenariat")
+      return form.organisation.trim().length >= 2;
+    return true;
+  }, [form]);
+
+  const setValue = (name, value) => {
+    const clean = sanitize(value);
+
+    setForm((prev) => {
+      if (name === "catalogueId") {
+        return {
+          ...prev,
+          catalogueId: clean,
+          schoolSlug: "",
+          programTitle: "",
+        };
+      }
+      if (name === "schoolSlug") {
+        return { ...prev, schoolSlug: clean, programTitle: "" };
+      }
+      if (name === "phone") {
+        return { ...prev, phone: clean.replace(/[^\d()+.\-\s]/g, "") };
+      }
+      return { ...prev, [name]: clean };
+    });
+  };
+
+  const closeModal = useCallback(() => {
+    if (sending) return;
+    setOpen(false);
+  }, [sending]);
+
+  const markAllTouched = () => {
+    setTouched({
+      name: true,
+      email: true,
+      phone: true,
+      organisation: true,
+    });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError("");
+
+    if (!isValid) {
+      markAllTouched();
+      setError("Vérifiez les informations obligatoires avant l’envoi.");
+      return;
+    }
+
+    if (!EMAILJS.serviceId || !EMAILJS.templateId || !EMAILJS.publicKey) {
+      setError(
+        "La configuration d’envoi n’est pas disponible. Utilisez WhatsApp ou contactez directement l’Institut Cortex."
+      );
+      return;
+    }
+
+    setSending(true);
+
+    try {
+      const details = [
+        `Type de demande : ${selectedIntent.label}`,
+        activeCatalogue?.shortLabel
+          ? `Profil / catalogue : ${activeCatalogue.shortLabel}`
+          : "",
+        selectedSchool?.title ? `Grande École : ${selectedSchool.title}` : "",
+        form.programTitle ? `Parcours : ${form.programTitle}` : "",
+        form.organisation ? `Organisation : ${form.organisation}` : "",
+        form.message ? `Message : ${form.message}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n");
+
+      await send(
+        EMAILJS.serviceId,
+        EMAILJS.templateId,
+        {
+          name: form.name,
+          email: form.email,
+          phone: form.phone || "N/A",
+          subject,
+          message: details,
+          intent: form.intent,
+          catalogue: activeCatalogue?.shortLabel || "",
+          school: selectedSchool?.title || "",
+          program: form.programTitle || "",
+          organisation: form.organisation || "",
+          source,
+          origin: typeof window !== "undefined" ? window.location.href : "app",
+        },
+        EMAILJS.publicKey
+      );
+
+      setSent(true);
+    } catch (err) {
+      setError(
+        err?.text ||
+          err?.message ||
+          "L’envoi n’a pas abouti. Vous pouvez utiliser WhatsApp immédiatement."
+      );
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const whatsappMessage = useMemo(() => {
+    const lines = [
+      "Bonjour Institut Cortex,",
+      `Je souhaite : ${selectedIntent.label.toLowerCase()}.`,
+      activeCatalogue?.shortLabel
+        ? `Profil : ${activeCatalogue.shortLabel}.`
+        : "",
+      selectedSchool?.title ? `Grande École : ${selectedSchool.title}.` : "",
+      form.programTitle ? `Parcours : ${form.programTitle}.` : "",
+      form.name ? `Nom : ${form.name}.` : "",
+      form.phone ? `Téléphone : ${form.phone}.` : "",
+    ].filter(Boolean);
+
+    return encodeURIComponent(lines.join("\n"));
+  }, [activeCatalogue, selectedIntent, selectedSchool, form]);
+
+  return (
+    <ProModal
+      open={open}
+      onClose={closeModal}
+      title={
+        sent ? "Demande transmise" : "Contact & admission — Institut Cortex"
+      }
+      labelledById="cortex-contact-modal-title"
+      describedById="cortex-contact-modal-desc"
+    >
+      <ModalBody id="cortex-contact-modal-desc">
+        {sent ? (
+          <SuccessPanel
+            as={motion.div}
+            initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <SuccessIcon>
+              <CheckCircle2 size={34} />
+            </SuccessIcon>
+            <SuccessKicker>PREMIER ÉCHANGE DÉCLENCHÉ</SuccessKicker>
+            <SuccessTitle>Votre demande a bien été envoyée.</SuccessTitle>
+            <SuccessText>
+              Notre équipe dispose déjà du contexte de votre demande
+              {contextLabel ? ` : ${contextLabel}` : ""}. Vous pouvez fermer
+              cette fenêtre et poursuivre votre navigation.
+            </SuccessText>
+            <SuccessActions>
+              <PrimaryButton type="button" onClick={closeModal}>
+                Continuer à explorer
+                <ArrowRight size={17} />
+              </PrimaryButton>
+              <WhatsAppButton
+                href={`https://wa.me/${CONTACT.whatsapp.replace(
+                  /\D/g,
+                  ""
+                )}?text=${whatsappMessage}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageCircle size={17} />
+                WhatsApp
+              </WhatsAppButton>
+            </SuccessActions>
+          </SuccessPanel>
+        ) : (
+          <Layout>
+            <IntroPanel>
+              <IntroTop>
+                <div>
+                  <Eyebrow>PREMIER CONTACT CORTEX</Eyebrow>
+                  <IntroTitle>Votre projet commence ici.</IntroTitle>
+                </div>
+              </IntroTop>
+
+              <IntroText>
+                Vous restez sur la page que vous consultez. Nous récupérons le
+                contexte de votre choix pour que l’équipe Cortex puisse vous
+                répondre plus rapidement.
+              </IntroText>
+
+              <IntentGrid role="group" aria-label="Type de demande">
+                {INTENTS.map(({ id, label, helper, icon: Icon }) => (
+                  <IntentButton
+                    key={id}
+                    type="button"
+                    $active={form.intent === id}
+                    aria-pressed={form.intent === id}
+                    onClick={() => setValue("intent", id)}
+                  >
+                    <motion.span
+                      animate={
+                        !reduceMotion && form.intent === id
+                          ? { scale: [1, 1.08, 1] }
+                          : undefined
+                      }
+                      transition={{ duration: 0.45 }}
+                    >
+                      <Icon size={18} />
+                    </motion.span>
+                    <span>
+                      <b>{label}</b>
+                      <small>{helper}</small>
+                    </span>
+                  </IntentButton>
+                ))}
+              </IntentGrid>
+
+              <ContextCard>
+                <ContextHead>
+                  <BadgeCheck size={17} />
+                  Contexte transmis
+                </ContextHead>
+                <ContextLine>
+                  <span>Profil</span>
+                  <b>{activeCatalogue?.shortLabel || "À définir"}</b>
+                </ContextLine>
+                <ContextLine>
+                  <span>Grande École</span>
+                  <b>{selectedSchool?.title || "À définir"}</b>
+                </ContextLine>
+                <ContextLine>
+                  <span>Parcours</span>
+                  <b>{form.programTitle || "À définir"}</b>
+                </ContextLine>
+              </ContextCard>
+
+              <DirectLinks>
+                <a href={`tel:${CONTACT.phone}`}>
+                  <Phone size={16} /> Appeler
+                </a>
+                <a href={`mailto:${CONTACT.email}`}>
+                  <Mail size={16} /> E-mail
+                </a>
+                <a
+                  href={`https://wa.me/${CONTACT.whatsapp.replace(
+                    /\D/g,
+                    ""
+                  )}?text=${whatsappMessage}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <MessageCircle size={16} /> WhatsApp
+                </a>
+              </DirectLinks>
+            </IntroPanel>
+
+            <Form onSubmit={handleSubmit} noValidate>
+              {form.intent !== "partenariat" && (
+                <SelectionBlock>
+                  <BlockLabel>
+                    <BookOpen size={16} /> Votre orientation
+                  </BlockLabel>
+                  <SelectGrid>
+                    <Field>
+                      <span>Profil / catalogue</span>
+                      <Select
+                        value={form.catalogueId}
+                        onChange={(event) =>
+                          setValue("catalogueId", event.target.value)
+                        }
+                      >
+                        <option value="">Choisir mon profil</option>
+                        {catalogues.map((catalogue) => (
+                          <option key={catalogue.id} value={catalogue.id}>
+                            {catalogue.shortLabel} — {catalogue.title}
+                          </option>
+                        ))}
+                      </Select>
+                    </Field>
+
+                    <Field>
+                      <span>Grande École</span>
+                      <Select
+                        value={form.schoolSlug}
+                        onChange={(event) =>
+                          setValue("schoolSlug", event.target.value)
+                        }
+                      >
+                        <option value="">Je souhaite être orienté(e)</option>
+                        {schools.map((school) => (
+                          <option key={school.slug} value={school.slug}>
+                            {school.title}
+                          </option>
+                        ))}
+                      </Select>
+                    </Field>
+
+                    <Field $wide>
+                      <span>Parcours / programme</span>
+                      <Select
+                        value={form.programTitle}
+                        onChange={(event) =>
+                          setValue("programTitle", event.target.value)
+                        }
+                        disabled={!selectedSchool}
+                      >
+                        <option value="">
+                          {selectedSchool
+                            ? "Je souhaite être conseillé(e) sur le parcours"
+                            : "Sélectionnez d’abord une Grande École"}
+                        </option>
+                        {programs.map((program) => (
+                          <option key={program.title} value={program.title}>
+                            {program.title}
+                          </option>
+                        ))}
+                      </Select>
+                    </Field>
+                  </SelectGrid>
+                </SelectionBlock>
+              )}
+
+              <BlockLabel>
+                <UsersRound size={16} /> Vos coordonnées
+              </BlockLabel>
+
+              <InputGrid>
+                <Field>
+                  <span>Nom complet *</span>
+                  <Input
+                    value={form.name}
+                    onChange={(event) => setValue("name", event.target.value)}
+                    onBlur={() =>
+                      setTouched((prev) => ({ ...prev, name: true }))
+                    }
+                    aria-invalid={Boolean(
+                      touched.name && form.name.trim().length < 2
+                    )}
+                    placeholder="Votre nom et prénom"
+                    autoComplete="name"
+                  />
+                </Field>
+
+                <Field>
+                  <span>E-mail *</span>
+                  <Input
+                    type="email"
+                    value={form.email}
+                    onChange={(event) => setValue("email", event.target.value)}
+                    onBlur={() =>
+                      setTouched((prev) => ({ ...prev, email: true }))
+                    }
+                    aria-invalid={Boolean(
+                      touched.email && !validEmail(form.email)
+                    )}
+                    placeholder="vous@email.com"
+                    autoComplete="email"
+                  />
+                </Field>
+
+                <Field>
+                  <span>Téléphone / WhatsApp</span>
+                  <Input
+                    value={form.phone}
+                    onChange={(event) => setValue("phone", event.target.value)}
+                    onBlur={() =>
+                      setTouched((prev) => ({ ...prev, phone: true }))
+                    }
+                    aria-invalid={Boolean(
+                      touched.phone && !validPhone(form.phone)
+                    )}
+                    placeholder="+224 ..."
+                    autoComplete="tel"
+                  />
+                </Field>
+
+                {form.intent === "partenariat" && (
+                  <Field>
+                    <span>Organisation *</span>
+                    <Input
+                      value={form.organisation}
+                      onChange={(event) =>
+                        setValue("organisation", event.target.value)
+                      }
+                      onBlur={() =>
+                        setTouched((prev) => ({ ...prev, organisation: true }))
+                      }
+                      aria-invalid={Boolean(
+                        touched.organisation &&
+                          form.organisation.trim().length < 2
+                      )}
+                      placeholder="Entreprise / institution"
+                    />
+                  </Field>
+                )}
+
+                <Field $wide>
+                  <span>Message complémentaire</span>
+                  <Textarea
+                    value={form.message}
+                    onChange={(event) =>
+                      setValue("message", event.target.value)
+                    }
+                    placeholder="Précisez votre besoin, vos disponibilités ou votre objectif professionnel…"
+                  />
+                </Field>
+              </InputGrid>
+
+              <Honeypot
+                tabIndex="-1"
+                autoComplete="off"
+                value={form.robot}
+                onChange={(event) => setValue("robot", event.target.value)}
+                aria-hidden="true"
+              />
+
+              {error && <ErrorBox role="alert">{error}</ErrorBox>}
+
+              <SubmitRow>
+                <SubmitHint>
+                  En envoyant, vous déclenchez le premier échange avec l’équipe
+                  Cortex. Aucun changement de page.
+                </SubmitHint>
+                <PrimaryButton type="submit" disabled={sending}>
+                  <Send size={17} />
+                  {sending ? "Envoi…" : "Envoyer"}
+                  {!sending && <ArrowRight size={16} />}
+                </PrimaryButton>
+              </SubmitRow>
+            </Form>
+          </Layout>
+        )}
+      </ModalBody>
+    </ProModal>
+  );
+}
+
+const ModalBody = styled.div`
+  color: ${colors.text};
+`;
+
+const Layout = styled.div`
+  display: grid;
+  grid-template-columns: minmax(250px, 0.78fr) minmax(0, 1.35fr);
+  gap: 18px;
+
+  @media (max-width: 820px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const IntroPanel = styled.aside`
+  position: relative;
+  overflow: hidden;
+  align-self: start;
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid rgba(243, 111, 33, 0.16);
+  border-radius: 22px 0 22px 0;
+  background: radial-gradient(
+      360px 180px at 10% 0%,
+      rgba(243, 111, 33, 0.13),
+      transparent 66%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.055),
+      rgba(255, 255, 255, 0.018)
+    );
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
+`;
+
+const IntroTop = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+`;
+
+const AnimatedBadge = styled.span`
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px 0 16px 0;
+  color: ${colors.bg};
+  background: ${colors.accentGold};
+  box-shadow: 0 12px 30px rgba(243, 111, 33, 0.22);
+`;
+
+const Eyebrow = styled.div`
+  color: ${colors.accentGold3};
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.13em;
+`;
+
+const IntroTitle = styled.h3`
+  margin: 5px 0 0;
+  color: ${colors.text};
+  font-size: clamp(18px, 4vw, 18px);
+  line-height: 1.03;
+  letter-spacing: -0.035em;
+`;
+
+const IntroText = styled.p`
+  margin: 0;
+  color: ${colors.muted};
+  line-height: 1.65;
+  font-size: 13px;
+`;
+
+const IntentGrid = styled.div`
+  display: grid;
+  gap: 8px;
+`;
+
+const IntentButton = styled.button`
+  width: 100%;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 10px 11px;
+  border: 1px solid
+    ${(p) => (p.$active ? colors.accentGold : "rgba(255,255,255,.10)")};
+  border-radius: 15px 0 15px 0;
+  background: ${(p) =>
+    p.$active ? "rgba(243,111,33,.10)" : "rgba(255,255,255,.025)"};
+  color: ${colors.text};
+  text-align: left;
+  cursor: pointer;
+  transition: 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-1px);
+    border-color: ${colors.accentGold};
+    outline: none;
+  }
+
+  > span:first-child {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px 0 12px 0;
+    color: ${(p) => (p.$active ? colors.bg : colors.accentGold)};
+    background: ${(p) =>
+      p.$active ? colors.accentGold : "rgba(243,111,33,.09)"};
+  }
+
+  > span:last-child {
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+  }
+
+  b {
+    font-size: 12px;
+  }
+
+  small {
+    color: ${colors.muted};
+    font-size: 10px;
+  }
+`;
+
+const ContextCard = styled.div`
+  display: grid;
+  gap: 9px;
+  padding: 13px;
+  border-radius: 16px 0 16px 0;
+  border: 1px solid rgba(42, 75, 124, 0.34);
+  background: ${colors.bg};
+`;
+
+const ContextHead = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: ${colors.accentGold};
+  font-size: 11px;
+  font-weight: 900;
+`;
+
+const ContextLine = styled.div`
+  display: grid;
+  grid-template-columns: 86px minmax(0, 1fr);
+  gap: 8px;
+  font-size: 10px;
+
+  span {
+    color: ${colors.muted};
+  }
+
+  b {
+    color: ${colors.text};
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`;
+
+const DirectLinks = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 0 10px;
+    border-radius: 12px 0 12px 0;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    color: ${colors.text};
+    background: rgba(255, 255, 255, 0.025);
+    text-decoration: none;
+    font-size: 10px;
+    font-weight: 800;
+  }
+
+  a:hover,
+  a:focus-visible {
+    border-color: ${colors.accentGold};
+    outline: none;
+  }
+`;
+
+const Form = styled.form`
+  min-width: 0;
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 0 22px 0 22px;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.045),
+    rgba(255, 255, 255, 0.015)
+  );
+`;
+
+const SelectionBlock = styled.div`
+  display: grid;
+  gap: 10px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+`;
+
+const BlockLabel = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: ${colors.accentGoldLight};
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+`;
+
+const SelectGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+
+  @media (max-width: 620px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const InputGrid = styled(SelectGrid)``;
+
+const Field = styled.label`
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  grid-column: ${(p) => (p.$wide ? "1 / -1" : "auto")};
+
+  > span {
+    color: ${colors.muted};
+    font-size: 10px;
+    font-weight: 800;
+  }
+`;
+
+const fieldStyles = `
+  width: 100%;
+  min-width: 0;
+  border-radius: 13px 0 13px 0;
+  border: 1px solid rgba(255,255,255,.11);
+  background: #0e1a2b;
+  color: #e8eef7;
+  outline: none;
+  transition: border-color .18s ease, box-shadow .18s ease;
+`;
+
+const Input = styled.input`
+  ${fieldStyles}
+  min-height: 43px;
+  padding: 0 12px;
+
+  &:focus {
+    border-color: ${colors.accentGold};
+    box-shadow: 0 0 0 3px rgba(243, 111, 33, 0.12);
+  }
+
+  &[aria-invalid="true"] {
+    border-color: #ff7b7b;
+  }
+`;
+
+const Select = styled.select`
+  ${fieldStyles}
+  min-height: 43px;
+  padding: 0 38px 0 12px;
+
+  &:focus {
+    border-color: ${colors.accentGold};
+    box-shadow: 0 0 0 3px rgba(243, 111, 33, 0.12);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+`;
+
+const Textarea = styled.textarea`
+  ${fieldStyles}
+  min-height: 105px;
+  resize: vertical;
+  padding: 11px 12px;
+  line-height: 1.55;
+
+  &:focus {
+    border-color: ${colors.accentGold};
+    box-shadow: 0 0 0 3px rgba(243, 111, 33, 0.12);
+  }
+`;
+
+const Honeypot = styled.input`
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+`;
+
+const ErrorBox = styled.div`
+  padding: 10px 12px;
+  border-radius: 12px 0 12px 0;
+  border: 1px solid rgba(255, 110, 110, 0.4);
+  background: rgba(156, 40, 40, 0.14);
+  color: #ffd1d1;
+  font-size: 11px;
+`;
+
+const SubmitRow = styled.div`
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 4px;
+
+  @media (max-width: 620px) {
+    align-items: stretch;
+    flex-direction: column;
+  }
+`;
+
+const SubmitHint = styled.p`
+  margin: 0;
+  max-width: 360px;
+  color: ${colors.muted};
+  font-size: 10px;
+  line-height: 1.5;
+`;
+
+const PrimaryButton = styled.button`
+  min-height: 45px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 15px;
+  border: 1px solid rgba(243, 111, 33, 0.7);
+  border-radius: 15px 0 15px 0;
+  color: ${colors.bg};
+  background: ${colors.accentGold};
+  font-weight: 950;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(243, 111, 33, 0.18);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 34px rgba(243, 111, 33, 0.24);
+    outline: none;
+  }
+
+  &:disabled {
+    opacity: 0.62;
+    cursor: wait;
+  }
+`;
+
+const WhatsAppButton = styled.a`
+  min-height: 45px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 15px;
+  border-radius: 15px 0 15px 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: ${colors.text};
+  background: rgba(255, 255, 255, 0.035);
+  text-decoration: none;
+  font-weight: 850;
+`;
+
+const SuccessPanel = styled.div`
+  min-height: 420px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  padding: clamp(28px, 7vw, 64px) 20px;
+  text-align: center;
+  border-radius: 22px 0 22px 0;
+  background: radial-gradient(
+      360px 220px at 50% 10%,
+      rgba(243, 111, 33, 0.13),
+      transparent 68%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.04),
+      rgba(255, 255, 255, 0.01)
+    );
+`;
+
+const SuccessIcon = styled.div`
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px 0 24px 0;
+  color: ${colors.bg};
+  background: ${colors.accentGold};
+  box-shadow: 0 18px 42px rgba(243, 111, 33, 0.22);
+`;
+
+const SuccessKicker = styled.div`
+  color: ${colors.accentGold3};
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.13em;
+`;
+
+const SuccessTitle = styled.h3`
+  margin: 0;
+  color: ${colors.text};
+  font-size: clamp(26px, 5vw, 42px);
+  letter-spacing: -0.04em;
+`;
+
+const SuccessText = styled.p`
+  margin: 0;
+  max-width: 620px;
+  color: ${colors.muted};
+  line-height: 1.7;
+`;
+
+const SuccessActions = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 8px;
+`;

@@ -4,7 +4,9 @@ import { NavLink, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronRight, ChevronDown } from "lucide-react";
 import { imagess } from "../../assets/imagess.js";
+import colors from "../../Styles/colors";
 import { filieres } from "./filieres.data.js";
+import { openProgrammeContactModal } from "./programmeContact.js";
 
 /** Liens principaux (CORTEX) */
 const navLinks = [
@@ -13,7 +15,7 @@ const navLinks = [
   { label: "Partenaires", to: "/#partenaires", anchor: true },
   { label: "Catalogues", to: "/catalogues" },
   { label: "À propos", to: "/a-propos" },
-  { label: "Contact", to: "/#contact", anchor: true },
+  { label: "Contact", to: "/contact", modal: true },
 ];
 
 export default function CortexMegaNavbar() {
@@ -122,6 +124,20 @@ export default function CortexMegaNavbar() {
                 <ChevronDown size={16} />
                 <Underline />
               </MegaTrigger>
+            ) : l.modal ? (
+              <ModalNavButton
+                key={l.label}
+                type="button"
+                onClick={() =>
+                  openProgrammeContactModal({
+                    intent: "information",
+                    source: "page-navigation-contact",
+                  })
+                }
+              >
+                {l.label}
+                <Underline />
+              </ModalNavButton>
             ) : l.anchor ? (
               <Anchor key={l.label} href={l.to}>
                 {l.label}
@@ -138,7 +154,17 @@ export default function CortexMegaNavbar() {
               </StyledNavLink>
             )
           )}
-          <Cta href="/inscription">S’inscrire</Cta>
+          <ContactCta
+            type="button"
+            onClick={() =>
+              openProgrammeContactModal({
+                intent: "inscription",
+                source: "page-navigation-cta",
+              })
+            }
+          >
+            S’inscrire
+          </ContactCta>
 
           {/* Mega menu */}
           <AnimatePresence>
@@ -239,6 +265,23 @@ export default function CortexMegaNavbar() {
                       title="Programmes"
                       idxStart={idx}
                     />
+                  ) : l.modal ? (
+                    <li key={l.label}>
+                      <button
+                        className="row"
+                        type="button"
+                        onClick={() => {
+                          setOpenMobile(false);
+                          openProgrammeContactModal({
+                            intent: "information",
+                            source: "page-navigation-mobile-contact",
+                          });
+                        }}
+                      >
+                        <span>{l.label}</span>
+                        <ChevronRight size={18} />
+                      </button>
+                    </li>
                   ) : l.anchor ? (
                     <li key={l.label}>
                       <a
@@ -269,9 +312,19 @@ export default function CortexMegaNavbar() {
                 <a href="/catalogues" className="ghost">
                   Voir les catalogues
                 </a>
-                <a href="/inscription" className="primary">
+                <button
+                  type="button"
+                  className="primary"
+                  onClick={() => {
+                    setOpenMobile(false);
+                    openProgrammeContactModal({
+                      intent: "inscription",
+                      source: "page-navigation-mobile-cta",
+                    });
+                  }}
+                >
                   S’inscrire
-                </a>
+                </button>
               </DrawerFoot>
             </Drawer>
           </>
@@ -413,6 +466,39 @@ const Anchor = styled.a`
   ${itemBase}
 `;
 
+const ModalNavButton = styled.button`
+  ${itemBase}
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+`;
+
+const ContactCta = styled.button`
+  appearance: none;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  border: 1px solid #d85f17;
+  border-radius: 14px 0 14px 0;
+  background: ${colors.accentGold};
+  color: ${colors.bg};
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 8px 22px rgba(243,111,33,.22);
+  transition: transform .16s ease, box-shadow .16s ease;
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 11px 28px rgba(243,111,33,.3);
+    outline: none;
+  }
+`;
+
 const Underline = styled.i`
   position: absolute;
   left: 10px;
@@ -423,7 +509,7 @@ const Underline = styled.i`
   opacity: 0;
   transform: translateY(3px);
   transition: opacity 0.2s ease, transform 0.2s ease;
-  ${StyledNavLink}:hover &, ${Anchor}:hover & {
+  ${StyledNavLink}:hover &, ${Anchor}:hover &, ${ModalNavButton}:hover & {
     opacity: 1;
     transform: translateY(0);
   }
@@ -583,6 +669,9 @@ const DrawerList = styled.ul`
   display: grid;
   gap: 6px;
   .row {
+    width: 100%;
+    font: inherit;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -606,7 +695,10 @@ const DrawerFoot = styled.div`
   gap: 8px;
   border-top: 1px solid #1f2c44;
   background: #0f223a;
-  a {
+  a,
+  button {
+    appearance: none;
+    cursor: pointer;
     text-align: center;
     padding: 12px 14px;
     border-radius: 12px;

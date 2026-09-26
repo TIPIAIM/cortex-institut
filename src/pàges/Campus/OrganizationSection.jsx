@@ -7,10 +7,11 @@ import {
   Clock,
   Users,
   Target,
-  Sparkles,
+  
   BadgeCheck,
   BriefcaseBusiness,
   ArrowRight,
+  BookCheck,
 } from "lucide-react";
 import colors from "../../Styles/colors";
 
@@ -92,7 +93,7 @@ const OrganizationSection = () => {
             transition={{ duration: 0.45 }}
             viewport={{ once: true, amount: 0.2 }}
           >
-            <Sparkles size={15} />
+            <BookCheck size={15} />
             Campus Cortex
           </Eyebrow>
 

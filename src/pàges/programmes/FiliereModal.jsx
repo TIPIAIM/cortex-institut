@@ -1,821 +1,930 @@
-import { useMemo } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import styled from "styled-components";
-import { motion } from "framer-motion";
-import colors from "../../Styles/colors";
-import ProModal from "./ProModal";
-import { imagess } from "../../assets/imagess";
 import {
-  BriefcaseBusiness,
-  Banknote,
-  Users,
-  ShieldCheck,
-  Cpu,
-  HeartPulse,
-  Building2,
-  Boxes,
-  Megaphone,
-  Layers,
-  Download,
-  ExternalLink,
-  Clock3,
-  BadgeCheck,
-  Target,
+  ArrowLeft,
   BookOpen,
-  Sparkles,
-  Files,
-  LayoutGrid,
-  ListChecks,
-  Info,
+  CheckCircle2,
+  Clock3,
+  GraduationCap,
+  Landmark,
+  Layers3,
+  Route,
+  BookCheck,
+  Send,
 } from "lucide-react";
+import colors from "../../Styles/colors";
+import { imagess } from "../../assets/imagess";
+import ProModal from "./ProModal";
+import { openProgrammeContactModal } from "./programmeContact";
 
-function cld(url, w = 1400) {
-  if (typeof url !== "string") return url;
-  if (!url.includes("res.cloudinary.com")) return url;
-  const sep = url.includes("?") ? "&" : "?";
-  return `${url}${sep}f_auto&q_auto&w=${w}`;
-}
+const cleanTitle = (value = "") => value.replace(/^\d{1,2}\.\s*/i, "");
 
-const iconMap = {
-  briefcase: BriefcaseBusiness,
-  banknote: Banknote,
-  users: Users,
-  shield: ShieldCheck,
-  cpu: Cpu,
-  "heart-pulse": HeartPulse,
-  "building-2": Building2,
-  boxes: Boxes,
-  megaphone: Megaphone,
+const visualMap = {
+  "management-business": () => imagess?.mànegem || imagess?.DirecteurInstitutCortex1,
+  "logistique-supply-chain": () =>
+    imagess?.loreàt || imagess?.Responsablecommercialegroupe2,
+  "digital-technologie-ia": () => imagess?.ingénierie || imagess?.àutàbleàu,
+  "industrie-mines-operations": () => imagess?.bàtiment || imagess?.DirecteurduGroupe4,
+  "agribusiness-economie-verte": () => imagess?.loreàt || imagess?.DirecteurInstitutCortex2,
+  "projet-conseil": () => imagess?.àutàbleàu || imagess?.Responsablecommercialegroupe2,
+  "finance-comptabilite-banque": () => imagess?.finànce || imagess?.DirecteurduGroupe4,
+  "finance-management-public": () => imagess?.finànce || imagess?.DirecteurduGroupe1,
 };
 
-export default function FiliereModal({ open, onClose, filiere }) {
-  const computed = useMemo(() => {
-    if (!filiere) return null;
+function visualFor(school) {
+  return visualMap[school?.slug]?.() || imagess?.loreàt || "/img/cortex-logo.png";
+}
 
-    const Icon = iconMap[filiere.iconName] || Layers;
-    const hero =
-      (filiere.heroKey && imagess?.[filiere.heroKey]) ||
-      imagess?.loreàt ||
-      "/img/placeholder.jpg";
+function ProgramContent({ program, reduceMotion, catalogue, school }) {
+  return (
+    <ProgramCard
+      as={motion.article}
+      initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.12 }}
+      transition={{ duration: reduceMotion ? 0 : .28 }}
+    >
+      <ProgramHead>
+        <div>
+          <ProgramLabel>PARCOURS</ProgramLabel>
+          <ProgramTitle>{program.title}</ProgramTitle>
+        </div>
+        {program.duration && (
+          <Duration>
+            <Clock3 size={14} /> {program.duration}
+          </Duration>
+        )}
+      </ProgramHead>
 
-    const detailedPrograms = filiere.programCards || [];
-    const fallbackPrograms = filiere.programs || [];
+      {!!program.sections?.length && (
+        <SectionStack>
+          {program.sections.map((section) => (
+            <SubSection key={section.title}>
+              <SubTitle>{section.title}</SubTitle>
+              <ModuleGrid>
+                {section.modules.map((item) => (
+                  <Module key={item}>
+                    <CheckIcon>
+                      <CheckCircle2 size={13} />
+                    </CheckIcon>
+                    <span>{item}</span>
+                  </Module>
+                ))}
+              </ModuleGrid>
+            </SubSection>
+          ))}
+        </SectionStack>
+      )}
 
-    return {
-      Icon,
-      hero,
-      detailedPrograms,
-      fallbackPrograms,
-      stats: [
-        {
-          label: "Programmes détaillés",
-          value: String(detailedPrograms.length),
-          icon: <Files size={16} />,
-        },
-        {
-          label: "Programmes listés",
-          value: String(fallbackPrograms.length),
-          icon: <LayoutGrid size={16} />,
-        },
-        {
-          label: "Mode",
-          value: filiere.meta?.mode || "—",
-          icon: <BadgeCheck size={16} />,
-        },
-        {
-          label: "Durée",
-          value: filiere.meta?.duration || "—",
-          icon: <Clock3 size={16} />,
-        },
-      ],
-      navItems: [
-        {
-          id: "modal-overview",
-          label: "Vue d’ensemble",
-          icon: <Info size={15} />,
-        },
-        {
-          id: "modal-programmes-detail",
-          label: "Programmes détaillés",
-          icon: <BookOpen size={15} />,
-        },
-        {
-          id: "modal-programmes-list",
-          label: "Liste complète",
-          icon: <ListChecks size={15} />,
-        },
-      ],
-    };
-  }, [filiere]);
+      {!!program.modules?.length && (
+        <ModuleGrid>
+          {program.modules.map((module) => (
+            <Module key={module}>
+              <CheckIcon>
+                <CheckCircle2 size={13} />
+              </CheckIcon>
+              <span>{module}</span>
+            </Module>
+          ))}
+        </ModuleGrid>
+      )}
 
-  if (!filiere || !computed) return null;
+      <ProgramAction
+        type="button"
+        onClick={() =>
+          openProgrammeContactModal({
+            catalogueId: catalogue?.id,
+            schoolSlug: school?.slug,
+            programTitle: program.title,
+            intent: "inscription",
+            source: "filiere-program-card",
+          })
+        }
+      >
+        <Send size={15} />
+        Démarrer l'inscription sur ce parcours
+      </ProgramAction>
+    </ProgramCard>
+  );
+}
 
-  const {
-    Icon,
-    hero,
-    detailedPrograms,
-    fallbackPrograms,
-    stats,
-    navItems,
-  } = computed;
+export default function FiliereModal({ open, onClose, catalogue, school }) {
+  const reduceMotion = useReducedMotion();
+
+  if (!catalogue || !school) return null;
+
+  const programCount = (school.blocks || []).reduce(
+    (sum, block) => sum + (block.programs?.length || 0),
+    0
+  );
+
+  const totalPathways = programCount || school.pathways?.length || 0;
 
   return (
     <ProModal
       open={open}
       onClose={onClose}
       fullScreen
-      title={filiere.title}
-      labelledById="filiere-modal-title"
-      describedById="filiere-modal-desc"
+      title={cleanTitle(school.title)}
+      labelledById="school-modal-title"
+      describedById="school-modal-content"
     >
-      <Wrap id="filiere-modal-desc">
-        <Layout>
-          <SideRail aria-label="Navigation rapide du modal">
+      <Shell id="school-modal-content">
+        <Hero>
+          <HeroCopy>
+            <HeroTop>
+              <CatalogueBadge>
+                <BookCheck size={13} /> {catalogue.shortLabel}
+              </CatalogueBadge>
+              {school.duration && (
+                <Duration>
+                  <Clock3 size={14} /> {school.duration}
+                </Duration>
+              )}
+            </HeroTop>
+
+            <h1>{cleanTitle(school.title)}</h1>
+            {school.schoolName && <SchoolName>{school.schoolName}</SchoolName>}
+            {school.summary && <Summary>{school.summary}</Summary>}
+
+            <Stats>
+              <Stat>
+                <Layers3 size={17} />
+                <strong>{school.blocks?.length || 0}</strong>
+                <span>blocs</span>
+              </Stat>
+              <Stat>
+                <Route size={17} />
+                <strong>{totalPathways}</strong>
+                <span>parcours</span>
+              </Stat>
+            </Stats>
+
+            <HeroActions>
+              <HeroApply
+                type="button"
+                onClick={() =>
+                  openProgrammeContactModal({
+                    catalogueId: catalogue?.id,
+                    schoolSlug: school?.slug,
+                    intent: "inscription",
+                    source: "filiere-hero",
+                  })
+                }
+              >
+                <Send size={17} />
+                Postuler / être contacté
+              </HeroApply>
+              <HeroHint>Votre Grande École sera déjà sélectionnée.</HeroHint>
+            </HeroActions>
+          </HeroCopy>
+
+          <HeroVisual>
+            <img
+              src={visualFor(school)}
+              alt=""
+              aria-hidden="true"
+              loading="eager"
+              decoding="async"
+            />
+            <VisualShade />
+            <VisualSeal
+              as={motion.span}
+              animate={
+                reduceMotion
+                  ? undefined
+                  : { y: [0, -6, 0], rotate: [0, -4, 0, 4, 0] }
+              }
+              transition={
+                reduceMotion
+                  ? undefined
+                  : { duration: 5, repeat: Infinity, ease: "easeInOut" }
+              }
+            >
+              <GraduationCap size={25} />
+            </VisualSeal>
+          </HeroVisual>
+        </Hero>
+
+        <ContentLayout>
+          <SideRail aria-label="Navigation de l'école">
             <RailCard>
-              <RailTitle>
-                <Layers size={16} />
-                Navigation rapide
-              </RailTitle>
-
-              <RailNav>
-                {navItems.map((item) => (
-                  <RailLink key={item.id} href={`#${item.id}`}>
-                    {item.icon}
-                    <span>{item.label}</span>
-                  </RailLink>
-                ))}
-              </RailNav>
-
-              <RailHint>
-                Utilise ces raccourcis pour accéder plus vite aux sections.
-              </RailHint>
+              <RailTitle>Navigation rapide</RailTitle>
+              <RailLink href="#school-content-start">
+                <BookOpen size={15} /> Contenu
+              </RailLink>
+              {(school.blocks || []).map((block, index) => (
+                <RailLink key={block.title} href={`#block-${index + 1}`}>
+                  <span>{String(index + 1).padStart(2, "0")}</span>
+                  {cleanTitle(block.title)}
+                </RailLink>
+              ))}
+              {!!school.pathways?.length && (
+                <RailLink href="#school-pathways">
+                  <Route size={15} /> Parcours
+                </RailLink>
+              )}
+              {!!school.qualificationLevels?.length && (
+                <RailLink href="#school-levels">
+                  <GraduationCap size={15} /> Niveaux
+                </RailLink>
+              )}
+              <RailApply
+                type="button"
+                onClick={() =>
+                  openProgrammeContactModal({
+                    catalogueId: catalogue?.id,
+                    schoolSlug: school?.slug,
+                    intent: "inscription",
+                    source: "filiere-rail",
+                  })
+                }
+              >
+                <Send size={15} /> Candidater
+              </RailApply>
+              <BackButton type="button" onClick={onClose}>
+                <ArrowLeft size={16} /> Retour au catalogue
+              </BackButton>
             </RailCard>
           </SideRail>
 
-          <MainColumn>
-            <HeroSection id="modal-overview">
-              <HeroVisual>
-                <HeroImage
-                  src={cld(hero, 1400)}
-                  alt={filiere.title}
-                  loading="lazy"
-                  decoding="async"
-                />
-                <HeroOverlay />
-                <HeroBadge>
-                  <Icon size={16} />
-                  {filiere.title}
-                </HeroBadge>
-              </HeroVisual>
-
-              <HeroContent
-                as={motion.div}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35 }}
+          <Body id="school-content-start">
+            {(school.blocks || []).map((block, index) => (
+              <Block
+                id={`block-${index + 1}`}
+                key={`${block.title}-${index}`}
+                as={motion.section}
+                initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.08 }}
+                transition={{ duration: reduceMotion ? 0 : .3 }}
               >
-                <TitleBlock>
-                  <Title id="filiere-modal-title">{filiere.title}</Title>
-                  <Desc>{filiere.description}</Desc>
-                </TitleBlock>
+                <BlockHead>
+                  <BlockNumber>{String(index + 1).padStart(2, "0")}</BlockNumber>
+                  <div>
+                    <BlockKicker>BLOC DE COMPÉTENCES</BlockKicker>
+                    <BlockTitle>{block.title}</BlockTitle>
+                    {block.duration && (
+                      <BlockMeta>
+                        <Clock3 size={14} /> {block.duration}
+                      </BlockMeta>
+                    )}
+                  </div>
+                </BlockHead>
 
-                <MetaWrap>
-                  {filiere.meta?.level && (
-                    <MetaPill>{filiere.meta.level}</MetaPill>
-                  )}
-                  {filiere.meta?.mode && <MetaPill>{filiere.meta.mode}</MetaPill>}
-                  {filiere.meta?.duration && (
-                    <MetaPill>{filiere.meta.duration}</MetaPill>
-                  )}
-                </MetaWrap>
-
-                {Array.isArray(filiere.outcomes) &&
-                  filiere.outcomes.length > 0 && (
-                    <OutcomeList>
-                      {filiere.outcomes.map((item, idx) => (
-                        <Outcome key={idx}>
-                          <Sparkles size={15} />
-                          <span>{item}</span>
-                        </Outcome>
+                {!!block.programs?.length ? (
+                  <ProgramList>
+                    {block.programs.map((program, programIndex) => (
+                      <ProgramContent
+                        key={`${program.title}-${programIndex}`}
+                        program={program}
+                        reduceMotion={reduceMotion}
+                        catalogue={catalogue}
+                        school={school}
+                      />
+                    ))}
+                  </ProgramList>
+                ) : (
+                  !!block.modules?.length && (
+                    <ModuleGrid>
+                      {block.modules.map((module) => (
+                        <Module key={module}>
+                          <CheckIcon>
+                            <CheckCircle2 size={13} />
+                          </CheckIcon>
+                          <span>{module}</span>
+                        </Module>
                       ))}
-                    </OutcomeList>
-                  )}
-              </HeroContent>
-            </HeroSection>
+                    </ModuleGrid>
+                  )
+                )}
+              </Block>
+            ))}
 
-            <StatsGrid>
-              {stats.map((item, idx) => (
-                <StatCard key={idx}>
-                  <StatTop>
-                    <StatIcon>{item.icon}</StatIcon>
-                    <StatLabel>{item.label}</StatLabel>
-                  </StatTop>
-                  <StatValue>{item.value}</StatValue>
-                </StatCard>
-              ))}
-            </StatsGrid>
-
-            {detailedPrograms.length > 0 && (
-              <Section id="modal-programmes-detail">
-                <SectionTitle>
-                  <BookOpen size={18} />
-                  Programmes détaillés
-                </SectionTitle>
-
-                <ProgramsGrid>
-                  {detailedPrograms.map((program, idx) => (
-                    <ProgramCard
-                      as={motion.article}
-                      key={program.id || idx}
-                      initial={{ opacity: 0, y: 12 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, amount: 0.18 }}
-                      transition={{ duration: 0.32, delay: idx * 0.03 }}
-                    >
-                      <CardHead>
-                        <div>
-                          {program.type && (
-                            <ProgramType>{program.type}</ProgramType>
-                          )}
-                          <ProgramTitle>{program.title}</ProgramTitle>
-                        </div>
-
-                        {program.duration && (
-                          <MiniPill>
-                            <Clock3 size={14} />
-                            {program.duration}
-                          </MiniPill>
-                        )}
-                      </CardHead>
-
-                      {program.summary && (
-                        <ProgramSummary>{program.summary}</ProgramSummary>
-                      )}
-
-                      <MetaGrid>
-                        {program.schedule && (
-                          <MetaBox>
-                            <span className="label">Organisation</span>
-                            <span className="value">{program.schedule}</span>
-                          </MetaBox>
-                        )}
-
-                        {program.volume && (
-                          <MetaBox>
-                            <span className="label">Volume</span>
-                            <span className="value">{program.volume}</span>
-                          </MetaBox>
-                        )}
-
-                        {program.price && (
-                          <MetaBox>
-                            <span className="label">Tarif indicatif</span>
-                            <span className="value">{program.price}</span>
-                          </MetaBox>
-                        )}
-
-                        {program.certification && (
-                          <MetaBox>
-                            <span className="label">Certification</span>
-                            <span className="value">{program.certification}</span>
-                          </MetaBox>
-                        )}
-                      </MetaGrid>
-
-                      {Array.isArray(program.target) &&
-                        program.target.length > 0 && (
-                          <Block>
-                            <BlockTitle>
-                              <Target size={16} />
-                              Public cible
-                            </BlockTitle>
-                            <BulletList>
-                              {program.target.map((item, i) => (
-                                <li key={i}>{item}</li>
-                              ))}
-                            </BulletList>
-                          </Block>
-                        )}
-
-                      {Array.isArray(program.modules) &&
-                        program.modules.length > 0 && (
-                          <Block>
-                            <BlockTitle>
-                              <BadgeCheck size={16} />
-                              Modules clés
-                            </BlockTitle>
-                            <BulletList>
-                              {program.modules.map((item, i) => (
-                                <li key={i}>{item}</li>
-                              ))}
-                            </BulletList>
-                          </Block>
-                        )}
-
-                      <Actions>
-                        {program.docHref && (
-                          <>
-                            <PrimaryLink
-                              href={program.docHref}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              <Download size={16} />
-                              Télécharger la fiche
-                            </PrimaryLink>
-
-                            <GhostLink
-                              href={program.docHref}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              <ExternalLink size={16} />
-                              Ouvrir
-                            </GhostLink>
-                          </>
-                        )}
-                      </Actions>
-                    </ProgramCard>
+            {!!school.pathways?.length && (
+              <Pathways id="school-pathways">
+                <SectionHeading>
+                  <Route size={18} /> Parcours
+                </SectionHeading>
+                <PathGrid>
+                  {school.pathways.map((path, index) => (
+                    <Path key={path}>
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      {path}
+                    </Path>
                   ))}
-                </ProgramsGrid>
-              </Section>
+                </PathGrid>
+              </Pathways>
             )}
 
-            <Section id="modal-programmes-list">
-              <SectionTitle>
-                <Layers size={18} />
-                Liste complète des programmes de la filière
-              </SectionTitle>
+            {!!school.qualificationLevels?.length && (
+              <Pathways id="school-levels">
+                <SectionHeading>
+                  <GraduationCap size={18} /> Niveaux
+                </SectionHeading>
+                <LevelGrid>
+                  {school.qualificationLevels.map((level) => (
+                    <Level key={level.title}>
+                      <LevelIcon>
+                        <GraduationCap size={17} />
+                      </LevelIcon>
+                      <b>{level.title}</b>
+                      {level.duration && <span>{level.duration}</span>}
+                      {level.description && <p>{level.description}</p>}
+                    </Level>
+                  ))}
+                </LevelGrid>
+              </Pathways>
+            )}
 
-              <SimpleProgramsGrid>
-                {fallbackPrograms.map((item, idx) => (
-                  <SimpleProgram key={`${item}-${idx}`}>{item}</SimpleProgram>
-                ))}
-              </SimpleProgramsGrid>
-            </Section>
-          </MainColumn>
-        </Layout>
-      </Wrap>
+            {school.slug === "finance-management-public" && (
+              <SourceNote>
+                <Landmark size={17} /> Cette offre figure dans le catalogue Cortex
+                Executive Academy.
+              </SourceNote>
+            )}
+          </Body>
+        </ContentLayout>
+      </Shell>
     </ProModal>
   );
 }
 
-const Wrap = styled.div`
-  display: grid;
-  gap: 20px;
+const Shell = styled.div`
+  min-height: 100%;
   color: ${colors.text};
-  padding-bottom: 6px;
+  background: linear-gradient(180deg, ${colors.bg}, ${colors.bgSoft});
 `;
 
-const Layout = styled.div`
+const Hero = styled.header`
   display: grid;
-  gap: 18px;
+  grid-template-columns: minmax(0, 1.08fr) minmax(320px, .92fr);
+  gap: 0;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: linear-gradient(135deg, ${colors.bg1}, ${colors.bg});
 
-  @media (min-width: 1180px) {
-    grid-template-columns: 280px minmax(0, 1fr);
-    align-items: start;
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-const SideRail = styled.aside`
-  display: none;
-
-  @media (min-width: 1180px) {
-    display: block;
-    position: sticky;
-    top: 0;
-    align-self: start;
-  }
-`;
-
-const RailCard = styled.div`
-  border: 1px solid #1f2c44;
-  border-radius: 20px 0 20px 0;
-  background: linear-gradient(120deg, ${colors.bgSoft} 64%, ${colors.bg} 50%);
-  padding: 16px;
-  display: grid;
-  gap: 14px;
-`;
-
-const RailTitle = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 900;
-  color: ${colors.accentGold};
-`;
-
-const RailNav = styled.nav`
-  display: grid;
-  gap: 10px;
-`;
-
-const RailLink = styled.a`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  padding: 11px 12px;
-  border-radius: 16px 0 16px 0;
-  border: 1px solid #264066;
-  background: ${colors.bg};
-  color: ${colors.text};
-  font-weight: 700;
-  transition: transform 0.15s ease, border-color 0.15s ease,
-    box-shadow 0.15s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    border-color: ${colors.accentGold};
-    box-shadow: 0 10px 22px rgba(10, 16, 28, 0.2);
-  }
-
-  span {
-    line-height: 1.4;
-  }
-`;
-
-const RailHint = styled.p`
-  margin: 0;
-  font-size: 13px;
-  line-height: 1.55;
-  opacity: 0.82;
-`;
-
-const MainColumn = styled.div`
-  display: grid;
-  gap: 20px;
-  min-width: 0;
-`;
-
-const HeroSection = styled.section`
-  display: grid;
-  gap: 16px;
-  scroll-margin-top: 18px;
-
-  @media (min-width: 980px) {
-    grid-template-columns: 1.05fr 1fr;
-    align-items: stretch;
-  }
-`;
-
-const HeroVisual = styled.div`
+const HeroCopy = styled.div`
   position: relative;
-  overflow: hidden;
-  border-radius: 20px 0 20px 0;
-  min-height: 280px;
-  border: 1px solid #1f2c44;
-  background: ${colors.bg};
-`;
+  z-index: 2;
+  padding: clamp(30px, 5vw, 68px) clamp(20px, 5vw, 64px) 40px;
 
-const HeroImage = styled.img`
-  width: 100%;
-  height: 100%;
-  min-height: 280px;
-  object-fit: cover;
-  display: block;
-`;
-
-const HeroOverlay = styled.div`
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(10, 16, 28, 0.08), rgba(10, 16, 28, 0.72)),
-    linear-gradient(120deg, ${colors.semygsecondar}25 20%, transparent 60%);
-`;
-
-const HeroBadge = styled.div`
-  position: absolute;
-  left: 14px;
-  bottom: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(14, 26, 43, 0.78);
-  color: ${colors.accentGold};
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  padding: 10px 12px;
-  border-radius: 16px 0 16px 0;
-  font-weight: 800;
-  backdrop-filter: blur(8px);
-`;
-
-const HeroContent = styled.div`
-  border: 1px solid #1f2c44;
-  border-radius: 20px 0 20px 0;
-  padding: 18px;
-  background: linear-gradient(120deg, ${colors.bgSoft} 64%, ${colors.bg} 50%);
-  display: grid;
-  gap: 16px;
-`;
-
-const TitleBlock = styled.div`
-  display: grid;
-  gap: 10px;
-`;
-
-const Title = styled.h2`
-  margin: 0;
-  font-size: clamp(24px, 3vw, 34px);
-  line-height: 1.08;
-  color: ${colors.accentGold};
-`;
-
-const Desc = styled.p`
-  margin: 0;
-  line-height: 1.72;
-  color: ${colors.text};
-`;
-
-const MetaWrap = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-`;
-
-const MetaPill = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 9px 12px;
-  border-radius: 999px;
-  border: 1px solid #264066;
-  background: ${colors.bg};
-  color: ${colors.accentGold};
-  font-weight: 800;
-  font-size: 13px;
-`;
-
-const OutcomeList = styled.div`
-  display: grid;
-  gap: 10px;
-`;
-
-const Outcome = styled.div`
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 12px;
-  border-radius: 16px 0 16px 0;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  svg {
-    color: ${colors.accentGold};
-    margin-top: 2px;
-    flex: 0 0 auto;
-  }
-
-  span {
-    line-height: 1.55;
+  h1 {
+    max-width: 920px;
+    margin: 15px 0 0;
+    color: ${colors.text};
+    font-size: clamp(32px, 5vw, 64px);
+    line-height: 1;
+    letter-spacing: -.045em;
   }
 `;
 
-const StatsGrid = styled.div`
-  display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-`;
-
-const StatCard = styled.div`
-  border: 1px solid #1f2c44;
-  border-radius: 18px 0 18px 0;
-  background: linear-gradient(120deg, ${colors.bgSoft} 58%, ${colors.bg} 50%);
-  padding: 14px;
-  display: grid;
-  gap: 10px;
-`;
-
-const StatTop = styled.div`
+const HeroTop = styled.div`
   display: flex;
   align-items: center;
-  gap: 9px;
-`;
-
-const StatIcon = styled.span`
-  width: 32px;
-  height: 32px;
-  display: grid;
-  place-items: center;
-  border-radius: 12px 0 12px 0;
-  background: rgba(242, 201, 76, 0.12);
-  color: ${colors.accentGold};
-`;
-
-const StatLabel = styled.span`
-  font-size: 13px;
-  opacity: 0.88;
-`;
-
-const StatValue = styled.div`
-  font-size: 18px;
-  font-weight: 900;
-  color: ${colors.text};
-`;
-
-const Section = styled.section`
-  display: grid;
-  gap: 14px;
-  scroll-margin-top: 18px;
-`;
-
-const SectionTitle = styled.h3`
-  margin: 0;
-  display: inline-flex;
-  align-items: center;
   gap: 10px;
-  font-size: 20px;
-  color: ${colors.accentGold};
-`;
-
-const ProgramsGrid = styled.div`
-  display: grid;
-  gap: 16px;
-
-  @media (min-width: 900px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-`;
-
-const ProgramCard = styled.article`
-  display: grid;
-  gap: 14px;
-  padding: 16px;
-  border-radius: 20px 0 20px 0;
-  border: 1px solid #1f2c44;
-  background: linear-gradient(120deg, ${colors.bgSoft} 58%, ${colors.bg} 50%);
-  box-shadow: 0 14px 34px rgba(10, 16, 28, 0.22);
-  align-content: start;
-`;
-
-const CardHead = styled.div`
-  display: flex;
-  gap: 12px;
-  justify-content: space-between;
-  align-items: flex-start;
   flex-wrap: wrap;
 `;
 
-const ProgramType = styled.div`
-  display: inline-block;
-  margin-bottom: 8px;
-  font-size: 12px;
-  font-weight: 900;
-  color: ${colors.accentGold};
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-`;
-
-const ProgramTitle = styled.h4`
-  margin: 0;
-  font-size: 20px;
-  line-height: 1.25;
-  color: ${colors.text};
-`;
-
-const MiniPill = styled.span`
+const CatalogueBadge = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 7px;
   padding: 8px 10px;
   border-radius: 999px;
-  border: 1px solid #264066;
-  background: ${colors.bg};
-  color: ${colors.accentGold};
+  color: ${colors.accentGold3};
+  border: 1px solid rgba(243,111,33,.28);
+  background: rgba(243,111,33,.08);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+`;
+
+const Duration = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: ${colors.accentGoldLight};
   font-size: 12px;
   font-weight: 800;
 `;
 
-const ProgramSummary = styled.p`
-  margin: 0;
-  line-height: 1.7;
-  color: ${colors.text};
-  opacity: 0.95;
+const SchoolName = styled.p`
+  margin: 10px 0 0;
+  color: ${colors.accentGold};
+  font-weight: 800;
 `;
 
-const MetaGrid = styled.div`
-  display: grid;
-  gap: 10px;
+const Summary = styled.p`
+  white-space: pre-line;
+  max-width: 880px;
+  margin: 16px 0 0;
+  color: ${colors.muted};
+  font-size: clamp(14px, 1.8vw, 17px);
+  line-height: 1.72;
+`;
 
-  @media (min-width: 700px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+const Stats = styled.div`
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  margin-top: 22px;
+`;
+
+const HeroActions = styled.div`
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 18px;
+`;
+
+const HeroApply = styled.button`
+  appearance: none;
+  cursor: pointer;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-radius: 15px 0 15px 0;
+  border: 1px solid rgba(243,111,33,.78);
+  color: ${colors.bg};
+  background: ${colors.accentGold};
+  font-size: 12px;
+  font-weight: 950;
+  box-shadow: 0 14px 32px rgba(243,111,33,.18);
+  transition: transform .18s ease, box-shadow .18s ease;
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 38px rgba(243,111,33,.24);
+    outline: none;
   }
 `;
 
-const MetaBox = styled.div`
-  display: grid;
-  gap: 6px;
-  padding: 12px;
-  border-radius: 16px 0 16px 0;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+const HeroHint = styled.span`
+  color: ${colors.muted};
+  font-size: 10px;
+`;
 
-  .label {
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+const Stat = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 11px;
+  border-radius: 14px 0 14px 0;
+  border: 1px solid rgba(255,255,255,.09);
+  background: rgba(255,255,255,.04);
+
+  svg,
+  strong {
     color: ${colors.accentGold};
   }
 
-  .value {
-    font-size: 14px;
-    line-height: 1.55;
-    color: ${colors.text};
+  span {
+    color: ${colors.muted};
+    font-size: 12px;
   }
 `;
 
-const Block = styled.div`
-  display: grid;
-  gap: 10px;
+const HeroVisual = styled.div`
+  position: relative;
+  min-height: 360px;
+  overflow: hidden;
+  background: ${colors.bgSoft};
+
+  img {
+    width: 100%;
+    height: 100%;
+    min-height: 360px;
+    display: block;
+    object-fit: cover;
+  }
+
+  @media (max-width: 900px) {
+    min-height: 260px;
+
+    img {
+      min-height: 260px;
+      max-height: 360px;
+    }
+  }
 `;
 
-const BlockTitle = styled.h5`
-  margin: 0;
-  display: inline-flex;
+const VisualShade = styled.div`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(7,23,39,.44), transparent 48%),
+    linear-gradient(180deg, transparent 48%, rgba(4,9,18,.55));
+`;
+
+const VisualSeal = styled.span`
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px 0 20px 0;
+  color: ${colors.bg};
+  background: ${colors.accentGold};
+  box-shadow: 0 16px 40px rgba(0,0,0,.28);
+`;
+
+const ContentLayout = styled.div`
+  width: min(1320px, calc(100% - 32px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 245px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: clamp(28px, 5vw, 58px) 0 76px;
+
+  @media (max-width: 1080px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const SideRail = styled.aside`
+  position: sticky;
+  top: 18px;
+
+  @media (max-width: 1080px) {
+    display: none;
+  }
+`;
+
+const RailCard = styled.nav`
+  display: grid;
+  gap: 7px;
+  padding: 14px;
+  max-height: calc(100dvh - 40px);
+  overflow: auto;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 22px 0 22px 0;
+  background: rgba(7,23,39,.76);
+  backdrop-filter: blur(14px);
+`;
+
+const RailTitle = styled.div`
+  margin-bottom: 5px;
+  color: ${colors.accentGold};
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+`;
+
+const RailLink = styled.a`
+  min-width: 0;
+  display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 15px;
+  padding: 9px 10px;
+  border-radius: 12px 0 12px 0;
+  color: ${colors.muted};
+  background: rgba(255,255,255,.025);
+  font-size: 11px;
+  line-height: 1.35;
+  transition: color .16s ease, background .16s ease, transform .16s ease;
+
+  > span {
+    color: ${colors.accentGold};
+    font-weight: 900;
+  }
+
+  &:hover,
+  &:focus-visible {
+    color: ${colors.text};
+    background: rgba(243,111,33,.07);
+    transform: translateX(2px);
+    outline: none;
+  }
+`;
+
+const RailApply = styled.button`
+  appearance: none;
+  cursor: pointer;
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px;
+  border-radius: 13px 0 13px 0;
+  border: 1px solid rgba(243,111,33,.68);
+  color: ${colors.bg};
+  background: ${colors.accentGold};
+  font-size: 11px;
+  font-weight: 950;
+  transition: transform .16s ease, box-shadow .16s ease;
+
+  &:hover,
+  &:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(243,111,33,.18);
+    outline: none;
+  }
+`;
+
+const BackButton = styled.button`
+  margin-top: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px;
+  border-radius: 13px 0 13px 0;
+  border: 1px solid rgba(243,111,33,.24);
+  color: ${colors.accentGold};
+  background: rgba(243,111,33,.07);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 850;
+`;
+
+const Body = styled.div`
+  min-width: 0;
+  display: grid;
+  gap: 18px;
+`;
+
+const Block = styled.section`
+  scroll-margin-top: 24px;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 24px 0 24px 0;
+  padding: clamp(18px,3vw,28px);
+  background: linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));
+`;
+
+const BlockHead = styled.div`
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 17px;
+`;
+
+const BlockNumber = styled.span`
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px 0 14px 0;
+  background: ${colors.accentGold};
+  color: ${colors.bg};
+  font-weight: 950;
+`;
+
+const BlockKicker = styled.span`
+  color: ${colors.accentGold3};
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .12em;
+`;
+
+const BlockTitle = styled.h3`
+  margin: 4px 0 0;
+  color: ${colors.text};
+  font-size: clamp(18px,2.2vw,25px);
+  line-height: 1.25;
+`;
+
+const BlockMeta = styled.div`
+  margin-top: 7px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: ${colors.muted};
+  font-size: 12px;
+`;
+
+const ProgramList = styled.div`
+  display: grid;
+  gap: 12px;
+`;
+
+const ProgramCard = styled.article`
+  padding: 16px;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 18px 0 18px 0;
+  background: rgba(7,23,39,.46);
+`;
+
+const ProgramHead = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+`;
+
+const ProgramLabel = styled.span`
+  color: ${colors.accentGold3};
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .12em;
+`;
+
+const ProgramTitle = styled.h4`
+  margin: 4px 0 0;
+  color: ${colors.text};
+  font-size: 17px;
+  line-height: 1.35;
+`;
+
+const ProgramAction = styled.button`
+  appearance: none;
+  cursor: pointer;
+  width: fit-content;
+  margin-top: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 11px;
+  border-radius: 12px 0 12px 0;
+  border: 1px solid rgba(243,111,33,.26);
+  color: ${colors.accentGold};
+  background: rgba(243,111,33,.055);
+  font-size: 11px;
+  font-weight: 900;
+  transition: transform .16s ease, border-color .16s ease, background .16s ease;
+
+  &:hover,
+  &:focus-visible {
+    transform: translateX(2px);
+    border-color: rgba(243,111,33,.5);
+    background: rgba(243,111,33,.09);
+    outline: none;
+  }
+`;
+
+const ModuleGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 8px;
+
+  @media(max-width:720px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const Module = styled.div`
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 11px;
+  border-radius: 12px;
+  color: ${colors.muted};
+  background: rgba(255,255,255,.025);
+  font-size: 13px;
+  line-height: 1.45;
+`;
+
+const CheckIcon = styled.span`
+  flex: 0 0 auto;
+  margin-top: 1px;
   color: ${colors.accentGold};
 `;
 
-const BulletList = styled.ul`
+const SectionStack = styled.div`
+  display: grid;
+  gap: 12px;
+`;
+
+const SubSection = styled.div`
+  display: grid;
+  gap: 8px;
+`;
+
+const SubTitle = styled.h5`
   margin: 0;
-  padding-left: 18px;
-  display: grid;
-  gap: 8px;
-  color: ${colors.text};
-
-  li {
-    line-height: 1.55;
-  }
+  color: ${colors.accentGoldLight};
+  font-size: 14px;
 `;
 
-const Actions = styled.div`
+const Pathways = styled.section`
+  scroll-margin-top: 24px;
+  padding: clamp(18px,3vw,28px);
+  border: 1px solid rgba(243,111,33,.18);
+  border-radius: 24px 0 24px 0;
+  background: rgba(243,111,33,.035);
+`;
+
+const SectionHeading = styled.h3`
+  margin: 0 0 14px;
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: auto;
-  padding-top: 4px;
-`;
-
-const PrimaryLink = styled.a`
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  text-decoration: none;
-  font-weight: 800;
-  padding: 11px 14px;
-  border-radius: 18px 0 18px 0;
-  background: ${colors.accentGold};
-  color: #0e1a2b;
-  box-shadow: 0 10px 24px rgba(242, 201, 76, 0.22);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 12px 28px rgba(242, 201, 76, 0.3);
-  }
+  color: ${colors.accentGold};
+  font-size: 19px;
 `;
 
-const GhostLink = styled.a`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  text-decoration: none;
-  font-weight: 800;
-  padding: 11px 14px;
-  border-radius: 18px 0 18px 0;
-  border: 1px solid #264066;
-  background: ${colors.bg};
-  color: ${colors.text};
-  transition: transform 0.15s ease, border-color 0.15s ease;
-
-  &:hover {
-    transform: translateY(-1px);
-    border-color: ${colors.semygsecondar};
-  }
-`;
-
-const SimpleProgramsGrid = styled.div`
+const PathGrid = styled.div`
   display: grid;
-  gap: 10px;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 8px;
 
-  @media (min-width: 700px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  @media (min-width: 1100px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  @media(max-width:720px) {
+    grid-template-columns: 1fr;
   }
 `;
 
-const SimpleProgram = styled.div`
-  padding: 12px 14px;
-  border-radius: 16px 0 16px 0;
-  border: 1px solid #1f2c44;
-  background: linear-gradient(120deg, ${colors.bgSoft} 58%, ${colors.bg} 50%);
-  line-height: 1.55;
+const Path = styled.div`
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 9px;
+  align-items: start;
+  padding: 11px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.035);
   color: ${colors.text};
+  font-size: 13px;
+  line-height: 1.45;
+
+  span {
+    color: ${colors.accentGold};
+    font-weight: 900;
+    font-size: 10px;
+  }
+`;
+
+const LevelGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 10px;
+
+  @media(max-width:840px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+const Level = styled.article`
+  padding: 15px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px 0 16px 0;
+  background: rgba(255,255,255,.025);
+
+  b {
+    display: block;
+    margin-top: 10px;
+    color: ${colors.text};
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  > span {
+    display: block;
+    margin-top: 7px;
+    color: ${colors.accentGold};
+    font-weight: 900;
+    font-size: 13px;
+  }
+
+  p {
+    margin: 7px 0 0;
+    color: ${colors.muted};
+    font-size: 12px;
+    line-height: 1.5;
+  }
+`;
+
+const LevelIcon = styled.span`
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px 0 12px 0;
+  color: ${colors.accentGold};
+  background: rgba(243,111,33,.08);
+  border: 1px solid rgba(243,111,33,.18);
+`;
+
+const SourceNote = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 14px 0 14px 0;
+  border: 1px solid rgba(255,255,255,.08);
+  color: ${colors.muted};
+  background: rgba(255,255,255,.025);
+  font-size: 12px;
+
+  svg {
+    color: ${colors.accentGold};
+  }
 `;

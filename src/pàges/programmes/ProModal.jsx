@@ -1,261 +1,274 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import styled, { css } from "styled-components";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
 import colors from "../../Styles/colors";
 
-/**
- * Props :
- * - open: bool
- * - onClose: fn
- * - title: string
- * - children: ReactNode
- * - fullScreen?: bool
- * - maxWidth?: number
- * - labelledById?: string
- * - describedById?: string
- */
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export default function ProModal({
   open,
   onClose,
   title = "",
   children,
   fullScreen = false,
-  maxWidth = 920,
+  maxWidth = 980,
   labelledById = "modal-title",
   describedById = "modal-desc",
 }) {
-  const closeBtnRef = useRef(null);
-  const contentRef = useRef(null);
+  const panelRef = useRef(null);
+  const closeRef = useRef(null);
   const lastActiveRef = useRef(null);
+  const onCloseRef = useRef(onClose);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (!open) return;
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  useEffect(() => {
+    if (!open || typeof document === "undefined") return undefined;
 
     lastActiveRef.current = document.activeElement;
-
     const html = document.documentElement;
     const body = document.body;
+    const previous = {
+      htmlOverflow: html.style.overflow,
+      bodyOverflow: body.style.overflow,
+      bodyPaddingRight: body.style.paddingRight,
+    };
     const scrollbarWidth = window.innerWidth - html.clientWidth;
-    const prevHtmlOverflow = html.style.overflow;
-    const prevBodyOverflow = body.style.overflow;
-    const prevBodyPaddingRight = body.style.paddingRight;
 
     html.style.overflow = "hidden";
     body.style.overflow = "hidden";
-    if (scrollbarWidth > 0) {
-      body.style.paddingRight = `${scrollbarWidth}px`;
-    }
+    if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`;
 
-    const focusTimer = window.setTimeout(() => {
-      closeBtnRef.current?.focus();
-      contentRef.current?.scrollTo({ top: 0, behavior: "auto" });
-    }, 40);
+    const timer = window.setTimeout(() => closeRef.current?.focus(), 30);
 
-    const onKey = (e) => {
-      if (e.key === "Escape") onClose?.();
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onCloseRef.current?.();
+        return;
+      }
+
+      if (event.key !== "Tab" || !panelRef.current) return;
+
+      const focusables = [...panelRef.current.querySelectorAll(FOCUSABLE)].filter(
+        (node) =>
+          !node.hasAttribute("disabled") &&
+          node.getAttribute("aria-hidden") !== "true"
+      );
+
+      if (!focusables.length) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
 
-    window.addEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKeyDown);
 
     return () => {
-      window.clearTimeout(focusTimer);
-      window.removeEventListener("keydown", onKey);
-      html.style.overflow = prevHtmlOverflow;
-      body.style.overflow = prevBodyOverflow;
-      body.style.paddingRight = prevBodyPaddingRight;
+      window.clearTimeout(timer);
+      window.removeEventListener("keydown", onKeyDown);
+      html.style.overflow = previous.htmlOverflow;
+      body.style.overflow = previous.bodyOverflow;
+      body.style.paddingRight = previous.bodyPaddingRight;
       lastActiveRef.current?.focus?.();
     };
-  }, [open, onClose]);
+  }, [open]);
 
-  const panelAni = fullScreen
-    ? {
-        initial: { opacity: 0, y: 10, filter: "blur(5px)" },
-        animate: { opacity: 1, y: 0, filter: "blur(0px)" },
-        exit: { opacity: 0, y: 8, transition: { duration: 0.16 } },
-      }
-    : {
-        initial: { opacity: 0, y: 16, scale: 0.985, filter: "blur(5px)" },
-        animate: { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" },
-        exit: {
-          opacity: 0,
-          y: 10,
-          scale: 0.985,
-          transition: { duration: 0.16 },
-        },
-      };
+  if (typeof document === "undefined") return null;
 
   return createPortal(
     <AnimatePresence>
       {open && (
-        <>
+        <Layer>
           <Overlay
-            as={motion.button}
             type="button"
-            aria-label="Fermer le modal"
+            aria-label="Fermer la fenêtre"
             onClick={onClose}
-            initial={{ opacity: 0 }}
+            as={motion.button}
+            initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.15 } }}
+            exit={reduceMotion ? undefined : { opacity: 0 }}
+            transition={{ duration: reduceMotion ? 0 : .18 }}
           />
 
-          <Wrapper
-            $full={fullScreen}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={labelledById}
-            aria-describedby={describedById}
-          >
+          <Wrapper $full={fullScreen}>
             <Panel
-              as={motion.div}
+              ref={panelRef}
               $full={fullScreen}
-              style={!fullScreen ? { maxWidth } : undefined}
-              {...panelAni}
+              $maxWidth={maxWidth}
+              as={motion.section}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={title ? labelledById : undefined}
+              aria-describedby={describedById}
+              initial={
+                reduceMotion
+                  ? false
+                  : { opacity: 0, y: 18, scale: fullScreen ? 1 : 0.985 }
+              }
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={
+                reduceMotion
+                  ? undefined
+                  : { opacity: 0, y: 12, scale: fullScreen ? 1 : 0.985 }
+              }
+              transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
             >
-              <Head $full={fullScreen}>
+              <AccentLine aria-hidden="true" />
+
+              <Header>
                 <Title id={labelledById} title={title}>
                   {title}
                 </Title>
 
-                <CloseBtn
-                  ref={closeBtnRef}
+                <Close
+                  ref={closeRef}
+                  type="button"
                   onClick={onClose}
                   aria-label="Fermer"
-                  type="button"
+                  as={motion.button}
+                  whileHover={reduceMotion ? undefined : { rotate: 4, scale: 1.04 }}
+                  whileTap={reduceMotion ? undefined : { scale: .92 }}
                 >
-                  <X size={19} />
-                </CloseBtn>
-              </Head>
+                  <X size={20} />
+                </Close>
+              </Header>
 
-              <Content ref={contentRef} $full={fullScreen} id={describedById}>
-                {children}
-              </Content>
+              <Content id={describedById}>{children}</Content>
             </Panel>
           </Wrapper>
-        </>
+        </Layer>
       )}
     </AnimatePresence>,
     document.body
   );
 }
 
-/* ============ styles ============ */
-const Overlay = styled(motion.button)`
+const Layer = styled.div`
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(6, 10, 18, 0.58);
-  backdrop-filter: blur(4px);
+`;
+
+const Overlay = styled.button`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   border: 0;
-  cursor: pointer;
+  background: rgba(4, 9, 18, 0.76);
+  backdrop-filter: blur(10px);
+  cursor: default;
 `;
 
 const Wrapper = styled.div`
-  position: fixed;
+  position: absolute;
   inset: 0;
-  z-index: 1010;
   display: grid;
-  align-items: ${(p) => (p.$full ? "stretch" : "center")};
-  justify-items: center;
-  padding: ${(p) => (p.$full ? "0" : "18px")};
+  place-items: center;
+  padding: ${({ $full }) => ($full ? "0" : "18px")};
+  pointer-events: none;
 `;
 
-const Panel = styled.div`
-  width: min(100%, 920px);
-  max-height: min(92dvh, 980px);
-  border-radius: 18px;
-  border: 1px solid #1f2c44;
-  background:
-    linear-gradient(120deg, ${colors.bgSoft} 64%, ${colors.bg} 50%),
-    linear-gradient(90deg, #0e1a2b, #0f223a);
-  box-shadow: 0 30px 80px rgba(6, 10, 18, 0.55);
-  overflow: hidden;
+const Panel = styled.section`
+  position: relative;
+  pointer-events: auto;
+  width: min(100%, ${({ $maxWidth }) => `${$maxWidth}px`});
+  max-height: min(94dvh, 1040px);
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 26px 0 26px 0;
+  background:
+    radial-gradient(680px 360px at 100% 0%, rgba(243,111,33,.09), transparent 62%),
+    linear-gradient(145deg, ${colors.bgSoft}, ${colors.bg});
+  box-shadow: 0 38px 100px rgba(0,0,0,.58);
 
-  ${(p) =>
-    p.$full &&
+  ${({ $full }) =>
+    $full &&
     css`
-      border-radius: 0;
       width: 100vw;
       height: 100dvh;
       max-width: none;
       max-height: none;
       border: 0;
-      box-shadow: none;
+      border-radius: 0;
     `}
 `;
 
-const Head = styled.div`
+const AccentLine = styled.div`
+  position: absolute;
+  z-index: 8;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  pointer-events: none;
+  background: linear-gradient(90deg, ${colors.accentGold}, ${colors.accentGold3}, transparent 78%);
+`;
+
+const Header = styled.header`
+  position: relative;
+  z-index: 7;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  color: #0f223a;
-  font-weight: 700;
-  background: linear-gradient(
-    120deg,
-    ${colors.accentGold3} 64%,
-    ${colors.bg} 50%
-  );
-  padding: 12px 14px;
-  border-bottom: 1px solid #1f2c44;
-
-  ${(p) =>
-    p.$full &&
-    css`
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      padding-top: calc(12px + env(safe-area-inset-top, 0px));
-    `}
+  gap: 16px;
+  min-height: 66px;
+  padding: 12px clamp(16px, 3vw, 28px);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  background: rgba(13,29,74,.86);
+  backdrop-filter: blur(16px);
 `;
 
-const Title = styled.h3`
+const Title = styled.h2`
   margin: 0;
-  font-size: clamp(16px, 2.3vw, 20px);
-  letter-spacing: 0.2px;
-  line-height: 1.25;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: ${colors.text};
+  font-size: clamp(15px, 2vw, 20px);
+  font-weight: 850;
 `;
 
-const CloseBtn = styled.button`
+const Close = styled.button`
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  border: 1px solid #21304f;
-  background: #0e1a2b;
+  border-radius: 14px 0 14px 0;
+  border: 1px solid rgba(243,111,33,.32);
   color: ${colors.accentGold};
+  background: rgba(14,26,43,.92);
   cursor: pointer;
-  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 
-  &:hover {
-    transform: translateY(-1px);
-    background: #112745;
-    border-color: ${colors.accentGold};
+  &:focus-visible {
+    outline: 3px solid rgba(243,111,33,.2);
+    outline-offset: 3px;
   }
 `;
 
 const Content = styled.div`
   min-height: 0;
   overflow: auto;
-  padding: clamp(14px, 2.2vw, 22px);
-  padding-bottom: max(92px, calc(env(safe-area-inset-bottom, 0px) + 28px));
-  scrollbar-gutter: stable both-edges;
   overscroll-behavior: contain;
+  scrollbar-gutter: stable;
   scroll-behavior: smooth;
-
-  ${(p) =>
-    p.$full &&
-    css`
-      height: 100%;
-    `}
-
-  &::after {
-    content: "";
-    display: block;
-    height: 2px;
-  }
 `;

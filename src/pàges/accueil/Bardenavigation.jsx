@@ -10,18 +10,21 @@ import {
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu as MenuIcon, X, ChevronDown, Phone, Mail } from "lucide-react";
 import colors from "../../Styles/colors";
+import { openProgrammeContactModal } from "../programmes/programmeContact.js";
 
 // --------- Config nav ----------
 const NAV = [
   { label: "Accueil", to: "/" },
-  { label: "Contact", to: "/contact" },
   //À propos
-  { label: "Cortex Holding", to: "/apropos" },
 
   { label: "Institut-Cortex", to: "/programmes" },
   { label: "Campus-Cortex", to: "/campuscortex" },
-  { label: "Tônôn", to: "/CreducPage" },
   { label: "Innov Éditions", to: "/innoveditions" },
+  { label: "Contact", to: "/contact", modal: true },
+
+  { label: "Cortex Holding", to: "/apropos" },
+
+  { label: "Tônôn", to: "/CreducPage" },
   // { label: "Innov-edition", to: "/" },
 ];
 
@@ -128,6 +131,29 @@ const NavLinkA = styled(NavLink)`
     border-color: #21375a;
   }
 `;
+const NavButtonA = styled.button`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 5px 0 5px 0;
+  color: ${colors.text};
+  font: inherit;
+  font-weight: 700;
+  font-size: 14px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  &:hover,
+  &:focus-visible {
+    color: ${colors.accentGold};
+    border-color: #21375a;
+    background: linear-gradient(180deg, #0e1a2b, #0f223a);
+    outline: none;
+  }
+`;
+
 const Underline = styled(motion.span)`
   position: absolute;
   left: 10px;
@@ -281,6 +307,28 @@ const MLink = styled(NavLink)`
     border-color: #2a4b7c;
   }
 `;
+const MButton = styled.button`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 5px 0 5px 0;
+  color: ${colors.text};
+  font: inherit;
+  font-weight: 800;
+  border: 1px solid #21375a;
+  background: linear-gradient(180deg, #0e1a2b, #0f223a);
+  cursor: pointer;
+  &:hover,
+  &:focus-visible {
+    color: ${colors.accentGold};
+    border-color: #2a4b7c;
+    outline: none;
+  }
+`;
+
 const MChild = styled(NavLink)`
   display: block;
   margin: 6px 0 0 12px;
@@ -442,18 +490,32 @@ export default function Bardenavigation() {
                 onMouseEnter={() => hasChildren && setDropOpen(idx)}
                 onMouseLeave={() => hasChildren && setDropOpen(false)}
               >
-                <NavLinkA
-                  to={item.to}
-                  className={({ isActive }) => (isActive ? "active" : "")}
-                  aria-haspopup={hasChildren || undefined}
-                  aria-expanded={(hasChildren && dropOpen === idx) || undefined}
-                >
-                  {item.label}
-                  {hasChildren && <ChevronDown size={16} />}
-                  {activeIndex === idx && (
-                    <Underline layoutId="nav-underline" />
-                  )}
-                </NavLinkA>
+                {item.modal ? (
+                  <NavButtonA
+                    type="button"
+                    onClick={() =>
+                      openProgrammeContactModal({
+                        intent: "information",
+                        source: "main-header-contact",
+                      })
+                    }
+                  >
+                    {item.label}
+                  </NavButtonA>
+                ) : (
+                  <NavLinkA
+                    to={item.to}
+                    className={({ isActive }) => (isActive ? "active" : "")}
+                    aria-haspopup={hasChildren || undefined}
+                    aria-expanded={(hasChildren && dropOpen === idx) || undefined}
+                  >
+                    {item.label}
+                    {hasChildren && <ChevronDown size={16} />}
+                    {activeIndex === idx && (
+                      <Underline layoutId="nav-underline" />
+                    )}
+                  </NavLinkA>
+                )}
 
                 {hasChildren && (
                   <AnimatePresence>
@@ -531,10 +593,25 @@ export default function Bardenavigation() {
             <SheetBody>
               {NAV.map((item) => (
                 <div key={item.to}>
-                  <MLink to={item.to} end>
-                    <span>{item.label}</span>
-                    {item.children?.length ? <ChevronDown size={16} /> : null}
-                  </MLink>
+                  {item.modal ? (
+                    <MButton
+                      type="button"
+                      onClick={() => {
+                        setOpen(false);
+                        openProgrammeContactModal({
+                          intent: "information",
+                          source: "main-header-mobile-contact",
+                        });
+                      }}
+                    >
+                      <span>{item.label}</span>
+                    </MButton>
+                  ) : (
+                    <MLink to={item.to} end>
+                      <span>{item.label}</span>
+                      {item.children?.length ? <ChevronDown size={16} /> : null}
+                    </MLink>
+                  )}
                   {item.children?.map((c) => (
                     <MChild key={c.to} to={c.to}>
                       {c.label}

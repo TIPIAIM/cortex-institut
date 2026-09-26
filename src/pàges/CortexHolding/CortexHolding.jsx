@@ -1,295 +1,201 @@
-// src/pages/CortexHolding.jsx
 import React, { memo } from "react";
 import styled, { keyframes } from "styled-components";
+import { motion, useReducedMotion } from "framer-motion";
 import {
+  ArrowUpRight,
+  BookCheck,
   Building2,
   Network,
+  Quote,
   Sparkles,
   Target,
-  ArrowUpRight,
-  Quote,
 } from "lucide-react";
-
 import colors from "../../Styles/colors";
 
-/* =========================================================
-   ANIMATIONS
-========================================================= */
-
-const gradientMove = keyframes`
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
-`;
-
-const floatOrb = keyframes`
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-
-  50% {
-    transform: translate3d(0, -14px, 0);
-  }
-`;
-
-/* =========================================================
-   COMPONENT
-========================================================= */
+const reveal = {
+  initial: { opacity: 0, y: 16 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, amount: 0.18 },
+};
 
 function CortexHolding() {
+  const reduceMotion = useReducedMotion();
+  const motionProps = reduceMotion
+    ? { initial: false }
+    : { ...reveal, transition: { duration: 0.48, ease: [0.22, 1, 0.36, 1] } };
+
   return (
-    <Section id="cortex-holding">
-      <BackgroundOrb
-        $accent={colors.accentGold || "#F2C94C"}
-        aria-hidden="true"
-      />
+    <Section id="cortex-holding" aria-labelledby="holding-title">
+      <Grid aria-hidden="true" />
+      <Glow aria-hidden="true" />
 
       <Container>
-        {/* =================================================
-            HEADER
-        ================================================= */}
-
-        <Header>
+        <Header as={motion.header} {...motionProps}>
           <Eyebrow>
-            <Sparkles size={14} />
+            <AnimatedIcon aria-hidden="true">
+              <BookCheck size={15} />
+            </AnimatedIcon>
             CORTEX HOLDING
           </Eyebrow>
 
-          <Title>
-            <GradientTitle>
-              Cortex Holding
-            </GradientTitle>
+          <Title id="holding-title">
+            Une vision commune, <Accent>des expertises complémentaires.</Accent>
           </Title>
 
           <Intro>
-            Une vision africaine de l'excellence, de
-            l'innovation et de la croissance durable.
+            Une vision africaine de l'excellence, de l'innovation et de la
+            croissance durable, portée par un groupe structuré autour de métiers
+            complémentaires.
           </Intro>
         </Header>
 
-        {/* =================================================
-            PRESENTATION
-        ================================================= */}
-
-        <PresentationCard>
+        <PresentationCard as={motion.article} {...motionProps}>
           <CardTop>
-            <IconBox>
-              <Building2 size={24} />
+            <IconBox as={motion.span} whileHover={reduceMotion ? undefined : { rotate: -8, scale: 1.06 }}>
+              <Building2 size={23} />
             </IconBox>
-
-            <CardLabel>
-              NOTRE VISION
-            </CardLabel>
+            <div>
+              <CardKicker>NOTRE VISION</CardKicker>
+              <CardTitle>Structurer la croissance et l’excellence.</CardTitle>
+            </div>
           </CardTop>
 
           <Paragraph>
-            La croissance rapide de Cortex Holding et
-            l’expansion de ses filiales, Institut Cortex
-            et Innov Éditions, Campus Cortex et Tônôn,
-            témoignent de la vision que nous portons :
-            bâtir un groupe africain d’excellence,
-            structuré, moderne et capable d’offrir des
-            services conformes aux standards
-            internationaux.
+            La croissance rapide de Cortex Holding et l’expansion de ses
+            filiales, Institut Cortex et Innov Éditions, Campus Cortex et Tônôn,
+            témoignent de la vision que nous portons : bâtir un groupe africain
+            d’excellence, structuré, moderne et capable d’offrir des services
+            conformes aux standards internationaux.
           </Paragraph>
 
           <Paragraph>
-            Cette ambition ne saurait se concrétiser sans
-            un cadre de gestion rigoureux, harmonisé et
-            partagé par l’ensemble de nos équipes.
+            Cette ambition ne saurait se concrétiser sans un cadre de gestion
+            rigoureux, harmonisé et partagé par l’ensemble de nos équipes.
           </Paragraph>
         </PresentationCard>
 
-        {/* =================================================
-            SYNERGIES
-        ================================================= */}
-
         <ContentGrid>
-          <ContentCard>
+          <ContentCard as={motion.article} {...motionProps}>
             <CardTop>
-              <IconBox>
-                <Network size={23} />
+              <IconBox as={motion.span} whileHover={reduceMotion ? undefined : { y: -3, rotate: 5 }}>
+                <Network size={22} />
               </IconBox>
-
-              <CardLabel>
-                UN RÉSEAU DE SYNERGIES
-              </CardLabel>
+              <div>
+                <CardKicker>SYNERGIES</CardKicker>
+                <CardTitle>Un réseau conçu pour mieux agir.</CardTitle>
+              </div>
             </CardTop>
 
             <Paragraph>
-              Notre réseau est conçu pour maximiser les
-              synergies entre les différentes entités,
-              permettant ainsi de répondre efficacement
-              aux besoins variés de nos clients.
+              Notre réseau est conçu pour maximiser les synergies entre les
+              différentes entités, permettant ainsi de répondre efficacement aux
+              besoins variés de nos clients.
             </Paragraph>
 
             <Paragraph>
-              Les filiales de Cortex Holding jouent un rôle
-              crucial dans cette dynamique collaborative.
-              Elles apportent chacune une expertise
-              spécifique, renforçant ainsi notre capacité
-              à offrir des solutions complètes et
-              innovantes.
+              Les filiales de Cortex Holding jouent un rôle crucial dans cette
+              dynamique collaborative. Elles apportent chacune une expertise
+              spécifique, renforçant ainsi notre capacité à offrir des solutions
+              complètes et innovantes.
             </Paragraph>
           </ContentCard>
 
-          <ContentCard>
+          <ContentCard as={motion.article} {...motionProps}>
             <CardTop>
-              <IconBox>
-                <Sparkles size={23} />
+              <IconBox as={motion.span} whileHover={reduceMotion ? undefined : { rotate: 8, scale: 1.06 }}>
+                <Sparkles size={22} />
               </IconBox>
-
-              <CardLabel>
-                PARTENARIATS & INNOVATION
-              </CardLabel>
+              <div>
+                <CardKicker>OUVERTURE</CardKicker>
+                <CardTitle>Partenariats & innovation.</CardTitle>
+              </div>
             </CardTop>
 
             <Paragraph>
-              De plus, nos partenariats externes nous
-              permettent d’élargir notre champ d’action
-              et de bénéficier de nouvelles compétences
-              et technologies.
+              De plus, nos partenariats externes nous permettent d’élargir notre
+              champ d’action et de bénéficier de nouvelles compétences et
+              technologies.
             </Paragraph>
 
             <HighlightBox>
               <ArrowUpRight size={18} />
-
               <span>
-                Des expertises complémentaires pour
-                construire des solutions complètes et
-                innovantes.
+                Des expertises complémentaires pour construire des solutions
+                complètes et innovantes.
               </span>
             </HighlightBox>
           </ContentCard>
         </ContentGrid>
 
-        {/* =================================================
-            PLAN 2026 - 2030
-        ================================================= */}
-
-        <StrategyCard>
+        <StrategyCard as={motion.article} {...motionProps}>
           <StrategyHeader>
-            <StrategyIcon>
-              <Target size={25} />
+            <StrategyIcon as={motion.span} whileHover={reduceMotion ? undefined : { rotate: -8, scale: 1.06 }}>
+              <Target size={24} />
             </StrategyIcon>
 
             <div>
-              <StrategyKicker>
-                PLAN QUINQUENNAL
-              </StrategyKicker>
-
-              <StrategyTitle>
-                2026 — 2030
-              </StrategyTitle>
+              <StrategyKicker>PLAN QUINQUENNAL</StrategyKicker>
+              <StrategyTitle>2026 — 2030</StrategyTitle>
             </div>
           </StrategyHeader>
 
-          <StrategyText>
-            Notre plan quinquennal 2026–2030 marque la
-            troisième grande phase d’évolution de Cortex
-            Holding SAS : la phase de consolidation et
-            d’expansion stratégique.
-          </StrategyText>
+          <StrategyGrid>
+            <div>
+              <StrategyText>
+                Notre plan quinquennal 2026–2030 marque la troisième grande phase
+                d’évolution de Cortex Holding SAS : la phase de consolidation et
+                d’expansion stratégique.
+              </StrategyText>
 
-          <StrategyText>
-            Il s’inscrit dans une logique de durabilité,
-            d’innovation et d’impact à long terme, afin de
-            positionner le groupe comme un acteur de
-            référence en Afrique francophone dans la
-            formation professionnelle, l’insertion, les
-            microfinances et l’édition.
-          </StrategyText>
+              <StrategyText>
+                Il s’inscrit dans une logique de durabilité, d’innovation et
+                d’impact à long terme, afin de positionner le groupe comme un
+                acteur de référence en Afrique francophone dans la formation
+                professionnelle, l’insertion, les microfinances et l’édition.
+              </StrategyText>
+            </div>
 
-          <StrategicPillars>
-            <Pillar>
-              <PillarNumber>01</PillarNumber>
-              <PillarText>
-                Durabilité
-              </PillarText>
-            </Pillar>
-
-            <Pillar>
-              <PillarNumber>02</PillarNumber>
-              <PillarText>
-                Innovation
-              </PillarText>
-            </Pillar>
-
-            <Pillar>
-              <PillarNumber>03</PillarNumber>
-              <PillarText>
-                Impact à long terme
-              </PillarText>
-            </Pillar>
-          </StrategicPillars>
+            <StrategicPillars>
+              {["Durabilité", "Innovation", "Impact à long terme"].map((label, index) => (
+                <Pillar key={label}>
+                  <PillarNumber>0{index + 1}</PillarNumber>
+                  <PillarText>{label}</PillarText>
+                </Pillar>
+              ))}
+            </StrategicPillars>
+          </StrategyGrid>
         </StrategyCard>
 
-        {/* =================================================
-            POSITIONNEMENT
-        ================================================= */}
-
-        <Positioning>
-          <PositioningLine />
-
-          <PositioningContent>
-            <PositioningLabel>
-              NOTRE AMBITION
-            </PositioningLabel>
-
+        <BottomGrid>
+          <Positioning as={motion.div} {...motionProps}>
+            <PositioningLabel>NOTRE AMBITION</PositioningLabel>
             <PositioningText>
-              Positionner le groupe comme un acteur de
-              référence en Afrique francophone dans la
-              <strong> formation professionnelle</strong>,
-              l’<strong>insertion</strong>, les
-              <strong> microfinances</strong> et
+              Positionner le groupe comme un acteur de référence en Afrique
+              francophone dans la <strong>formation professionnelle</strong>,
+              l’<strong>insertion</strong>, les <strong>microfinances</strong> et
               l’<strong>édition</strong>.
             </PositioningText>
-          </PositioningContent>
-        </Positioning>
+          </Positioning>
 
-        {/* =================================================
-            MESSAGE DU PDG
-        ================================================= */}
-
-        <QuoteCard>
-          <QuoteIcon>
-            <Quote size={22} />
-          </QuoteIcon>
-
-          <QuoteText>
-            « Bâtir un groupe africain d’excellence,
-            structuré, moderne et capable d’offrir des
-            services conformes aux standards
-            internationaux. »
-          </QuoteText>
-
-          <Author>
-            <AuthorLine />
-
-            <div>
-              <AuthorName>
-                Jean-Baptiste Zebelamou
-              </AuthorName>
-
-              <AuthorRole>
-                Président Directeur Général
-              </AuthorRole>
-
-              <AuthorCompany>
-                Cortex Holding
-              </AuthorCompany>
-            </div>
-          </Author>
-        </QuoteCard>
+          <QuoteCard as={motion.blockquote} {...motionProps}>
+            <QuoteIcon>
+              <Quote size={21} />
+            </QuoteIcon>
+            <QuoteText>
+              « Bâtir un groupe africain d’excellence, structuré, moderne et
+              capable d’offrir des services conformes aux standards
+              internationaux. »
+            </QuoteText>
+            <Author>
+              <AuthorLine />
+              <div>
+                <AuthorName>Jean-Baptiste Zebelamou</AuthorName>
+                <AuthorRole>Président Directeur Général</AuthorRole>
+                <AuthorCompany>Cortex Holding</AuthorCompany>
+              </div>
+            </Author>
+          </QuoteCard>
+        </BottomGrid>
       </Container>
     </Section>
   );
@@ -297,628 +203,375 @@ function CortexHolding() {
 
 export default memo(CortexHolding);
 
-/* =========================================================
-   STYLES
-========================================================= */
+const floatSoft = keyframes`
+  0%, 100% { transform: translate3d(0,0,0); }
+  50% { transform: translate3d(0,-10px,0); }
+`;
 
 const Section = styled.section`
   position: relative;
-
-  overflow: hidden;
-
-  padding:
-    clamp(60px, 8vw, 110px)
-    16px;
-
-  background:
-    radial-gradient(
-      700px 400px at 8% 10%,
-      rgba(0, 102, 153, 0.12),
-      transparent 65%
-    ),
-    radial-gradient(
-      600px 400px at 90% 65%,
-      rgba(242, 201, 76, 0.07),
-      transparent 65%
-    ),
-    linear-gradient(
-      180deg,
-      ${colors.bgSoft || "#0A1828"},
-      ${colors.bg1 || "#071727"}
-    );
-
-  color: ${colors.text || "#FFFFFF"};
-
   isolation: isolate;
+  overflow: hidden;
+  padding: clamp(72px, 9vw, 118px) 16px;
+  background:
+    radial-gradient(760px 520px at 8% 8%, rgba(243,111,33,.09), transparent 64%),
+    radial-gradient(740px 520px at 92% 72%, rgba(42,75,124,.20), transparent 66%),
+    linear-gradient(180deg, ${colors.bg}, ${colors.bgSoft} 48%, ${colors.bg1});
+  color: ${colors.text};
 `;
 
-const BackgroundOrb = styled.div`
+const Grid = styled.div`
   position: absolute;
+  inset: 0;
+  z-index: -3;
+  opacity: .18;
+  background:
+    linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+  background-size: 46px 46px;
+  mask-image: linear-gradient(to bottom, #000, transparent 92%);
+`;
 
+const Glow = styled.div`
+  position: absolute;
+  z-index: -2;
   top: 8%;
-  right: -180px;
-
-  width: 420px;
-  height: 420px;
-
+  right: -190px;
+  width: min(46vw, 580px);
+  aspect-ratio: 1;
   border-radius: 50%;
-
-  border: 1px solid
-    ${(p) => p.$accent}14;
-
-  box-shadow:
-    inset 0 0 80px
-      ${(p) => p.$accent}08;
-
-  pointer-events: none;
-
-  animation: ${floatOrb} 9s ease-in-out infinite;
+  background: radial-gradient(circle, rgba(243,111,33,.16), transparent 68%);
+  filter: blur(14px);
+  animation: ${floatSoft} 10s ease-in-out infinite;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
-  }
-
-  @media (max-width: 700px) {
-    width: 280px;
-    height: 280px;
-
-    right: -150px;
   }
 `;
 
 const Container = styled.div`
   position: relative;
-
   z-index: 2;
-
-  width: min(1180px, 100%);
-
+  width: min(1280px, 100%);
   margin: 0 auto;
+  display: grid;
+  gap: clamp(20px, 2.6vw, 32px);
 `;
 
 const Header = styled.header`
-  max-width: 850px;
-
-  margin: 0 auto 38px;
-
+  max-width: 860px;
+  margin: 0 auto 8px;
   text-align: center;
 `;
 
 const Eyebrow = styled.div`
+  width: fit-content;
+  margin: 0 auto 14px;
   display: inline-flex;
-
   align-items: center;
-
-  gap: 7px;
-
-  margin-bottom: 12px;
-
-  color: ${colors.accentGold || "#F2C94C"};
-
+  gap: 8px;
+  padding: 8px 11px;
+  border: 1px solid rgba(243,111,33,.34);
+  border-radius: 9px 0 9px 0;
+  background: rgba(243,111,33,.08);
+  color: ${colors.accentGold3};
   font-size: 11px;
-
   font-weight: 900;
-
-  letter-spacing: 0.16em;
-
-  text-transform: uppercase;
+  letter-spacing: .14em;
 `;
 
-const Title = styled.h2`
-  margin: 0;
-`;
-
-const GradientTitle = styled.span`
-  display: inline-block;
-
-  background:
-    linear-gradient(
-      90deg,
-      ${colors.brandNavy || "#0E2D4F"},
-      ${colors.brandBlue || "#006699"},
-      ${colors.accentGold || "#F2C94C"},
-      ${colors.brandBlue || "#006699"},
-      ${colors.brandNavy || "#0E2D4F"}
-    );
-
-  background-size: 250% 100%;
-
-  -webkit-background-clip: text;
-  background-clip: text;
-
-  color: transparent;
-
-  font-size: clamp(2.3rem, 6vw, 4.5rem);
-
-  line-height: 1;
-
-  font-weight: 950;
-
-  letter-spacing: -0.055em;
-
-  animation: ${gradientMove} 10s ease infinite;
+const AnimatedIcon = styled.span`
+  display: inline-grid;
+  place-items: center;
+  animation: ${floatSoft} 4.6s ease-in-out infinite;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
 `;
 
-const Intro = styled.p`
-  max-width: 650px;
-
-  margin: 18px auto 0;
-
-  color: ${colors.muted || "rgba(255,255,255,.62)"};
-
-  font-size: clamp(14px, 2vw, 17px);
-
-  line-height: 1.7;
+const Title = styled.h2`
+  margin: 0;
+  color: ${colors.text};
+  font-size: clamp(34px, 5.2vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -.045em;
+  font-weight: 950;
 `;
 
-/* =========================================================
-   CARDS
-========================================================= */
+const Accent = styled.span`
+  color: ${colors.accentGold};
+`;
 
-const BaseCard = styled.div`
-  position: relative;
+const Intro = styled.p`
+  max-width: 720px;
+  margin: 18px auto 0;
+  color: ${colors.accentGoldLight};
+  font-size: clamp(15px, 1.8vw, 18px);
+  line-height: 1.75;
+`;
 
-  padding: clamp(20px, 4vw, 32px);
-
-  border: 1px solid
-    rgba(255, 255, 255, 0.1);
-
-  border-radius: 24px 0 24px 0;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.055),
-      rgba(255, 255, 255, 0.018)
-    );
-
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  box-shadow:
-    0 22px 60px rgba(0, 0, 0, 0.22);
+const BaseCard = styled.article`
+   border-radius: 30px 0 30px 0;
+  background: linear-gradient(145deg, rgba(7,23,39,.86), rgba(13,29,74,.62));
+   backdrop-filter: blur(16px);
 `;
 
 const PresentationCard = styled(BaseCard)`
-  max-width: 1000px;
-
+  max-width: 1100px;
   margin: 0 auto;
+  padding: clamp(22px, 4vw, 34px);
 `;
 
 const ContentGrid = styled.div`
   display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 18px;
 
-  grid-template-columns:
-    repeat(2, minmax(0, 1fr));
-
-  gap: 14px;
-
-  margin-top: 14px;
-
-  @media (max-width: 760px) {
+  @media (max-width: 850px) {
     grid-template-columns: 1fr;
   }
 `;
 
 const ContentCard = styled(BaseCard)`
-  min-height: 100%;
-
-  transition:
-    transform 180ms ease,
-    border-color 180ms ease;
-
-  &:hover {
-    transform: translateY(-3px);
-
-    border-color:
-      rgba(242, 201, 76, 0.2);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-
-    &:hover {
-      transform: none;
-    }
-  }
+  padding: clamp(20px, 3vw, 30px);
 `;
 
 const CardTop = styled.div`
-  display: flex;
-
+  display: grid;
+  grid-template-columns: auto 1fr;
   align-items: center;
-
-  gap: 11px;
-
-  margin-bottom: 17px;
+  gap: 14px;
+  margin-bottom: 16px;
 `;
 
-const IconBox = styled.div`
-  width: 42px;
-  height: 42px;
-
-  flex: 0 0 auto;
-
+const IconBox = styled.span`
+  width: 48px;
+  height: 48px;
   display: grid;
   place-items: center;
-
-  border-radius: 13px 0 13px 0;
-
-  color: ${colors.accentGold || "#F2C94C"};
-
-  background:
-    rgba(242, 201, 76, 0.1);
-
-  border: 1px solid
-    rgba(242, 201, 76, 0.12);
+  border-radius: 15px 0 15px 0;
+  border: 1px solid rgba(243,111,33,.30);
+  background: rgba(243,111,33,.10);
+  color: ${colors.accentGold};
 `;
 
-const CardLabel = styled.span`
-  color: rgba(255, 255, 255, 0.52);
-
+const CardKicker = styled.div`
+  margin-bottom: 4px;
+  color: ${colors.accentGold3};
   font-size: 10px;
-
   font-weight: 900;
+  letter-spacing: .15em;
+`;
 
-  letter-spacing: 0.13em;
+const CardTitle = styled.h3`
+  margin: 0;
+  color: ${colors.text};
+  font-size: clamp(18px, 2vw, 23px);
+  line-height: 1.25;
 `;
 
 const Paragraph = styled.p`
   margin: 0;
-
-  & + & {
-    margin-top: 15px;
-  }
-
-  color: rgba(255, 255, 255, 0.69);
-
-  font-size: 14px;
-
+  color: ${colors.textSoft};
+  font-size: 15px;
   line-height: 1.8;
+
+  & + & { margin-top: 12px; }
 `;
 
 const HighlightBox = styled.div`
-  display: flex;
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 13px 14px;
+  border: 1px solid rgba(243,111,33,.28);
+  border-radius: 16px 0 16px 0;
+  background: rgba(243,111,33,.07);
+  color: ${colors.accentGoldLight};
 
-  align-items: flex-start;
-
-  gap: 9px;
-
-  margin-top: 20px;
-
-  padding: 13px;
-
-  border-radius: 14px 0 14px 0;
-
-  border: 1px solid
-    rgba(242, 201, 76, 0.12);
-
-  background:
-    rgba(242, 201, 76, 0.05);
-
-  color: rgba(255, 255, 255, 0.62);
-
-  font-size: 12px;
-
-  line-height: 1.55;
-
-  svg {
-    flex: 0 0 auto;
-
-    color: ${colors.accentGold || "#F2C94C"};
-  }
+  svg { color: ${colors.accentGold}; }
 `;
 
-/* =========================================================
-   STRATEGY
-========================================================= */
-
 const StrategyCard = styled(BaseCard)`
-  margin-top: 14px;
-
-  overflow: hidden;
-
+  padding: clamp(22px, 4vw, 36px);
   background:
-    radial-gradient(
-      500px 280px at 100% 0%,
-      rgba(242, 201, 76, 0.08),
-      transparent 65%
-    ),
-    linear-gradient(
-      145deg,
-      rgba(0, 102, 153, 0.08),
-      rgba(255, 255, 255, 0.025)
-    );
+    radial-gradient(520px 280px at 94% 0%, rgba(243,111,33,.10), transparent 66%),
+    linear-gradient(145deg, rgba(13,29,74,.88), rgba(14,26,43,.92));
 `;
 
 const StrategyHeader = styled.div`
   display: flex;
-
   align-items: center;
-
   gap: 13px;
+  margin-bottom: 20px;
 `;
 
-const StrategyIcon = styled.div`
-  width: 48px;
-  height: 48px;
-
+const StrategyIcon = styled.span`
+  width: 52px;
+  height: 52px;
   display: grid;
   place-items: center;
-
-  flex: 0 0 auto;
-
-  border-radius: 15px 0 15px 0;
-
-  color: ${colors.accentGold || "#F2C94C"};
-
-  background:
-    rgba(242, 201, 76, 0.1);
-
-  border: 1px solid
-    rgba(242, 201, 76, 0.14);
+  border-radius: 16px 0 16px 0;
+  background: ${colors.accentGold};
+  color: ${colors.bg};
 `;
 
 const StrategyKicker = styled.div`
-  color: rgba(255, 255, 255, 0.45);
-
+  color: ${colors.accentGold3};
   font-size: 10px;
-
   font-weight: 900;
-
-  letter-spacing: 0.13em;
+  letter-spacing: .15em;
 `;
 
 const StrategyTitle = styled.div`
   margin-top: 3px;
-
-  color: #fff;
-
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
-
+  color: ${colors.text};
+  font-size: clamp(26px, 3vw, 38px);
   font-weight: 950;
-
-  letter-spacing: -0.035em;
+  letter-spacing: -.035em;
 `;
 
-const StrategyText = styled.p`
-  max-width: 900px;
-
-  margin: 22px 0 0;
-
-  color: rgba(255, 255, 255, 0.69);
-
-  font-size: 14px;
-
-  line-height: 1.8;
-
-  & + & {
-    margin-top: 14px;
-  }
-`;
-
-const StrategicPillars = styled.div`
+const StrategyGrid = styled.div`
   display: grid;
+  grid-template-columns: minmax(0,1.2fr) minmax(280px,.8fr);
+  gap: clamp(20px, 4vw, 48px);
+  align-items: start;
 
-  grid-template-columns:
-    repeat(3, minmax(0, 1fr));
-
-  gap: 9px;
-
-  margin-top: 24px;
-
-  @media (max-width: 650px) {
+  @media (max-width: 850px) {
     grid-template-columns: 1fr;
   }
 `;
 
-const Pillar = styled.div`
-  display: flex;
+const StrategyText = styled.p`
+  margin: 0;
+  color: ${colors.textSoft};
+  line-height: 1.8;
 
-  align-items: center;
+  & + & { margin-top: 13px; }
+`;
 
+const StrategicPillars = styled.div`
+  display: grid;
   gap: 10px;
+`;
 
-  padding: 12px;
-
-  border-radius: 14px 0 14px 0;
-
-  border: 1px solid
-    rgba(255, 255, 255, 0.08);
-
-  background:
-    rgba(0, 0, 0, 0.12);
+const Pillar = styled.div`
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 13px;
+   border-radius: 16px 0 16px 0;
+  background: rgba(255,255,255,.035);
 `;
 
 const PillarNumber = styled.span`
-  color: ${colors.accentGold || "#F2C94C"};
-
-  font-size: 10px;
-
-  font-weight: 900;
+  color: ${colors.accentGold};
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: .08em;
 `;
 
 const PillarText = styled.span`
-  color: rgba(255, 255, 255, 0.7);
-
-  font-size: 12px;
-
+  color: ${colors.text};
   font-weight: 800;
 `;
 
-/* =========================================================
-   POSITIONNEMENT
-========================================================= */
-
-const Positioning = styled.div`
+const BottomGrid = styled.div`
   display: grid;
-
-  grid-template-columns: 4px 1fr;
-
+  grid-template-columns: 1fr 1fr;
   gap: 18px;
 
-  max-width: 900px;
-
-  margin: 45px auto;
-
-  padding: 0 8px;
+  @media (max-width: 850px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
-const PositioningLine = styled.div`
-  border-radius: 999px;
-
-  background:
-    linear-gradient(
-      180deg,
-      ${colors.accentGold || "#F2C94C"},
-      ${colors.brandBlue || "#006699"}
-    );
+const Positioning = styled.div`
+  padding: clamp(20px, 3vw, 28px);
+  border-left: 3px solid ${colors.accentGold};
+  border-radius: 0 24px 24px 0;
+  background: linear-gradient(120deg, rgba(13,29,74,.72), rgba(17,35,59,.54));
 `;
-
-const PositioningContent = styled.div``;
 
 const PositioningLabel = styled.div`
-  margin-bottom: 8px;
-
-  color: ${colors.accentGold || "#F2C94C"};
-
+  margin-bottom: 10px;
+  color: ${colors.accentGold3};
   font-size: 10px;
-
   font-weight: 900;
-
-  letter-spacing: 0.14em;
+  letter-spacing: .15em;
 `;
 
 const PositioningText = styled.p`
   margin: 0;
+  color: ${colors.textSoft};
+  font-size: clamp(15px, 1.8vw, 18px);
+  line-height: 1.75;
 
-  color: rgba(255, 255, 255, 0.74);
-
-  font-size: clamp(16px, 2.5vw, 22px);
-
-  line-height: 1.55;
-
-  font-weight: 500;
-
-  strong {
-    color: #fff;
-
-    font-weight: 850;
-  }
+  strong { color: ${colors.text}; }
 `;
 
-/* =========================================================
-   PDG
-========================================================= */
-
-const QuoteCard = styled(BaseCard)`
-  max-width: 920px;
-
-  margin: 0 auto;
-
-  text-align: center;
-
-  background:
-    radial-gradient(
-      500px 300px at 50% 0%,
-      rgba(0, 102, 153, 0.12),
-      transparent 65%
-    ),
-    rgba(255, 255, 255, 0.025);
+const QuoteCard = styled.blockquote`
+  position: relative;
+  margin: 0;
+  padding: clamp(20px, 3vw, 28px);
+   border-radius: 24px 0 24px 0;
+  background: rgba(7,23,39,.72);
 `;
 
-const QuoteIcon = styled.div`
-  width: 48px;
-  height: 48px;
-
-  margin: 0 auto 18px;
-
+const QuoteIcon = styled.span`
+  width: 38px;
+  height: 38px;
   display: grid;
   place-items: center;
-
-  border-radius: 50%;
-
-  color: ${colors.accentGold || "#F2C94C"};
-
-  background:
-    rgba(242, 201, 76, 0.09);
-
-  border: 1px solid
-    rgba(242, 201, 76, 0.14);
+  margin-bottom: 12px;
+  border-radius: 12px 0 12px 0;
+  background: rgba(243,111,33,.10);
+  color: ${colors.accentGold};
 `;
 
-const QuoteText = styled.blockquote`
-  max-width: 760px;
-
-  margin: 0 auto;
-
-  color: rgba(255, 255, 255, 0.84);
-
-  font-size: clamp(17px, 3vw, 25px);
-
-  line-height: 1.55;
-
-  font-weight: 600;
-
-  letter-spacing: -0.015em;
+const QuoteText = styled.p`
+  margin: 0;
+  color: ${colors.text};
+  font-size: clamp(16px, 2vw, 20px);
+  line-height: 1.65;
+  font-weight: 700;
 `;
 
-const Author = styled.div`
+const Author = styled.footer`
   display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  gap: 12px;
-
-  margin-top: 25px;
-
-  text-align: left;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 18px;
 `;
 
 const AuthorLine = styled.span`
-  width: 32px;
+  width: 28px;
   height: 2px;
-
-  flex: 0 0 auto;
-
-  border-radius: 999px;
-
-  background:
-    ${colors.accentGold || "#F2C94C"};
+  margin-top: 8px;
+  background: ${colors.accentGold};
 `;
 
 const AuthorName = styled.div`
-  color: #fff;
-
+  color: ${colors.text};
   font-size: 13px;
-
   font-weight: 900;
 `;
 
 const AuthorRole = styled.div`
-  margin-top: 2px;
-
-  color: rgba(255, 255, 255, 0.48);
-
+  margin-top: 3px;
+  color: ${colors.muted};
   font-size: 11px;
 `;
 
 const AuthorCompany = styled.div`
-  margin-top: 2px;
-
-  color: ${colors.accentGold || "#F2C94C"};
-
+  margin-top: 3px;
+  color: ${colors.accentGold3};
   font-size: 10px;
-
-  font-weight: 800;
-
-  letter-spacing: 0.06em;
-
+  font-weight: 900;
+  letter-spacing: .06em;
   text-transform: uppercase;
 `;
