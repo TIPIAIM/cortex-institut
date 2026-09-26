@@ -19,10 +19,11 @@ const NAV = [
 
   { label: "Institut-Cortex", to: "/programmes" },
   { label: "Campus-Cortex", to: "/campuscortex" },
+  { label: "Cortex Holding", to: "/apropos" },
+
   { label: "Innov Éditions", to: "/innoveditions" },
   { label: "Contact", to: "/contact", modal: true },
 
-  { label: "Cortex Holding", to: "/apropos" },
 
   { label: "Tônôn", to: "/CreducPage" },
   // { label: "Innov-edition", to: "/" },

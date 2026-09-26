@@ -1,20 +1,19 @@
- import { createRoot } from 'react-dom/client'
- import React from 'react';
-  import { BrowserRouter } from "react-router-dom";
- import App from './App';
- import { HelmetProvider } from '@dr.pogodin/react-helmet'
- //import "bootstrap/dist/css/bootstrap.min.css"; //css du bootst
- //import "slick-carousel/slick/slick.css";
- //import "slick-carousel/slick/slick-theme.css";
- import 'swiper/css';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import { HelmetProvider } from "@dr.pogodin/react-helmet";
+import App from "./App.jsx";
 
-createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-  <HelmetProvider>
- <BrowserRouter> 
-    <App />
-  
-  </BrowserRouter>
-  </HelmetProvider>
-</React.StrictMode>,
-)
+/*
+ * Pas d'import global de `swiper/css` : si un futur composant utilise Swiper,
+ * importer son CSS localement dans ce composant afin de ne pas le charger partout.
+ */
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <HelmetProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </HelmetProvider>
+  </StrictMode>
+);

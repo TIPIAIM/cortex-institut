@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import colors from "./colors";
 
 const GlobalStyle = createGlobalStyle`
   *,
@@ -7,7 +8,19 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
 
-  html,
+  :root {
+    color-scheme: dark;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background: ${colors.bg};
+  }
+
   body,
   #root {
     margin: 0;
@@ -16,13 +29,14 @@ const GlobalStyle = createGlobalStyle`
     min-height: 100%;
   }
 
-  html,
   body {
-    background: rgb(0, 8, 15);
+    min-width: 320px;
+    min-height: 100vh;
     overflow-x: hidden;
-  }
-
-  body {
+    background:
+      radial-gradient(900px 560px at 12% -8%, rgba(243, 111, 33, 0.07), transparent 62%),
+      linear-gradient(180deg, ${colors.bg}, ${colors.bgSoft} 48%, ${colors.bg1});
+    color: ${colors.text};
     font-family: inherit;
   }
 
@@ -45,9 +59,51 @@ const GlobalStyle = createGlobalStyle`
     font: inherit;
   }
 
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    -webkit-tap-highlight-color: transparent;
+  }
+
   a {
-    text-decoration: none;
     color: inherit;
+    text-decoration: none;
+  }
+
+  button {
+    color: inherit;
+  }
+
+  ::selection {
+    background: ${colors.accentGold};
+    color: ${colors.bg};
+  }
+
+  :focus-visible {
+    outline: 3px solid ${colors.focusRing};
+    outline-offset: 3px;
+  }
+
+  html {
+    scrollbar-color: ${colors.brandBlueMid} ${colors.bg};
+    scrollbar-width: thin;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 `;
 

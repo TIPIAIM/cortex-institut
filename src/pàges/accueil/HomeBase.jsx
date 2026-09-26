@@ -15,7 +15,6 @@ const PartnersStrip = lazy(() => import("./PartnersStrip"));
 const TestimonialsWall = lazy(() => import("./Temoignàge"));
 const RealisationsZigzag = lazy(() => import("./RealisationsZigzag"));
 const FinalBandCTA = lazy(() => import("./FinalBandCTA"));
-const CortexHolding = lazy(() => import("../CortexHolding/CortexHolding"));
 
 /* ===================== FX légers ===================== */
 
@@ -90,35 +89,37 @@ function DeferInView({ children, height = 280 }) {
 /* ===================== Préchargement idle ===================== */
 function useWarmChunks() {
   useEffect(() => {
-    const ric =
-      window.requestIdleCallback ||
-      function (cb) {
-        const id = setTimeout(cb, 350);
-        return { id, cancel: () => clearTimeout(id) };
-      };
+    const connection =
+      navigator.connection || navigator.mozConnection || navigator.webkitConnection;
 
-    const handle = ric(async () => {
-      // On déclenche les imports (ils seront déjà en cache au scroll)
-      const tasks = [
+    /* Ne pas précharger inutilement sur économie de données / réseau très lent. */
+    if (connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType || "")) {
+      return undefined;
+    }
+
+    let cancelled = false;
+    let fallbackTimer = null;
+
+    const warm = async () => {
+      if (cancelled) return;
+      /* Les deux premières sections seulement : le reste reste piloté par IntersectionObserver. */
+      await Promise.allSettled([
         import("./PillarsGrid"),
         import("./ProgramsRail"),
-        import("./PartnersStrip"),
-        import("./Temoignàge"),
-        import("./RealisationsZigzag"),
-        import("./FinalBandCTA"),
-      ];
-      try {
-        await Promise.allSettled(tasks);
-      } catch {
-        /* silencieux */
-      }
-    });
+      ]);
+    };
+
+    let idleId = null;
+    if ("requestIdleCallback" in window) {
+      idleId = window.requestIdleCallback(warm, { timeout: 1600 });
+    } else {
+      fallbackTimer = window.setTimeout(warm, 900);
+    }
 
     return () => {
-      if ("cancelIdleCallback" in window && handle) {
-        // @ts-ignore
-        window.cancelIdleCallback(handle);
-      }
+      cancelled = true;
+      if (idleId != null) window.cancelIdleCallback?.(idleId);
+      if (fallbackTimer != null) window.clearTimeout(fallbackTimer);
     };
   }, []);
 }

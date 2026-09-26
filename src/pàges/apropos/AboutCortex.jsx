@@ -1,10 +1,8 @@
 import React, { memo, useEffect, useMemo } from "react";
 import styled, { keyframes } from "styled-components";
 import { motion, useReducedMotion } from "framer-motion";
-import { Link } from "react-router-dom";
-import {
-  ArrowRight,
-  BookOpenCheck,
+ import {
+   BookOpenCheck,
   Briefcase,
   Compass,
   HeartHandshake,
@@ -19,8 +17,7 @@ import colors from "../../Styles/colors";
 import { imagess } from "../../assets/imagess";
 import SEO from "../../SEO";
 import CortexHolding from "../CortexHolding/CortexHolding";
-import { openProgrammeContactModal } from "../programmes/programmeContact.js";
-
+ 
 const CANONICAL = "https://www.institut-cortex.com/apropos";
 const OG_IMAGE = imagess?.logoCortex2 || imagess?.logoCortex || "/img/cortex-logo.png";
 

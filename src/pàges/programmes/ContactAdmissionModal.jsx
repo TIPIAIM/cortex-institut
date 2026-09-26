@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { motion, useReducedMotion } from "framer-motion";
-import { send } from "@emailjs/browser";
 import {
   ArrowRight,
   BadgeCheck,
@@ -13,13 +12,18 @@ import {
   MessageCircle,
   Phone,
   Send,
-  
+  Sparkles,
   UsersRound,
 } from "lucide-react";
 import colors from "../../Styles/colors";
 import ProModal from "./ProModal";
-import { catalogues, getCatalogueSchools } from "./filieres.data";
-import { CONTACT_MODAL_EVENT, flattenSchoolPrograms } from "./programmeContact";
+import {
+  catalogues,
+  getCatalogueSchools,
+} from "./filieres.data";
+import {
+  flattenSchoolPrograms,
+} from "./programmeContact";
 
 const EMAILJS = {
   serviceId: import.meta.env.VITE_EMAILJS_SERVICE_IDC,
@@ -55,9 +59,7 @@ const INTENTS = [
 ];
 
 const sanitize = (value = "") =>
-  String(value)
-    .replace(/<[^>]*>?/gm, "")
-    .replace(/\u00A0/g, " ");
+  String(value).replace(/<[^>]*>?/gm, "").replace(/\u00A0/g, " ");
 
 const validEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 const validPhone = (value) => !value || /^[\d()+.\-\s]{6,}$/.test(value);
@@ -77,7 +79,7 @@ function getInitialForm(detail = {}) {
   };
 }
 
-export default function ContactAdmissionModal() {
+export default function ContactAdmissionModal({ initialRequest = null }) {
   const reduceMotion = useReducedMotion();
   const [open, setOpen] = useState(false);
   const [source, setSource] = useState("site");
@@ -87,24 +89,22 @@ export default function ContactAdmissionModal() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const handleOpen = (event) => {
-      const detail = event?.detail || {};
-      setSource(detail.source || "site");
-      setForm(getInitialForm(detail));
-      setTouched({});
-      setSent(false);
-      setError("");
-      setOpen(true);
-    };
-
-    window.addEventListener(CONTACT_MODAL_EVENT, handleOpen);
-    return () => window.removeEventListener(CONTACT_MODAL_EVENT, handleOpen);
+  const applyOpenRequest = useCallback((detail = {}) => {
+    setSource(detail.source || "site");
+    setForm(getInitialForm(detail));
+    setTouched({});
+    setSent(false);
+    setError("");
+    setOpen(true);
   }, []);
 
+  useEffect(() => {
+    if (!initialRequest) return;
+    applyOpenRequest(initialRequest);
+  }, [initialRequest, applyOpenRequest]);
+
   const activeCatalogue = useMemo(
-    () =>
-      catalogues.find((catalogue) => catalogue.id === form.catalogueId) || null,
+    () => catalogues.find((catalogue) => catalogue.id === form.catalogueId) || null,
     [form.catalogueId]
   );
 
@@ -151,14 +151,10 @@ export default function ContactAdmissionModal() {
 
   const subject = useMemo(() => {
     if (form.intent === "inscription") {
-      return `Demande d'inscription${
-        form.programTitle ? ` — ${form.programTitle}` : ""
-      }`;
+      return `Demande d'inscription${form.programTitle ? ` — ${form.programTitle}` : ""}`;
     }
     if (form.intent === "partenariat") return "Demande de partenariat";
-    return `Demande d'information${
-      selectedSchool?.title ? ` — ${selectedSchool.title}` : ""
-    }`;
+    return `Demande d'information${selectedSchool?.title ? ` — ${selectedSchool.title}` : ""}`;
   }, [form.intent, form.programTitle, selectedSchool]);
 
   const isValid = useMemo(() => {
@@ -170,8 +166,7 @@ export default function ContactAdmissionModal() {
 
     if (!base) return false;
     if (form.intent === "inscription") return Boolean(form.catalogueId);
-    if (form.intent === "partenariat")
-      return form.organisation.trim().length >= 2;
+    if (form.intent === "partenariat") return form.organisation.trim().length >= 2;
     return true;
   }, [form]);
 
@@ -244,6 +239,9 @@ export default function ContactAdmissionModal() {
         .filter(Boolean)
         .join("\n");
 
+      // EmailJS est chargé uniquement au moment de l'envoi, pas à l'ouverture du site.
+      const { send } = await import("@emailjs/browser");
+
       await send(
         EMAILJS.serviceId,
         EMAILJS.templateId,
@@ -267,8 +265,7 @@ export default function ContactAdmissionModal() {
       setSent(true);
     } catch (err) {
       setError(
-        err?.text ||
-          err?.message ||
+        err?.text || err?.message ||
           "L’envoi n’a pas abouti. Vous pouvez utiliser WhatsApp immédiatement."
       );
     } finally {
@@ -296,9 +293,7 @@ export default function ContactAdmissionModal() {
     <ProModal
       open={open}
       onClose={closeModal}
-      title={
-        sent ? "Demande transmise" : "Contact & admission — Institut Cortex"
-      }
+      title={sent ? "Demande transmise" : "Contact & admission — Institut Cortex"}
       labelledById="cortex-contact-modal-title"
       describedById="cortex-contact-modal-desc"
     >
@@ -316,8 +311,8 @@ export default function ContactAdmissionModal() {
             <SuccessTitle>Votre demande a bien été envoyée.</SuccessTitle>
             <SuccessText>
               Notre équipe dispose déjà du contexte de votre demande
-              {contextLabel ? ` : ${contextLabel}` : ""}. Vous pouvez fermer
-              cette fenêtre et poursuivre votre navigation.
+              {contextLabel ? ` : ${contextLabel}` : ""}. Vous pouvez fermer cette
+              fenêtre et poursuivre votre navigation.
             </SuccessText>
             <SuccessActions>
               <PrimaryButton type="button" onClick={closeModal}>
@@ -325,10 +320,7 @@ export default function ContactAdmissionModal() {
                 <ArrowRight size={17} />
               </PrimaryButton>
               <WhatsAppButton
-                href={`https://wa.me/${CONTACT.whatsapp.replace(
-                  /\D/g,
-                  ""
-                )}?text=${whatsappMessage}`}
+                href={`https://wa.me/${CONTACT.whatsapp.replace(/\D/g, "")}?text=${whatsappMessage}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -341,6 +333,17 @@ export default function ContactAdmissionModal() {
           <Layout>
             <IntroPanel>
               <IntroTop>
+                <AnimatedBadge
+                  as={motion.span}
+                  animate={
+                    reduceMotion
+                      ? undefined
+                      : { y: [0, -4, 0], rotate: [0, 2, 0] }
+                  }
+                  transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <Sparkles size={18} />
+                </AnimatedBadge>
                 <div>
                   <Eyebrow>PREMIER CONTACT CORTEX</Eyebrow>
                   <IntroTitle>Votre projet commence ici.</IntroTitle>
@@ -349,8 +352,8 @@ export default function ContactAdmissionModal() {
 
               <IntroText>
                 Vous restez sur la page que vous consultez. Nous récupérons le
-                contexte de votre choix pour que l’équipe Cortex puisse vous
-                répondre plus rapidement.
+                contexte de votre choix pour que l’équipe Cortex puisse vous répondre
+                plus rapidement et avec les bonnes informations.
               </IntroText>
 
               <IntentGrid role="group" aria-label="Type de demande">
@@ -407,10 +410,7 @@ export default function ContactAdmissionModal() {
                   <Mail size={16} /> E-mail
                 </a>
                 <a
-                  href={`https://wa.me/${CONTACT.whatsapp.replace(
-                    /\D/g,
-                    ""
-                  )}?text=${whatsappMessage}`}
+                  href={`https://wa.me/${CONTACT.whatsapp.replace(/\D/g, "")}?text=${whatsappMessage}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -495,12 +495,8 @@ export default function ContactAdmissionModal() {
                   <Input
                     value={form.name}
                     onChange={(event) => setValue("name", event.target.value)}
-                    onBlur={() =>
-                      setTouched((prev) => ({ ...prev, name: true }))
-                    }
-                    aria-invalid={Boolean(
-                      touched.name && form.name.trim().length < 2
-                    )}
+                    onBlur={() => setTouched((prev) => ({ ...prev, name: true }))}
+                    aria-invalid={Boolean(touched.name && form.name.trim().length < 2)}
                     placeholder="Votre nom et prénom"
                     autoComplete="name"
                   />
@@ -512,12 +508,8 @@ export default function ContactAdmissionModal() {
                     type="email"
                     value={form.email}
                     onChange={(event) => setValue("email", event.target.value)}
-                    onBlur={() =>
-                      setTouched((prev) => ({ ...prev, email: true }))
-                    }
-                    aria-invalid={Boolean(
-                      touched.email && !validEmail(form.email)
-                    )}
+                    onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
+                    aria-invalid={Boolean(touched.email && !validEmail(form.email))}
                     placeholder="vous@email.com"
                     autoComplete="email"
                   />
@@ -528,12 +520,8 @@ export default function ContactAdmissionModal() {
                   <Input
                     value={form.phone}
                     onChange={(event) => setValue("phone", event.target.value)}
-                    onBlur={() =>
-                      setTouched((prev) => ({ ...prev, phone: true }))
-                    }
-                    aria-invalid={Boolean(
-                      touched.phone && !validPhone(form.phone)
-                    )}
+                    onBlur={() => setTouched((prev) => ({ ...prev, phone: true }))}
+                    aria-invalid={Boolean(touched.phone && !validPhone(form.phone))}
                     placeholder="+224 ..."
                     autoComplete="tel"
                   />
@@ -551,8 +539,7 @@ export default function ContactAdmissionModal() {
                         setTouched((prev) => ({ ...prev, organisation: true }))
                       }
                       aria-invalid={Boolean(
-                        touched.organisation &&
-                          form.organisation.trim().length < 2
+                        touched.organisation && form.organisation.trim().length < 2
                       )}
                       placeholder="Entreprise / institution"
                     />
@@ -563,9 +550,7 @@ export default function ContactAdmissionModal() {
                   <span>Message complémentaire</span>
                   <Textarea
                     value={form.message}
-                    onChange={(event) =>
-                      setValue("message", event.target.value)
-                    }
+                    onChange={(event) => setValue("message", event.target.value)}
                     placeholder="Précisez votre besoin, vos disponibilités ou votre objectif professionnel…"
                   />
                 </Field>
@@ -588,7 +573,7 @@ export default function ContactAdmissionModal() {
                 </SubmitHint>
                 <PrimaryButton type="submit" disabled={sending}>
                   <Send size={17} />
-                  {sending ? "Envoi…" : "Envoyer"}
+                  {sending ? "Envoi…" : "Envoyer ma demande"}
                   {!sending && <ArrowRight size={16} />}
                 </PrimaryButton>
               </SubmitRow>
@@ -623,16 +608,9 @@ const IntroPanel = styled.aside`
   padding: 18px;
   border: 1px solid rgba(243, 111, 33, 0.16);
   border-radius: 22px 0 22px 0;
-  background: radial-gradient(
-      360px 180px at 10% 0%,
-      rgba(243, 111, 33, 0.13),
-      transparent 66%
-    ),
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.055),
-      rgba(255, 255, 255, 0.018)
-    );
+  background:
+    radial-gradient(360px 180px at 10% 0%, rgba(243, 111, 33, 0.13), transparent 66%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018));
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
 `;
 
@@ -664,7 +642,7 @@ const Eyebrow = styled.div`
 const IntroTitle = styled.h3`
   margin: 5px 0 0;
   color: ${colors.text};
-  font-size: clamp(18px, 4vw, 18px);
+  font-size: clamp(22px, 4vw, 31px);
   line-height: 1.03;
   letter-spacing: -0.035em;
 `;
@@ -801,11 +779,7 @@ const Form = styled.form`
   padding: 18px;
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 0 22px 0 22px;
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.045),
-    rgba(255, 255, 255, 0.015)
-  );
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.015));
 `;
 
 const SelectionBlock = styled.div`
@@ -996,16 +970,9 @@ const SuccessPanel = styled.div`
   padding: clamp(28px, 7vw, 64px) 20px;
   text-align: center;
   border-radius: 22px 0 22px 0;
-  background: radial-gradient(
-      360px 220px at 50% 10%,
-      rgba(243, 111, 33, 0.13),
-      transparent 68%
-    ),
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.04),
-      rgba(255, 255, 255, 0.01)
-    );
+  background:
+    radial-gradient(360px 220px at 50% 10%, rgba(243, 111, 33, 0.13), transparent 68%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
 `;
 
 const SuccessIcon = styled.div`

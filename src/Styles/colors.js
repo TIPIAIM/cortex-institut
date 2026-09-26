@@ -1,30 +1,42 @@
-// src/Styles/colors.js
 const colors = {
-    semygprimary: "#0E2D4F",          // bleu profond
-    semygsecondary: "#1C3F6E",        // bleu
-    semygsecondar: "#2A4B7C",         // bleu médian
-    semygprimar: "#F2C94C",           // accent or
-    semygjouneclàire: "#FFF5C7",      // or clair
-  
-    bg: "#0e1a2b", // #0e1a2b
-    bg1: "#0D1D4A",// #0D1D4A
-    bg2: "#1A3C8B",//ce ke veulent #1A3C8B
-    bgSoft:"#11233b",// ce ke j'àime #11233b bleu foncé
-    //bgSoft2:"#1A3C8B",//ce ke il veux leur veux, #1A3C8B  #E6ECF7 #4A6DC1
+  /* Legacy tokens — conservés pour compatibilité */
+  semygprimary: "#0E2D4F",
+  semygsecondary: "#1C3F6E",
+  semygsecondar: "#2A4B7C",
+  semygprimar: "#F2C94C",
+  semygjouneclàire: "#FFF5C7",
 
-    //Bleu foncé 1 : #132C6B ➝ titres sur fond blanc
-//Bleu foncé 2 : #0D1D4A ➝ footer ou bandeau sombre
-   
-//Variante plus foncée (hover bouton) : #D85F17
-//Variante plus claire (accent doux) : #F89C5D
-text: "#e8eef7",
-    muted: "#a8b3c7",
-    accentGold: "#F36F21", //  #F36F21 ce ke il veux orànge
-    accentGold3: "#F89C5D",//   #F89C5D
-    accentGoldLight: "#FFF5C7",
+  bg: "#0E1A2B",
+  bg1: "#0D1D4A",
+  bg2: "#1A3C8B",
+  bgSoft: "#11233B",
 
+  text: "#E8EEF7",
+  muted: "#A8B3C7",
 
-  };
-  
-  export default colors;
-  
+  accentGold: "#F36F21",
+  accentGold3: "#F89C5D",
+  accentGoldLight: "#FFF5C7",
+
+  /* Design tokens CORTEX — UI Premium */
+  brandNavy: "#0E2D4F",
+  brandBlue: "#1C3F6E",
+  brandBlueMid: "#2A4B7C",
+  accent: "#F36F21",
+  accentSoft: "#F89C5D",
+  cream: "#FFF5C7",
+
+  surface: "#11233B",
+  surfaceStrong: "#0D1D4A",
+  surfaceDeep: "#0E1A2B",
+  surfaceGlass: "rgba(13, 29, 74, 0.68)",
+  surfaceGlassStrong: "rgba(7, 23, 39, 0.88)",
+
+  stroke: "rgba(255, 255, 255, 0.10)",
+  strokeStrong: "rgba(255, 255, 255, 0.16)",
+  textSoft: "rgba(232, 238, 247, 0.74)",
+  focusRing: "rgba(243, 111, 33, 0.34)",
+  shadow: "rgba(0, 0, 0, 0.28)",
+};
+
+export default colors;

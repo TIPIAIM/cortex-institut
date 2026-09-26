@@ -1,131 +1,140 @@
-
-//import { Helmet } from "react-helmet-async"; on l'utilise ps en reàct 19
 import { Helmet } from "@dr.pogodin/react-helmet";
 
+const SITE_URL = "https://www.institut-cortex.com";
+const DEFAULT_IMAGE = "/img/cortex-logo.png";
+const ORG_DESCRIPTION =
+  "Institut Cortex à Conakry propose des parcours de formation organisés en Grandes Écoles pour étudiants, jeunes professionnels, cadres et managers.";
+
+const CURRENT_TOPICS = [
+  "Management & Business",
+  "Logistique & Supply Chain",
+  "Digital, Technologie & IA",
+  "Industrie, Mines & Opérations",
+  "Agri-Business & Économie Verte",
+  "Projet, Conseil & Employabilité / Transformation",
+  "Finance, Comptabilité & Banque",
+];
+
+function absoluteUrl(value, fallback = SITE_URL) {
+  if (!value) return fallback;
+  try {
+    return new URL(value, SITE_URL).href;
+  } catch {
+    return fallback;
+  }
+}
+
+function canonicalUrl(value) {
+  try {
+    const parsed = new URL(value || "/", SITE_URL);
+    if (parsed.hostname === "institut-cortex.com" || parsed.hostname === "www.institut-cortex.com") {
+      parsed.protocol = "https:";
+      parsed.hostname = "www.institut-cortex.com";
+    }
+    parsed.search = "";
+    parsed.hash = "";
+    return parsed.href;
+  } catch {
+    return SITE_URL;
+  }
+}
+
+function currentCanonical() {
+  if (typeof window === "undefined") return SITE_URL;
+  return canonicalUrl(window.location.pathname || "/");
+}
+
 const SEO = ({
-  title = "Institut Cortex – Formations & Masters en ligne",
-  description = "Institut Cortex (Conakry) : formations certifiantes et Masters 100 % en ligne en partenariat avec CCL (Maroc), ASC Annecy (France) et Master Learn (Royaume-Uni). Filières : Management, Ingénierie, Finance, Santé, Génie Civil…",
-  image = "/img/cortex-logo.png",
+  title = "Institut Cortex | Grandes Écoles & formations professionnelles",
+  description = "Institut Cortex à Conakry : parcours de formation organisés en Grandes Écoles pour étudiants, jeunes professionnels, cadres et managers.",
+  image = DEFAULT_IMAGE,
+  imageAlt = "Institut Cortex",
   keywords = [
     "Institut Cortex",
-    "CCL",
-    "ASC Annecy",
-    "Master Learn",
-    "Masters en ligne",
     "Formation professionnelle Guinée",
-    "Management",
-    "Ingénierie",
-    "Finance",
-    "Santé",
-    "Génie civil",
-    "QHSE",
-    "Gestion de projet",
-    "Ressources humaines",
-    "Supply Chain"
+    "Grandes Écoles Conakry",
+    "Cortex Junior Academy",
+    "Cortex Executive Academy",
+    ...CURRENT_TOPICS,
   ],
   url,
   type = "website",
-  siteName = "Institut Cortex | CCL · ASC Annecy · Master Learn",
-  twitterHandle, // laisse vide si tu n'as pas de compte officiel
-  children
+  siteName = "Institut Cortex",
+  twitterHandle,
+  robots = "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1",
+  schemas = [],
+  children,
 }) => {
-  // Schéma principal : organisme de formation
-  const orgSchema = {
+  const canonical = canonicalUrl(url || currentCanonical());
+  const socialImage = absoluteUrl(image, absoluteUrl(DEFAULT_IMAGE));
+
+  const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "EducationalOrganization",
+    "@id": `${SITE_URL}/#organization`,
     name: "Institut Cortex",
-    url,
-    logo: image,
-    description,
+    url: SITE_URL,
+    logo: absoluteUrl(DEFAULT_IMAGE),
+    description: ORG_DESCRIPTION,
     address: {
       "@type": "PostalAddress",
       addressLocality: "Conakry",
-      addressCountry: "GN"
+      addressCountry: "GN",
     },
-    // Partenariats (réseau)
-    memberOf: [
-      {
-        "@type": "Organization",
-        "name": "Centre des Compétences & Leadership (CCL)",
-        "url": "https://www.ccl.ma"
-      },
-      {
-        "@type": "CollegeOrUniversity",
-        "name": "ASC Annecy (France)"
-      },
-      {
-        "@type": "CollegeOrUniversity",
-        "name": "Master Learn (Royaume-Uni)"
-      }
-    ],
-    // Domaines couverts
-    knowsAbout: [
-      "Management et stratégie",
-      "Contrôle de gestion",
-      "Finance d’entreprise",
-      "Audit interne",
-      "Ingénierie & SI",
-      "QHSE",
-      "Gestion de projet (PMP)",
-      "Logistique & Supply Chain",
-      "Santé / Santé publique",
-      "Génie civil"
-    ]
+    knowsAbout: CURRENT_TOPICS,
   };
 
-  // Schéma local succinct (point de présence à Conakry)
-  const localSchema = {
+  const websiteSchema = {
     "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
-    name: "Institut Cortex",
-    url,
-    logo: image,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Conakry",
-      addressCountry: "GN"
-    }
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    name: siteName,
+    url: SITE_URL,
+    inLanguage: "fr",
+    publisher: {
+      "@id": `${SITE_URL}/#organization`,
+    },
   };
+
+  const pageSchemas = Array.isArray(schemas) ? schemas.filter(Boolean) : [];
+  const jsonLd = [organizationSchema, websiteSchema, ...pageSchemas];
 
   return (
     <Helmet>
+      <html lang="fr" />
       <title>{title}</title>
 
-      {/* Meta de base */}
       <meta name="description" content={description} />
       {keywords?.length > 0 && (
         <meta name="keywords" content={keywords.join(", ")} />
       )}
-      <meta name="robots" content="index, follow" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <meta httpEquiv="content-language" content="fr" />
+      <meta name="robots" content={robots} />
       <meta name="application-name" content={siteName} />
+      <meta name="theme-color" content="#0E2D4F" />
+      <meta httpEquiv="content-language" content="fr" />
 
-      {/* Open Graph */}
+      <link rel="canonical" href={canonical} />
+
       <meta property="og:type" content={type} />
       <meta property="og:site_name" content={siteName} />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
-      {image && <meta property="og:image" content={image} />}
-      {url && <meta property="og:url" content={url} />}
+      <meta property="og:url" content={canonical} />
+      <meta property="og:image" content={socialImage} />
+      <meta property="og:image:alt" content={imageAlt} />
       <meta property="og:locale" content="fr_FR" />
 
-      {/* Twitter (facultatif si pas de handle) */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
-      {image && <meta name="twitter:image" content={image} />}
+      <meta name="twitter:image" content={socialImage} />
+      <meta name="twitter:image:alt" content={imageAlt} />
       {twitterHandle && <meta name="twitter:site" content={twitterHandle} />}
 
-      {/* Favicons */}
       <link rel="icon" type="image/png" href="/img/cortex-logo.png" />
       <link rel="apple-touch-icon" sizes="180x180" href="/img/cortex-logo.png" />
-      <html lang="fr" />
 
-      {/* JSON-LD : Organisation + Local */}
-      <script type="application/ld+json">
-        {JSON.stringify([orgSchema, localSchema])}
-      </script>
+      <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
 
       {children}
     </Helmet>

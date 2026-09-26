@@ -1,4 +1,6 @@
 import {
+  lazy,
+  Suspense,
   useDeferredValue,
   useEffect,
   useMemo,
@@ -21,19 +23,19 @@ import {
   Route,
   Search,
   Send,
-
+  Sparkles,
   Sprout,
   Truck,
   UsersRound,
   WalletCards,
   X,
-  BookAlert,
 } from "lucide-react";
 import colors from "../../Styles/colors";
 import { imagess } from "../../assets/imagess";
-import FiliereModal from "./FiliereModal";
 import { catalogues, getSchoolSearchText } from "./filieres.data";
 import { openProgrammeContactModal } from "./programmeContact";
+
+const FiliereModal = lazy(() => import("./FiliereModal.jsx"));
 
 const iconMap = {
   briefcase: BriefcaseBusiness,
@@ -223,7 +225,7 @@ export default function Catalogue({
         {!!active.selectionLogic?.length && (
           <LogicCard>
             <LogicHeader>
-              <BookAlert size={18} />
+              <Sparkles size={18} />
               <div>
                 <LogicTitle>Pour choisir une formation</LogicTitle>
                 <LogicLead>Suivez la logique proposée dans le catalogue.</LogicLead>
@@ -403,12 +405,16 @@ export default function Catalogue({
         )}
       </Container>
 
-      <FiliereModal
-        open={!!selected}
-        onClose={() => setSelected(null)}
-        catalogue={selected?.catalogue}
-        school={selected?.school}
-      />
+      {selected && (
+        <Suspense fallback={null}>
+          <FiliereModal
+            open
+            onClose={() => setSelected(null)}
+            catalogue={selected.catalogue}
+            school={selected.school}
+          />
+        </Suspense>
+      )}
     </Section>
   );
 }
