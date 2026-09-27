@@ -1,14 +1,14 @@
 import React, { memo, useEffect, useMemo } from "react";
 import styled, { keyframes } from "styled-components";
 import { motion, useReducedMotion } from "framer-motion";
- import {
-   BookOpenCheck,
+import {
+  BookOpenCheck,
   Briefcase,
   Compass,
   HeartHandshake,
   Lightbulb,
   ShieldCheck,
-  Sparkles,
+  BookCheck,
   Star,
   Target,
   UsersRound,
@@ -17,9 +17,10 @@ import colors from "../../Styles/colors";
 import { imagess } from "../../assets/imagess";
 import SEO from "../../SEO";
 import CortexHolding from "../CortexHolding/CortexHolding";
- 
+
 const CANONICAL = "https://www.institut-cortex.com/apropos";
-const OG_IMAGE = imagess?.logoCortex2 || imagess?.logoCortex || "/img/cortex-logo.png";
+const OG_IMAGE =
+  imagess?.logoCortex2 || imagess?.logoCortex || "/img/cortex-logo.png";
 
 function cld(url, w = 1200) {
   if (typeof url !== "string") return url;
@@ -41,7 +42,9 @@ function AboutPage() {
   const team = useMemo(
     () => [
       {
-        img: imagess?.DirecteurInstitutCortex2 || imagess?.DirecteurInstitutCortex1,
+        img:
+          imagess?.DirecteurInstitutCortex2 ||
+          imagess?.DirecteurInstitutCortex1,
         name: "Directeur CORTEX",
         role: "Pilotage académique & innovation",
         bio: "Conduit la R&D, la qualité pédagogique et les partenariats.",
@@ -55,7 +58,9 @@ function AboutPage() {
         bio: "Fiabilise la gestion, la conformité et la transparence.",
       },
       {
-        img: imagess?.Responsablecommercialegroupe4 || imagess?.Responsablecommercialegroupe2,
+        img:
+          imagess?.Responsablecommercialegroupe4 ||
+          imagess?.Responsablecommercialegroupe2,
         name: "Dév. commercial",
         role: "Relation & croissance",
         bio: "Déploie les offres, anime le réseau et la satisfaction client.",
@@ -178,7 +183,10 @@ function AboutPage() {
             rel="preload"
             as="image"
             href={cld(heroCover, 1600)}
-            imageSrcSet={`${cld(heroCover, 800)} 800w, ${cld(heroCover, 1200)} 1200w, ${cld(heroCover, 1600)} 1600w`}
+            imageSrcSet={`${cld(heroCover, 800)} 800w, ${cld(
+              heroCover,
+              1200
+            )} 1200w, ${cld(heroCover, 1600)} 1600w`}
             fetchPriority="high"
           />
         )}
@@ -191,7 +199,7 @@ function AboutPage() {
         <HeroInner>
           <HeroContent as={motion.div} {...motionProps}>
             <Eyebrow>
-              <Sparkles size={14} /> INSTITUT CORTEX · CORTEX HOLDING
+              <BookOpenCheck size={14} /> INSTITUT CORTEX · CORTEX HOLDING
             </Eyebrow>
 
             <HeroTitle id="about-title">
@@ -204,14 +212,16 @@ function AboutPage() {
               ambition commune : rendre les compétences immédiatement utiles au
               terrain.
             </HeroLead>
- 
           </HeroContent>
 
           <HeroPoster as={motion.figure} {...motionProps}>
             <PosterMedia>
               <PosterImage
                 src={cld(heroCover, 1400)}
-                srcSet={`${cld(heroCover, 800)} 800w, ${cld(heroCover, 1100)} 1100w, ${cld(heroCover, 1400)} 1400w`}
+                srcSet={`${cld(heroCover, 800)} 800w, ${cld(
+                  heroCover,
+                  1100
+                )} 1100w, ${cld(heroCover, 1400)} 1400w`}
                 sizes="(max-width: 980px) 100vw, 44vw"
                 alt="Équipe et environnement Institut Cortex"
                 loading="eager"
@@ -262,27 +272,31 @@ function AboutPage() {
 
         <TwoCols>
           <GlassCard as={motion.article} {...motionProps}>
-            <CardIcon><Compass size={21} /></CardIcon>
+            <CardIcon>
+              <Compass size={21} />
+            </CardIcon>
             <CardTitle>Notre philosophie</CardTitle>
             <CardText>
-              Innover utile, professionnaliser par la pratique et accompagner les
-              organisations vers l’excellence à travers les formations
+              Innover utile, professionnaliser par la pratique et accompagner
+              les organisations vers l’excellence à travers les formations
               certifiantes, ateliers, séminaires et projets encadrés.
             </CardText>
             <CardNote>
-              Activités : formation continue, recherche appliquée, certifications
-              et conseil.
+              Activités : formation continue, recherche appliquée,
+              certifications et conseil.
             </CardNote>
           </GlassCard>
 
           <GlassCard as={motion.article} {...motionProps}>
-            <CardIcon><Briefcase size={21} /></CardIcon>
+            <CardIcon>
+              <Briefcase size={21} />
+            </CardIcon>
             <CardTitle>Domaines CORTEX</CardTitle>
             <CardText>
-              Management & Business, Logistique & Supply Chain, Digital, Technologie
-              & IA, Industrie, Mines & Opérations, Agri-Business & Économie Verte,
-              Projet, Conseil & Employabilité / Transformation, Finance, Comptabilité
-              & Banque.
+              Management & Business, Logistique & Supply Chain, Digital,
+              Technologie & IA, Industrie, Mines & Opérations, Agri-Business &
+              Économie Verte, Projet, Conseil & Employabilité / Transformation,
+              Finance, Comptabilité & Banque.
             </CardText>
           </GlassCard>
         </TwoCols>
@@ -295,9 +309,17 @@ function AboutPage() {
               initial={reduceMotion ? false : { opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: reduceMotion ? 0 : 0.4, delay: reduceMotion ? 0 : index * 0.05 }}
+              transition={{
+                duration: reduceMotion ? 0 : 0.4,
+                delay: reduceMotion ? 0 : index * 0.05,
+              }}
             >
-              <PillarIcon as={motion.span} whileHover={reduceMotion ? undefined : { rotate: -7, scale: 1.08 }}>
+              <PillarIcon
+                as={motion.span}
+                whileHover={
+                  reduceMotion ? undefined : { rotate: -7, scale: 1.08 }
+                }
+              >
                 <Icon size={19} />
               </PillarIcon>
               <div>
@@ -319,7 +341,9 @@ function AboutPage() {
 
         <NoniGrid>
           <GlassCard as={motion.article} {...motionProps}>
-            <CardIcon><Target size={21} /></CardIcon>
+            <CardIcon>
+              <Target size={21} />
+            </CardIcon>
             <CardTitle>Objectif & vision</CardTitle>
             <CardText>
               Promouvoir un développement économique pleinement humain et
@@ -330,10 +354,22 @@ function AboutPage() {
             </CardText>
 
             <PrinciplesList>
-              <li><strong>Esprit d’équipe</strong><span>Co-construction, confiance, solidarité.</span></li>
-              <li><strong>Satisfaction client</strong><span>Qualité des services et des résultats.</span></li>
-              <li><strong>Innovation</strong><span>Solutions et pratiques technologiques utiles.</span></li>
-              <li><strong>Responsabilité & ouverture</strong><span>Éthique, égalité, inclusion & formation.</span></li>
+              <li>
+                <strong>Esprit d’équipe</strong>
+                <span>Co-construction, confiance, solidarité.</span>
+              </li>
+              <li>
+                <strong>Satisfaction client</strong>
+                <span>Qualité des services et des résultats.</span>
+              </li>
+              <li>
+                <strong>Innovation</strong>
+                <span>Solutions et pratiques technologiques utiles.</span>
+              </li>
+              <li>
+                <strong>Responsabilité & ouverture</strong>
+                <span>Éthique, égalité, inclusion & formation.</span>
+              </li>
             </PrinciplesList>
 
             <CardNote>
@@ -345,7 +381,9 @@ function AboutPage() {
 
           <RightColumn>
             <GlassCard as={motion.article} {...motionProps}>
-              <CardIcon><UsersRound size={21} /></CardIcon>
+              <CardIcon>
+                <UsersRound size={21} />
+              </CardIcon>
               <CardTitle>Domaines & réseau</CardTitle>
               <CardText>
                 Réseau de filiales et partenaires pour maximiser les synergies :
@@ -356,9 +394,18 @@ function AboutPage() {
 
             <Portraits>
               {[
-                { img: imagess?.Responsablecommercialegroupe3, name: "Resp Commerciale" },
-                { img: imagess?.DirecteurInstitutCortex2, name: "Direction CORTEX" },
-                { img: imagess?.DirecteurduGroupe4, name: "Direction Cortex Holding" },
+                {
+                  img: imagess?.Responsablecommercialegroupe3,
+                  name: "Resp Commerciale",
+                },
+                {
+                  img: imagess?.DirecteurInstitutCortex2,
+                  name: "Direction CORTEX",
+                },
+                {
+                  img: imagess?.DirecteurduGroupe4,
+                  name: "Direction Cortex Holding",
+                },
               ].map((person, index) => (
                 <Portrait
                   key={`${person.name}-${index}`}
@@ -366,9 +413,17 @@ function AboutPage() {
                   initial={reduceMotion ? false : { opacity: 0, y: 12 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: reduceMotion ? 0 : 0.42, delay: reduceMotion ? 0 : index * 0.05 }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.42,
+                    delay: reduceMotion ? 0 : index * 0.05,
+                  }}
                 >
-                  <img src={cld(person.img, 800)} alt={person.name} loading="lazy" decoding="async" />
+                  <img
+                    src={cld(person.img, 800)}
+                    alt={person.name}
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <figcaption>{person.name}</figcaption>
                 </Portrait>
               ))}
@@ -379,7 +434,9 @@ function AboutPage() {
 
       <Section id="dynamique" aria-labelledby="dynamique-title">
         <SectionHeading as={motion.div} {...motionProps}>
-          <SectionKicker><Sparkles size={15} /> TRAJECTOIRE</SectionKicker>
+          <SectionKicker>
+            <BookCheck size={15} /> TRAJECTOIRE
+          </SectionKicker>
           <H2 id="dynamique-title">Étapes & dynamiques</H2>
         </SectionHeading>
 
@@ -404,7 +461,10 @@ function AboutPage() {
               initial={reduceMotion ? false : { opacity: 0, x: -12 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: reduceMotion ? 0 : 0.42, delay: reduceMotion ? 0 : index * 0.05 }}
+              transition={{
+                duration: reduceMotion ? 0 : 0.42,
+                delay: reduceMotion ? 0 : index * 0.05,
+              }}
             >
               <TimelineIndex>0{index + 1}</TimelineIndex>
               <div>
@@ -418,7 +478,9 @@ function AboutPage() {
 
       <Section id="equipe" aria-labelledby="equipe-title">
         <SectionHeading as={motion.div} {...motionProps}>
-          <SectionKicker><UsersRound size={15} /> ÉQUIPE</SectionKicker>
+          <SectionKicker>
+            <UsersRound size={15} /> ÉQUIPE
+          </SectionKicker>
           <H2 id="equipe-title">Les personnes derrière CORTEX</H2>
           <Lead>
             Une équipe réunissant direction académique, gestion, finances et
@@ -434,10 +496,18 @@ function AboutPage() {
               initial={reduceMotion ? false : { opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: reduceMotion ? 0 : 0.44, delay: reduceMotion ? 0 : index * 0.05 }}
+              transition={{
+                duration: reduceMotion ? 0 : 0.44,
+                delay: reduceMotion ? 0 : index * 0.05,
+              }}
             >
               <TeamImageWrap>
-                <TeamImage src={cld(member.img, 1000)} alt={member.name} loading="lazy" decoding="async" />
+                <TeamImage
+                  src={cld(member.img, 1000)}
+                  alt={member.name}
+                  loading="lazy"
+                  decoding="async"
+                />
                 <TeamShade />
               </TeamImageWrap>
               <TeamBody>
@@ -445,15 +515,18 @@ function AboutPage() {
                 <TeamRole>{member.role}</TeamRole>
                 <TeamBio>{member.bio}</TeamBio>
                 <TeamMeta>
-                  <span><Briefcase size={14} /> Expérience</span>
-                  <span><Star size={14} /> Expertise</span>
+                  <span>
+                    <Briefcase size={14} /> Expérience
+                  </span>
+                  <span>
+                    <Star size={14} /> Expertise
+                  </span>
                 </TeamMeta>
               </TeamBody>
             </TeamCard>
           ))}
         </TeamGrid>
       </Section>
- 
     </Page>
   );
 }
@@ -468,8 +541,11 @@ const floatSoft = keyframes`
 const Page = styled.main`
   min-height: 100vh;
   overflow-x: clip;
-  background:
-    radial-gradient(920px 560px at 10% 0%, rgba(243,111,33,.07), transparent 64%),
+  background: radial-gradient(
+      920px 560px at 10% 0%,
+      rgba(243, 111, 33, 0.07),
+      transparent 64%
+    ),
     linear-gradient(180deg, ${colors.bg}, ${colors.bgSoft} 50%, ${colors.bg1});
   color: ${colors.text};
 `;
@@ -482,19 +558,26 @@ const Hero = styled.section`
   display: grid;
   align-items: center;
   border-bottom: 1px solid ${colors.stroke};
-  background:
-    radial-gradient(900px 560px at 78% 12%, rgba(42,75,124,.22), transparent 64%),
-    linear-gradient(118deg, rgba(13,29,74,.99), rgba(14,26,43,.99) 56%, rgba(17,35,59,.99));
+  background: radial-gradient(
+      900px 560px at 78% 12%,
+      rgba(42, 75, 124, 0.22),
+      transparent 64%
+    ),
+    linear-gradient(
+      118deg,
+      rgba(13, 29, 74, 0.99),
+      rgba(14, 26, 43, 0.99) 56%,
+      rgba(17, 35, 59, 0.99)
+    );
 `;
 
 const HeroGrid = styled.div`
   position: absolute;
   inset: 0;
   z-index: -3;
-  opacity: .22;
-  background:
-    linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+  opacity: 0.22;
+  background: linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
   background-size: 46px 46px;
   mask-image: linear-gradient(to bottom, #000, transparent 94%);
 `;
@@ -507,11 +590,17 @@ const HeroGlow = styled.div`
   width: min(48vw, 620px);
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(243,111,33,.19), transparent 68%);
+  background: radial-gradient(
+    circle,
+    rgba(243, 111, 33, 0.19),
+    transparent 68%
+  );
   filter: blur(14px);
   animation: ${floatSoft} 9s ease-in-out infinite;
 
-  @media (prefers-reduced-motion: reduce) { animation: none; }
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `;
 
 const HeroInner = styled.div`
@@ -519,7 +608,7 @@ const HeroInner = styled.div`
   margin: 0 auto;
   padding: clamp(88px, 9vw, 126px) 0 clamp(70px, 8vw, 96px);
   display: grid;
-  grid-template-columns: minmax(0,1.05fr) minmax(360px,.95fr);
+  grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
   gap: clamp(32px, 5vw, 72px);
   align-items: center;
 
@@ -532,8 +621,12 @@ const HeroContent = styled.div`
   position: relative;
   z-index: 3;
   padding: clamp(20px, 3vw, 34px);
-   border-radius: 32px 0 32px 0;
-  background: linear-gradient(145deg, rgba(7,23,39,.86), rgba(13,29,74,.63));
+  border-radius: 32px 0 32px 0;
+  background: linear-gradient(
+    145deg,
+    rgba(7, 23, 39, 0.86),
+    rgba(13, 29, 74, 0.63)
+  );
   box-shadow: -10px 0px 0px 0px ${colors.accentGold};
   backdrop-filter: blur(18px);
 `;
@@ -545,20 +638,20 @@ const Eyebrow = styled.div`
   gap: 8px;
   margin-bottom: 16px;
   padding: 8px 11px;
-   border-radius: 9px 0 9px 0;
-  background: rgba(243,111,33,.08);
+  border-radius: 9px 0 9px 0;
+  background: rgba(243, 111, 33, 0.08);
   color: ${colors.accentGold3};
   font-size: 11px;
   font-weight: 900;
-  letter-spacing: .13em;
+  letter-spacing: 0.13em;
 `;
 
 const HeroTitle = styled.h1`
   margin: 0;
   color: ${colors.text};
   font-size: clamp(40px, 6vw, 74px);
-  line-height: .99;
-  letter-spacing: -.052em;
+  line-height: 0.99;
+  letter-spacing: -0.052em;
   font-weight: 950;
 `;
 
@@ -574,16 +667,13 @@ const HeroLead = styled.p`
   line-height: 1.72;
 `;
 
- 
- 
 const HeroPoster = styled.figure`
   margin: 0;
   overflow: hidden;
-   border-radius: 32px 0 32px 0;
-  background: rgba(7,23,39,.78);
-   box-shadow:0px -10px 0px 0px ${colors.accentGold};
-
-  `;
+  border-radius: 32px 0 32px 0;
+  background: rgba(7, 23, 39, 0.78);
+  box-shadow: 0px -10px 0px 0px ${colors.accentGold};
+`;
 
 const PosterMedia = styled.div`
   position: relative;
@@ -602,7 +692,12 @@ const PosterImage = styled.img`
 const PosterShade = styled.div`
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 34%, rgba(7,23,39,.30) 62%, rgba(7,23,39,.90));
+  background: linear-gradient(
+    180deg,
+    transparent 34%,
+    rgba(7, 23, 39, 0.3) 62%,
+    rgba(7, 23, 39, 0.9)
+  );
 `;
 
 const PosterSeal = styled.span`
@@ -613,14 +708,16 @@ const PosterSeal = styled.span`
   height: 52px;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(243,111,33,.38);
+  border: 1px solid rgba(243, 111, 33, 0.38);
   border-radius: 17px 0 17px 0;
-  background: rgba(7,23,39,.74);
+  background: rgba(7, 23, 39, 0.74);
   color: ${colors.accentGold};
   backdrop-filter: blur(12px);
   animation: ${floatSoft} 4.8s ease-in-out infinite;
 
-  @media (prefers-reduced-motion: reduce) { animation: none; }
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `;
 
 const PosterBody = styled.div`
@@ -631,7 +728,7 @@ const PosterKicker = styled.div`
   color: ${colors.accentGold3};
   font-size: 10px;
   font-weight: 900;
-  letter-spacing: .14em;
+  letter-spacing: 0.14em;
 `;
 
 const PosterTitle = styled.h2`
@@ -650,7 +747,7 @@ const QuickNav = styled.nav`
   position: sticky;
   top: 0;
   z-index: 45;
-   background: rgba(14,26,43,.86);
+  background: rgba(14, 26, 43, 0.86);
   backdrop-filter: blur(16px);
 `;
 
@@ -663,7 +760,9 @@ const QuickNavInner = styled.div`
   overflow-x: auto;
   scrollbar-width: none;
 
-  &::-webkit-scrollbar { display: none; }
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   a {
     flex: 0 0 auto;
@@ -673,13 +772,13 @@ const QuickNavInner = styled.div`
     color: ${colors.accentGold};
     font-size: 12px;
     font-weight: 800;
-    transition: color .18s ease, border-color .18s ease, background .18s ease;
+    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
   }
 
   a:hover {
     color: ${colors.text};
-    border-color: rgba(243,111,33,.38);
-    background: rgba(243,111,33,.07);
+    border-color: rgba(243, 111, 33, 0.38);
+    background: rgba(243, 111, 33, 0.07);
   }
 `;
 
@@ -704,7 +803,7 @@ const SectionKicker = styled.div`
   color: ${colors.accentGold3};
   font-size: 10px;
   font-weight: 900;
-  letter-spacing: .15em;
+  letter-spacing: 0.15em;
 `;
 
 const H2 = styled.h2`
@@ -712,7 +811,7 @@ const H2 = styled.h2`
   color: ${colors.text};
   font-size: clamp(30px, 4.5vw, 52px);
   line-height: 1.05;
-  letter-spacing: -.035em;
+  letter-spacing: -0.035em;
 `;
 
 const Lead = styled.p`
@@ -725,17 +824,23 @@ const Lead = styled.p`
 
 const TwoCols = styled.div`
   display: grid;
-  grid-template-columns: 1.08fr .92fr;
+  grid-template-columns: 1.08fr 0.92fr;
   gap: 18px;
 
-  @media (max-width: 850px) { grid-template-columns: 1fr; }
+  @media (max-width: 850px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const GlassCard = styled.article`
   padding: clamp(20px, 3vw, 30px);
-   border-radius: 26px 0 26px 0;
-  background: linear-gradient(145deg, rgba(7,23,39,.84), rgba(13,29,74,.58));
-  box-shadow: 0 24px 64px rgba(0,0,0,.20);
+  border-radius: 26px 0 26px 0;
+  background: linear-gradient(
+    145deg,
+    rgba(7, 23, 39, 0.84),
+    rgba(13, 29, 74, 0.58)
+  );
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(14px);
 `;
 
@@ -745,9 +850,9 @@ const CardIcon = styled.span`
   display: grid;
   place-items: center;
   margin-bottom: 14px;
-  border: 1px solid rgba(243,111,33,.30);
+  border: 1px solid rgba(243, 111, 33, 0.3);
   border-radius: 14px 0 14px 0;
-  background: rgba(243,111,33,.09);
+  background: rgba(243, 111, 33, 0.09);
   color: ${colors.accentGold};
 `;
 
@@ -774,12 +879,16 @@ const CardNote = styled.p`
 
 const Pillars = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, minmax(0,1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
   margin-top: 18px;
 
-  @media (max-width: 900px) { grid-template-columns: repeat(2, minmax(0,1fr)); }
-  @media (max-width: 540px) { grid-template-columns: 1fr; }
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (max-width: 540px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const Pillar = styled.article`
@@ -788,8 +897,8 @@ const Pillar = styled.article`
   gap: 12px;
   align-items: start;
   padding: 16px;
-   border-radius: 18px 0 18px 0;
-  background: rgba(255,255,255,.03);
+  border-radius: 18px 0 18px 0;
+  background: rgba(255, 255, 255, 0.03);
 
   b {
     display: block;
@@ -812,16 +921,18 @@ const PillarIcon = styled.span`
   display: grid;
   place-items: center;
   border-radius: 12px 0 12px 0;
-  background: rgba(243,111,33,.09);
+  background: rgba(243, 111, 33, 0.09);
   color: ${colors.accentGold};
 `;
 
 const NoniGrid = styled.div`
   display: grid;
-  grid-template-columns: 1.02fr .98fr;
+  grid-template-columns: 1.02fr 0.98fr;
   gap: 18px;
 
-  @media (max-width: 900px) { grid-template-columns: 1fr; }
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const PrinciplesList = styled.ul`
@@ -834,7 +945,7 @@ const PrinciplesList = styled.ul`
   li {
     padding: 11px 12px;
     border-left: 2px solid ${colors.accentGold};
-    background: rgba(255,255,255,.025);
+    background: rgba(255, 255, 255, 0.025);
   }
 
   strong {
@@ -858,10 +969,12 @@ const RightColumn = styled.div`
 
 const Portraits = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, minmax(0,1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 
-  @media (max-width: 560px) { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr 1fr;
+  }
 `;
 
 const Portrait = styled.figure`
@@ -869,7 +982,7 @@ const Portrait = styled.figure`
   min-height: 180px;
   margin: 0;
   overflow: hidden;
-   border-radius: 18px 0 18px 0;
+  border-radius: 18px 0 18px 0;
   background: ${colors.bg1};
 
   img {
@@ -878,16 +991,18 @@ const Portrait = styled.figure`
     min-height: 180px;
     object-fit: cover;
     object-position: center top;
-    transition: transform .38s ease;
+    transition: transform 0.38s ease;
   }
 
-  &:hover img { transform: scale(1.04); }
+  &:hover img {
+    transform: scale(1.04);
+  }
 
   figcaption {
     position: absolute;
     inset: auto 0 0;
     padding: 28px 10px 10px;
-    background: linear-gradient(180deg, transparent, rgba(7,23,39,.92));
+    background: linear-gradient(180deg, transparent, rgba(7, 23, 39, 0.92));
     color: ${colors.text};
     font-size: 11px;
     font-weight: 800;
@@ -904,40 +1019,54 @@ const TimelineItem = styled.article`
   grid-template-columns: auto 1fr;
   gap: 14px;
   padding: 16px;
-   border-radius: 18px 0 18px 0;
-  background: rgba(255,255,255,.028);
+  border-radius: 18px 0 18px 0;
+  background: rgba(255, 255, 255, 0.028);
 
-  b { color: ${colors.text}; }
-  p { margin: 5px 0 0; color: ${colors.muted}; line-height: 1.62; }
+  b {
+    color: ${colors.text};
+  }
+  p {
+    margin: 5px 0 0;
+    color: ${colors.muted};
+    line-height: 1.62;
+  }
 `;
 
 const TimelineIndex = styled.span`
   color: ${colors.accentGold};
   font-size: 12px;
   font-weight: 950;
-  letter-spacing: .08em;
+  letter-spacing: 0.08em;
 `;
 
 const TeamGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, minmax(0,1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
 
-  @media (max-width: 1000px) { grid-template-columns: repeat(2, minmax(0,1fr)); }
-  @media (max-width: 560px) { grid-template-columns: 1fr; }
+  @media (max-width: 1000px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const TeamCard = styled.article`
   overflow: hidden;
   border: 1px solid ${colors.stroke};
   border-radius: 24px 0 24px 0;
-  background: linear-gradient(145deg, rgba(7,23,39,.88), rgba(13,29,74,.54));
-  box-shadow: 0 20px 52px rgba(0,0,0,.18);
-  transition: transform .2s ease, border-color .2s ease;
+  background: linear-gradient(
+    145deg,
+    rgba(7, 23, 39, 0.88),
+    rgba(13, 29, 74, 0.54)
+  );
+  box-shadow: 0 20px 52px rgba(0, 0, 0, 0.18);
+  transition: transform 0.2s ease, border-color 0.2s ease;
 
   &:hover {
     transform: translateY(-4px);
-    border-color: rgba(243,111,33,.34);
+    border-color: rgba(243, 111, 33, 0.34);
   }
 `;
 
@@ -957,7 +1086,7 @@ const TeamImage = styled.img`
 const TeamShade = styled.div`
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, transparent 56%, rgba(7,23,39,.74));
+  background: linear-gradient(180deg, transparent 56%, rgba(7, 23, 39, 0.74));
 `;
 
 const TeamBody = styled.div`
@@ -1002,8 +1131,7 @@ const TeamMeta = styled.div`
     font-weight: 800;
   }
 
-  svg { color: ${colors.accentGold}; }
+  svg {
+    color: ${colors.accentGold};
+  }
 `;
-
- 
-  

@@ -12,7 +12,7 @@ import {
   MessageCircle,
   Phone,
   Send,
-  Sparkles,
+  BookCheck,
   UsersRound,
 } from "lucide-react";
 import colors from "../../Styles/colors";
@@ -342,7 +342,7 @@ export default function ContactAdmissionModal({ initialRequest = null }) {
                   }
                   transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  <Sparkles size={18} />
+                  <BookCheck size={18} />
                 </AnimatedBadge>
                 <div>
                   <Eyebrow>PREMIER CONTACT CORTEX</Eyebrow>

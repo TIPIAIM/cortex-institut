@@ -23,7 +23,7 @@ import {
   Route,
   Search,
   Send,
-  Sparkles,
+  BookCheck,
   Sprout,
   Truck,
   UsersRound,
@@ -225,7 +225,7 @@ export default function Catalogue({
         {!!active.selectionLogic?.length && (
           <LogicCard>
             <LogicHeader>
-              <Sparkles size={18} />
+              <BookCheck size={18} />
               <div>
                 <LogicTitle>Pour choisir une formation</LogicTitle>
                 <LogicLead>Suivez la logique proposée dans le catalogue.</LogicLead>

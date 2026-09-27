@@ -7,8 +7,9 @@ import { motion, useReducedMotion } from "framer-motion";
   Compass,
   HeartHandshake,
   Lightbulb,
+  LucideGitPullRequestDraft,
   ShieldCheck,
-  Sparkles,
+  BookCheck,
   Star,
   Target,
   UsersRound,
@@ -191,7 +192,7 @@ function AboutPage() {
         <HeroInner>
           <HeroContent as={motion.div} {...motionProps}>
             <Eyebrow>
-              <Sparkles size={14} /> INSTITUT CORTEX · CORTEX HOLDING
+              <LucideGitPullRequestDraft size={14} /> INSTITUT CORTEX · CORTEX HOLDING
             </Eyebrow>
 
             <HeroTitle id="about-title">
@@ -379,7 +380,7 @@ function AboutPage() {
 
       <Section id="dynamique" aria-labelledby="dynamique-title">
         <SectionHeading as={motion.div} {...motionProps}>
-          <SectionKicker><Sparkles size={15} /> TRAJECTOIRE</SectionKicker>
+          <SectionKicker><BookCheck size={15} /> TRAJECTOIRE</SectionKicker>
           <H2 id="dynamique-title">Étapes & dynamiques</H2>
         </SectionHeading>
 

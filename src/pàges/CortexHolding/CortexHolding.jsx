@@ -7,7 +7,7 @@ import {
   Building2,
   Network,
   Quote,
-  Sparkles,
+  BookCheck,
   Target,
 } from "lucide-react";
 import colors from "../../Styles/colors";
@@ -103,7 +103,7 @@ function CortexHolding() {
           <ContentCard as={motion.article} {...motionProps}>
             <CardTop>
               <IconBox as={motion.span} whileHover={reduceMotion ? undefined : { rotate: 8, scale: 1.06 }}>
-                <Sparkles size={22} />
+                <BookCheck size={22} />
               </IconBox>
               <div>
                 <CardKicker>OUVERTURE</CardKicker>
