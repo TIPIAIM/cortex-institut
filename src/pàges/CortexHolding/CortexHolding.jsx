@@ -7,7 +7,7 @@ import {
   Building2,
   Network,
   Quote,
-  BookCheck,
+  
   Target,
 } from "lucide-react";
 import colors from "../../Styles/colors";
