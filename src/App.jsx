@@ -6,7 +6,7 @@ import HomeBase from "./pàges/accueil/HomeBase.jsx";
 import Header from "./pàges/accueil/Bardenavigation.jsx";
 import Footer from "./pàges/accueil/Footer.jsx";
 import GlobalStyle from "./Styles/GlobalStyles.js";
-//import ContactModalHost from "./pàges/programmes/ContactModalHost.jsx";
+import ContactModalHost from "./pàges/programmes/ContactModalHost.jsx";
 import colors from "./Styles/colors.js";
 
 /*
@@ -16,8 +16,8 @@ import colors from "./Styles/colors.js";
 const AboutCortex = lazy(() => import("./pàges/apropos/AboutCortex.jsx"));
 
 
-//const Programmes = lazy(() => import("./pàges/programmes/Programmes.jsx"));
-//const ContactCortex = lazy(() => import("./pàges/contact/Contact.jsx"));
+const Programmes = lazy(() => import("./pàges/programmes/Programmes.jsx"));
+const ContactCortex = lazy(() => import("./pàges/contact/Contact.jsx"));
 
 const CampusCortexPage = lazy(() => import("./pàges/Campus/CampusCortex.jsx"));
 const CREDUCPage = lazy(() => import("./pàges/cREDUCPage/CREDUCPage.jsx"));
@@ -83,17 +83,17 @@ export default function App() {
       <Header />
 
       {/* Le vrai formulaire n'est téléchargé qu'au premier clic Contact/Postuler. */}
-     {/* <ContactModalHost />*/}
+     {/**/} <ContactModalHost />
 
       <Suspense fallback={<LoadingRoute />}>
         <Routes>
           <Route path="/" element={<HomeBase />} />
           <Route path="/apropos" element={<AboutCortex />} />
 
-{/*
+{/*  */ }
           <Route path="/programmes" element={<Programmes />} />
           <Route path="/contact" element={<ContactCortex />} />
-         */ }
+       
 
 
           <Route path="/CreducPage" element={<CREDUCPage />} />
